@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- Base de données :  `prwb_calendar_GXX`
 --
-CREATE DATABASE IF NOT EXISTS `prwb_calendar_GXX` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `prwb_calendar_G10` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `prwb_calendar_G10`;
 
 -- --------------------------------------------------------
