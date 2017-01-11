@@ -23,6 +23,16 @@
                         <td class="errors" id="errPseudo"></td>
                     </tr>
                     <tr>
+                        <td>Full Name:</td>
+                        <td><input id="full_name" name="full_name" type="text" size="16" value="<?= $full_name ?>"></td>
+                        <td class="errors" id="errFullName"></td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td><input id="email" name="email" type="text" size="16" value="<?= $email ?>"></td>
+                        <td class="errors" id="errEmail"></td>
+                    </tr>
+                    <tr>
                         <td>Password:</td>
                         <td><input id="password" name="password" type="password" size="16" value="<?= $password ?>"></td>
                         <td class="errors" id="errPassword"></td>

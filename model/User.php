@@ -1,7 +1,6 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "Message.php";
 
 class User extends Model {
 
@@ -14,16 +13,16 @@ class User extends Model {
     public function __construct($pseudo, $hashed_password, $email, $full_name) {
         $this->pseudo = $pseudo;
         $this->hashed_password = $hashed_password;
-        $this->$email = $email;
-        $this->$full_name = $full_name;
+        $this->email = $email;
+        $this->full_name = $full_name;
     }
 
     public function write_event($event) {
-        return Calendar::add_event($message);
+        return Calendar::add_event($event);
     }
 
     public function delete_event($event) {
-        return Calendar->delete($this);
+        return $event->delete($this);
     }
 
     public function get_events() {
@@ -38,12 +37,12 @@ class User extends Model {
     }
 
     public static function get_user($pseudo) {
-        $query = self::execute("SELECT * FROM Members where pseudo = ?", array($pseudo));
+        $query = self::execute("SELECT * FROM User where pseudo = ?", array($pseudo));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new user($data["pseudo"], $data["password"], $data["profile"], $data["picture_path"]);
+            return new user($data["pseudo"], $data["password"], $data["email"], $data["full_name"]);
         }
     }
 
@@ -65,7 +64,7 @@ class User extends Model {
             $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
         } if ($password != $password_confirm) {
             $errors[] = "You have to enter twice the same password.";
-        }if ()
+        }
         return $errors;
     }
 
@@ -77,7 +76,7 @@ class User extends Model {
     //renvoie un string en fonction de l'erreur de login.
     public static function validate_login($pseudo, $password) {
         $error = "";
-        $user = Member::get_user($pseudo);
+        $user = User::get_user($pseudo);
         if ($user) {
             if (!self::check_password($password, $user->hashed_password)) {
                 $error = "Wrong password. Please try again.";
@@ -88,7 +87,7 @@ class User extends Model {
         return $error;
     }
 
-    public static function validate_photo($file) {
+    /*public static function validate_photo($file) {
         if (isset($file['name']) && $file['name'] != '') {
             if ($file['error'] == 0) {
                 $valid_types = array("image/gif", "image/jpeg", "image/png");
@@ -116,5 +115,5 @@ class User extends Model {
         }
         return $saveTo;
     }
-
+*/
 }

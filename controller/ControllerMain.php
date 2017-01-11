@@ -1,6 +1,6 @@
 <?php
 
-require_once 'model/Member.php';
+require_once 'model/User.php';
 require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 
@@ -10,7 +10,7 @@ class ControllerMain extends Controller {
     //sinon, produit la vue d'accueil.
     public function index() {
         if ($this->user_logged()) {
-            $this->redirect("member", "profile");
+            $this->redirect("main", "welcome");
         } else {
             (new View("index"))->show();
         }
@@ -26,13 +26,14 @@ class ControllerMain extends Controller {
             $pseudo = $_POST['pseudo'];
             $password = $_POST['password'];
 
-            $error = Member::validate_login($pseudo, $password);
+            $error = User::validate_login($pseudo, $password);
             if ($error === "") {
-                $this->log_user(Member::get_member($pseudo));
+                $this->log_user(User::get_user($pseudo));
             }
         }
         (new View("login"))->show(array("pseudo" => $pseudo, "password" => $password, "error" => $error));
     }
+    
 
     //gestion de l'inscription d'un utilisateur
     public function signup() {
@@ -40,22 +41,38 @@ class ControllerMain extends Controller {
         $password = '';
         $password_confirm = '';
         $errors = [];
+        $email = '';
+        $full_name = '';
 
-        if (isset($_POST['pseudo']) && isset($_POST['password']) && isset($_POST['password_confirm'])) {
+        if (isset($_POST['pseudo']) && isset($_POST['password']) && isset($_POST['password_confirm'])
+                 && isset($_POST['full_name']) && isset($_POST['email'])) {
             $pseudo = trim($_POST['pseudo']);
             $password = $_POST['password'];
             $password_confirm = $_POST['password_confirm'];
+            $email = $_POST['email'];
+            $full_name = $_POST['full_name'];
 
 
-            $errors = Member::validate($pseudo, $password, $password_confirm);
+            $errors = User::validate($pseudo, $password, $password_confirm, $email, $full_name);
 
             if (count($errors) == 0) {
-                $member = new Member($pseudo, Tools::my_hash($password));
-                Member::add_member($member);
-                $this->log_user($member);
+                $user = new User($pseudo, Tools::my_hash($password), $email, $full_name);
+                User::add_user($user);
+                $this->log_user($user);
             }
         }
-        (new View("signup"))->show(array("pseudo" => $pseudo, "password" => $password, "password_confirm" => $password_confirm, "errors" => $errors));
+        (new View("signup"))->show(array("pseudo" => $pseudo, "email" => $email, "full_name" => $full_name, 
+            "password" => $password, "password_confirm" => $password_confirm, "errors" => $errors));
+    }
+    
+    public function welcome()
+    {
+        
+        $user = $this->get_user_or_redirect();
+        if (isset($_GET["id"]) && $_GET["id"] !== "") {
+            $user = User::get_user($_GET["id"]);
+        }
+        (new View("welcome"))->show(array("user" => $user->pseudo));
     }
 
 }
