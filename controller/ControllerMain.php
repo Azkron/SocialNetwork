@@ -66,8 +66,7 @@ class ControllerMain extends Controller {
     }
     
     public function welcome()
-    {
-        
+    {   
         $user = $this->get_user_or_redirect();
         if (isset($_GET["id"]) && $_GET["id"] !== "") {
             $user = User::get_user($_GET["id"]);
