@@ -1,20 +1,19 @@
 <?php
 
 require_once "framework/Model.php";
+require_once "framework/Controller.php";
 
 class Calendar extends Model {
 
-    public $pseudo;
-    public $hashed_password;
-    public $email;
-    public $full_name;
+    public $idCalendar;
+    public $description;
+    public $color;
     
 
-    public function __construct($pseudo, $hashed_password, $email, $full_name) {
-        $this->pseudo = $pseudo;
-        $this->hashed_password = $hashed_password;
-        $this->email = $email;
-        $this->full_name = $full_name;
+    public function __construct($idCalendar = NULL, $description, $color = "white") {
+        $this->idCalendar = $idCalendar;
+        $this->description = $description;
+        $this->color = $color;
     }
 
     public function write_event($event) {
@@ -30,20 +29,29 @@ class Calendar extends Model {
     }
 
     //pre : user does'nt exist yet
-    public static function add_user($user) {
-        self::execute("INSERT INTO user(pseudo,password, email, full_name)
-                       VALUES(?,?,?,?)", array($user->pseudo, $user->hashed_password, $user->email, $user->full_name));
+    public static function add_calendar($calendar, $user) {
+        self::execute("INSERT INTO calendar(description, color, iduser)
+                       VALUES(?,?,?)", array($calendar->description, $calendar->color, $user->idUser));
+        
+        $calendar->idCalendar = lastInsertId();
         return true;
     }
 
-    public static function get_user($pseudo) {
-        $query = self::execute("SELECT * FROM User where pseudo = ?", array($pseudo));
+    public static function get_calendar($description) {
+        $query = self::execute("SELECT * FROM calendar where idcalendar = ?", array($idCalendar));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new user($data["pseudo"], $data["password"], $data["email"], $data["full_name"]);
+            return new calendar($data["idcalendar"], $data["description"], $data["color"]);
         }
+    }
+    
+    public function getCalendars($user) {
+        $query = self::execute("SELECT idCalendar, description, color
+              FROM calendar 
+              WHERE iduser = :iduser", array("iduser" => $user->idUser));
+        return $query->fetchAll();
     }
 
     //renvoie un tableau de strings en fonction des erreurs de signup.
@@ -66,25 +74,6 @@ class Calendar extends Model {
             $errors[] = "You have to enter twice the same password.";
         }
         return $errors;
-    }
-
-    //indique si un mot de passe correspond à son hash
-    private static function check_password($clear_password, $hash) {
-        return $hash === Tools::my_hash($clear_password);
-    }
-
-    //renvoie un string en fonction de l'erreur de login.
-    public static function validate_login($pseudo, $password) {
-        $error = "";
-        $user = User::get_user($pseudo);
-        if ($user) {
-            if (!self::check_password($password, $user->hashed_password)) {
-                $error = "Wrong password. Please try again.";
-            }
-        } else {
-            $error = "Can't find a user with the pseudo '$pseudo'. Please sign up.";
-        }
-        return $error;
     }
 
     /*public static function validate_photo($file) {
