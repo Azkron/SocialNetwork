@@ -10,10 +10,10 @@ class Calendar extends Model {
     public $color;
     
 
-    public function __construct($idCalendar = NULL, $description, $color = "white") {
-        $this->idCalendar = $idCalendar;
+    public function __construct($description, $color = "white", $idCalendar = NULL) {
         $this->description = $description;
         $this->color = $color;
+        $this->idCalendar = $idCalendar;
     }
 
     public function write_event($event) {
@@ -33,7 +33,7 @@ class Calendar extends Model {
         self::execute("INSERT INTO calendar(description, color, iduser)
                        VALUES(?,?,?)", array($calendar->description, $calendar->color, $user->idUser));
         
-        $calendar->idCalendar = lastInsertId();
+        $calendar->idCalendar = self::lastInsertId();
         return true;
     }
 
