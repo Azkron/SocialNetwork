@@ -46,7 +46,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
+            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["idUser"]);
         }
     }
 

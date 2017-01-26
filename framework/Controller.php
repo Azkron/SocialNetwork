@@ -9,8 +9,8 @@ abstract class Controller {
     }
 
     //connecte l'utilisateur donné et redirige vers la page d'acceuil
-    protected function log_user($member, $controller = "", $action = "index") {
-        $_SESSION["user"] = $member;
+    protected function log_user($user, $controller = "", $action = "index") {
+        $_SESSION["user"] = $user;
         $this->redirect($controller, $action);
         //see http://codingexplained.com/coding/php/solving-concurrent-request-blocking-in-php
         session_write_close();

@@ -14,32 +14,48 @@ class Calendar extends Model {
         $this->description = $description;
         $this->color = $color;
         $this->idCalendar = $idCalendar;
+        return  true;
     }
 
 
     //pre : user does'nt exist yet
     public static function add_calendar($calendar, $user) {
-        self::execute("INSERT INTO calendar(description, color, iduser)
+        self::execute("INSERT INTO calendar(description, color, idUser)
                        VALUES(?,?,?)", array($calendar->description, $calendar->color, $user->idUser));
+        self::execute("UPDATE Members SET picture_path=?, profile=? WHERE pseudo=? ", 
+                array($this->picture_path, $this->profile, $this->pseudo));
         
         $calendar->idCalendar = self::lastInsertId();
         return true;
     }
+    
+    public static function update_calendar($description, $color, $idCalendar) {
+        self::execute("UPDATE Calendar SET description=?, color=? WHERE idCalendar=? ", 
+                array($description, $color, $idCalendar));
+        return true;
+    }
+    
+    public static function delete_calendar($idCalendar)
+    {
+        self::execute("DELETE FROM Calendar WHERE  idCalendar=? ", 
+                array($idCalendar));
+        return true;
+    }
 
     public static function get_calendar($idCalendar) {
-        $query = self::execute("SELECT * FROM calendar where idcalendar = ?", array($idCalendar));
+        $query = self::execute("SELECT * FROM calendar where idCalendar = ?", array($idCalendar));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new calendar($data["description"], $data["color"], $data["idcalendar"]);
+            return new calendar($data["description"], $data["color"], $data["idCalendar"]);
         }
     }
     
-    public function get_calendars($user) {
+    public static function get_calendars($user) {
         $query = self::execute("SELECT idCalendar, description, color
               FROM calendar 
-              WHERE iduser = :iduser", array("iduser" => $user->idUser));
+              WHERE idUser = :idUser", array("idUser" => $user->idUser));
         return $query->fetchAll();
     }
 

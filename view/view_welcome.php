@@ -8,14 +8,11 @@
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <div class="title">Log In</div>
+        <div class="title">Welcome <?= $userPseudo ?>!</div>
         <div class="menu">
-            <a href="planning/MyPlanning">My Planning</a>
-            <a href="calendar/MyCalendars">My Calendars</a>
+            <a href="planning/my_planning">My Planning</a>
+            <a href="calendar/my_calendars">My Calendars</a>
             <a href="main/logout">Log Out</a>
-        </div>
-        <div class="main">
-            <h1>Welcome <?= $user ?></h1>
         </div>
     </body>
 </html>

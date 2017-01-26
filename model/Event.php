@@ -10,17 +10,17 @@ class Member extends Model {
     public $whole_day;
     public $title;
     public $description;
-    public $idcalendar;
+    public $idCalendar;
     
 
-    public function __construct($start, $whole_day, $title , $idcalendar, $idevent = NULL, $finish = NULL, $description = NULL) {
+    public function __construct($start, $whole_day, $title , $idCalendar, $idevent = NULL, $finish = NULL, $description = NULL) {
         $this->idevent = $idevent;
         $this->start = $start;
         $this->finish = $finish;
         $this->whole_day = $whole_day;
         $this->title = $title;
         $his->description = $description;
-        $this->idcalendar = $idcalendar; 
+        $this->idCalendar = $idCalendar; 
     }
 /*
     public function write_message($message) {
@@ -44,21 +44,21 @@ class Member extends Model {
             return false;
         } else {
             return new event( $data["start"], $data["whole_day"], $data["title"], 
-                              $data["idcalendar"], $data["idevent"], $data["finish"], 
+                              $data["idCalendar"], $data["idevent"], $data["finish"], 
                               $data["description"]);
         }
         
     }
     
     public function add_event() {
-        self::execute("INSERT INTO event(start,finish,whole_day,title,description,idcalendar)
-                       VALUES(:idevent,:start,:finish,:whole_day,:title,:description,:idcalendar)", 
+        self::execute("INSERT INTO event(start,finish,whole_day,title,description,idCalendar)
+                       VALUES(:idevent,:start,:finish,:whole_day,:title,:description,:idCalendar)", 
                        array('start' => $event->start, 
                               'finish' => $event->finish,
                               'whole_day'=> $event->whole_day,
                               'title' => $event->title, 
                               'description'=>$event->description, 
-                              'idcalendar'=>$event->idcalendar));
+                              'idCalendar'=>$event->idCalendar));
         $event->idevent = self::lastInsertId();
         
     }
