@@ -11,8 +11,7 @@ class ControllerEvent extends Controller {
         $this->profile();
     }
     
-    public function events() {
-        
+    public function events() {   
         
     }
     

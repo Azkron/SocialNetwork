@@ -13,7 +13,7 @@ class Member extends Model {
     public $idcalendar;
     
 
-    public function __construct($idevent = NULL, $start, $finish = NULL, $whole_day, $title , $description = NULL, $idcalendar) {
+    public function __construct($start, $whole_day, $title , $idcalendar, $idevent = NULL, $finish = NULL, $description = NULL) {
         $this->idevent = $idevent;
         $this->start = $start;
         $this->finish = $finish;
@@ -35,24 +35,31 @@ class Member extends Model {
         return Message::get_messages($this);
     }
 */
-    public function get_events() {
-        $query = self::execute("SELECT description
-                      FROM event 
-                      WHERE ", array("user" => $this->pseudo));
-        return $query->fetchAll();
+    public static function view_event($description) {
+        $query = self::execute("SELECT *
+                                FROM event 
+                                WHERE description = ?", array($description));
+        $data = $query->fecth();
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return new event( $data["start"], $data["whole_day"], $data["title"], 
+                              $data["idcalendar"], $data["idevent"], $data["finish"], 
+                              $data["description"]);
+        }
+        
     }
     
     public function add_event() {
-        self::execute("INSERT INTO event(idevent,start,finish,whole_day,title,description,idcalendar)
+        self::execute("INSERT INTO event(start,finish,whole_day,title,description,idcalendar)
                        VALUES(:idevent,:start,:finish,:whole_day,:title,:description,:idcalendar)", 
-                       array('idevent'=> $event->idevent, 
-                              'start' => $event->start, 
+                       array('start' => $event->start, 
                               'finish' => $event->finish,
                               'whole_day'=> $event->whole_day,
                               'title' => $event->title, 
                               'description'=>$event->description, 
                               'idcalendar'=>$event->idcalendar));
-        $event->idevent = lastInsertId();
+        $event->idevent = self::lastInsertId();
         
     }
 
