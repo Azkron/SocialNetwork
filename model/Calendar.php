@@ -37,17 +37,17 @@ class Calendar extends Model {
         return true;
     }
 
-    public static function get_calendar($description) {
+    public static function get_calendar($idCalendar) {
         $query = self::execute("SELECT * FROM calendar where idcalendar = ?", array($idCalendar));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new calendar($data["idcalendar"], $data["description"], $data["color"]);
+            return new calendar($data["description"], $data["color"], $data["idcalendar"]);
         }
     }
     
-    public function getCalendars($user) {
+    public function get_calendars($user) {
         $query = self::execute("SELECT idCalendar, description, color
               FROM calendar 
               WHERE iduser = :iduser", array("iduser" => $user->idUser));
