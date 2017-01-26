@@ -16,17 +16,6 @@ class Calendar extends Model {
         $this->idCalendar = $idCalendar;
     }
 
-    public function write_event($event) {
-        return Calendar::add_event($event);
-    }
-
-    public function delete_event($event) {
-        return $event->delete($this);
-    }
-
-    public function get_events() {
-        return Calendar::get_events($this);
-    }
 
     //pre : user does'nt exist yet
     public static function add_calendar($calendar, $user) {
