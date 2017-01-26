@@ -36,7 +36,7 @@ class User extends Model {
         self::execute("INSERT INTO user(pseudo,password, email, full_name)
                        VALUES(?,?,?,?)", array($user->pseudo, $user->hashed_password, $user->email, $user->full_name));
         
-        $user->userId = self::lastInsertId();
+        $user->idUser = self::lastInsertId();
         return true;
     }
 

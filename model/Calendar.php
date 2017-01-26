@@ -55,7 +55,7 @@ class Calendar extends Model {
     }
 
     //renvoie un tableau de strings en fonction des erreurs de signup.
-    public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
+    /*public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
         $errors = [];
         $user = self::get_user($pseudo);
         if ($user) {
@@ -76,7 +76,7 @@ class Calendar extends Model {
         return $errors;
     }
 
-    /*public static function validate_photo($file) {
+    public static function validate_photo($file) {
         if (isset($file['name']) && $file['name'] != '') {
             if ($file['error'] == 0) {
                 $valid_types = array("image/gif", "image/jpeg", "image/png");
