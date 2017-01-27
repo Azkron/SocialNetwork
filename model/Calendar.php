@@ -1,62 +1,66 @@
 <?php
 
+require_once 'model/User.php';
 require_once "framework/Model.php";
 require_once "framework/Controller.php";
 
 class Calendar extends Model {
 
-    public $idCalendar;
+    public $idcalendar;
     public $description;
     public $color;
     
 
-    public function __construct($description, $color = "white", $idCalendar = NULL) {
+    public function __construct($description, $color , $idcalendar = NULL) {
         $this->description = $description;
         $this->color = $color;
-        $this->idCalendar = $idCalendar;
+        $this->idcalendar = $idcalendar;
         return  true;
     }
 
 
     //pre : user does'nt exist yet
     public static function add_calendar($calendar, $user) {
-        self::execute("INSERT INTO calendar(description, color, idUser)
-                       VALUES(?,?,?)", array($calendar->description, $calendar->color, $user->idUser));
-        self::execute("UPDATE Members SET picture_path=?, profile=? WHERE pseudo=? ", 
-                array($this->picture_path, $this->profile, $this->pseudo));
+        self::execute("INSERT INTO calendar(description, color, iduser)
+                       VALUES(?,?,?)", array($calendar->description, $calendar->color, $user->iduser));
         
-        $calendar->idCalendar = self::lastInsertId();
+        $calendar->idcalendar = self::lastInsertId();
         return true;
     }
     
-    public static function update_calendar($description, $color, $idCalendar) {
-        self::execute("UPDATE Calendar SET description=?, color=? WHERE idCalendar=? ", 
-                array($description, $color, $idCalendar));
+    public static function update_calendar($description, $color, $idcalendar) {
+        self::execute("UPDATE Calendar SET description=?, color=? WHERE idcalendar=? ", 
+                array($description, $color, $idcalendar));
         return true;
     }
     
-    public static function delete_calendar($idCalendar)
+    public static function delete_calendar($idcalendar)
     {
-        self::execute("DELETE FROM Calendar WHERE  idCalendar=? ", 
-                array($idCalendar));
+        self::execute("DELETE FROM Calendar WHERE  idcalendar=? ", 
+                array($idcalendar));
         return true;
     }
 
-    public static function get_calendar($idCalendar) {
-        $query = self::execute("SELECT * FROM calendar where idCalendar = ?", array($idCalendar));
+    public static function get_calendar($idcalendar) {
+        $query = self::execute("SELECT * FROM calendar where idcalendar = ?", array($idcalendar));
         $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
+        if ($query->rowCount() == 0) 
             return false;
-        } else {
-            return new calendar($data["description"], $data["color"], $data["idCalendar"]);
-        }
+        else 
+            return new calendar($data["description"], $data["color"], $data["idcalendar"]);
     }
     
     public static function get_calendars($user) {
-        $query = self::execute("SELECT idCalendar, description, color
+        $query = self::execute("SELECT idcalendar, description, color
               FROM calendar 
-              WHERE idUser = :idUser", array("idUser" => $user->idUser));
-        return $query->fetchAll();
+              WHERE iduser = :iduser", array("iduser" => $user->iduser));
+        
+        $data = $query->fetchAll();
+        $calendars = [];
+        foreach ($data as $row) 
+            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar']);
+        
+        return $calendars;
     }
 
     //renvoie un tableau de strings en fonction des erreurs de signup.

@@ -27,13 +27,13 @@
                     <table>
                         <tr>
                             <td>
-                                <input id="description" name="description" type="text" size="16" value="<?= $calendar->description ?>">
+                                <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
                             </td>
                             <td>
-                                <input id="color" name="color" type="text" size="16" value="<?= $calendar->color ?>">
+                                <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
                             </td>
                             <td>
-                                    <input type="hidden" name="idCalendar" value="<?= $calendar->idCalendar ?>"/>
+                                    <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
                                     <input class="btn" type="submit" value="edit" name="Edit">
                                     <input class="btn" type="submit" value="delete" name="Delete">
                             </td>
@@ -47,10 +47,10 @@
                     <table>
                         <tr>
                             <td>
-                                <input id="description" name="description" type="text" size="16" value="">
+                                <input class="description" name="description" type="text" size="16" value="">
                             </td>
                             <td>
-                                <input id="color" name="color" type="text" size="16" value="">
+                                <input class="color" name="color" type="color" value="">
                             </td>
                             <td>
                                     <input class="btn" type="submit" value="create" name="Create a calenar">

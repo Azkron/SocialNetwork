@@ -29,10 +29,10 @@ USE `prwb_calendar_G10`;
 --
 
 CREATE TABLE `calendar` (
-  `idCalendar` int(11) NOT NULL,
+  `idcalendar` int(11) NOT NULL,
   `description` varchar(50) NOT NULL,
   `color` char(6) NOT NULL,
-  `idUser` int(11) NOT NULL
+  `iduser` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -48,7 +48,7 @@ CREATE TABLE `event` (
   `whole_day` tinyint(1) NOT NULL,
   `title` varchar(50) NOT NULL,
   `description` varchar(500) DEFAULT NULL,
-  `idCalendar` int(11) NOT NULL
+  `idcalendar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -58,7 +58,7 @@ CREATE TABLE `event` (
 --
 
 CREATE TABLE `user` (
-  `idUser` int(11) NOT NULL,
+  `iduser` int(11) NOT NULL,
   `pseudo` varchar(32) NOT NULL,
   `password` varchar(32) NOT NULL,
   `email` varchar(50) NOT NULL,
@@ -73,21 +73,21 @@ CREATE TABLE `user` (
 -- Index pour la table `calendar`
 --
 ALTER TABLE `calendar`
-  ADD PRIMARY KEY (`idCalendar`),
-  ADD KEY `fk_calendar_user_idx` (`idUser`);
+  ADD PRIMARY KEY (`idcalendar`),
+  ADD KEY `fk_calendar_user_idx` (`iduser`);
 
 --
 -- Index pour la table `event`
 --
 ALTER TABLE `event`
   ADD PRIMARY KEY (`idevent`),
-  ADD KEY `fk_event_calendar1_idx` (`idCalendar`);
+  ADD KEY `fk_event_calendar1_idx` (`idcalendar`);
 
 --
 -- Index pour la table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`idUser`),
+  ADD PRIMARY KEY (`iduser`),
   ADD UNIQUE KEY `pseudo_UNIQUE` (`pseudo`),
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
 
@@ -99,7 +99,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `calendar`
 --
 ALTER TABLE `calendar`
-  MODIFY `idCalendar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcalendar` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT pour la table `event`
 --
@@ -109,7 +109,7 @@ ALTER TABLE `event`
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Contraintes pour les tables exportées
 --
@@ -118,13 +118,13 @@ ALTER TABLE `user`
 -- Contraintes pour la table `calendar`
 --
 ALTER TABLE `calendar`
-  ADD CONSTRAINT `fk_calendar_user` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`);
+  ADD CONSTRAINT `fk_calendar_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`);
 
 --
 -- Contraintes pour la table `event`
 --
 ALTER TABLE `event`
-  ADD CONSTRAINT `fk_event_calendar` FOREIGN KEY (`idCalendar`) REFERENCES `calendar` (`idCalendar`);
+  ADD CONSTRAINT `fk_event_calendar` FOREIGN KEY (`idcalendar`) REFERENCES `calendar` (`idcalendar`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

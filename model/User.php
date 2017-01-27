@@ -8,11 +8,11 @@ class User extends Model {
     public $hashed_password;
     public $email;
     public $full_name;
-    public $idUser;
+    public $iduser;
     
 
-    public function __construct( $pseudo, $hashed_password, $email, $full_name, $idUser = NULL) {
-        $this->idUser = $idUser;
+    public function __construct( $pseudo, $hashed_password, $email, $full_name, $iduser = NULL) {
+        $this->iduser = $iduser;
         $this->pseudo = $pseudo;
         $this->hashed_password = $hashed_password;
         $this->email = $email;
@@ -36,7 +36,7 @@ class User extends Model {
         self::execute("INSERT INTO user(pseudo,password, email, full_name)
                        VALUES(?,?,?,?)", array($user->pseudo, $user->hashed_password, $user->email, $user->full_name));
         
-        $user->idUser = self::lastInsertId();
+        $user->iduser = self::lastInsertId();
         return true;
     }
 
@@ -46,7 +46,7 @@ class User extends Model {
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["idUser"]);
+            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
         }
     }
 
