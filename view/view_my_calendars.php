@@ -34,8 +34,8 @@
                             </td>
                             <td>
                                     <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
-                                    <input class="btn" type="submit" value="edit" name="Edit">
-                                    <input class="btn" type="submit" value="delete" name="Delete">
+                                    <input class="btn" type="submit" name="edit" value="Edit">
+                                    <input class="btn" type="submit" name="delete" value="Delete">
                             </td>
                         </tr>
                     </table>
