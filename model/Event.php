@@ -26,6 +26,7 @@ class Member extends Model {
         return true;
     }  
     
+    //new event
     public static function add_event($event, $calendar) {
         self::execute("INSERT INTO event(title,whole_day,start,finish,description,idcalendar)
                        VALUES(:title,:whole_day,:start,:finish,:description,:idcalendar)", 
@@ -53,13 +54,13 @@ class Member extends Model {
         return true;
     }
     
-    public static function get_event($idevent) {
+    public static function show_event($idevent) {
         $query = self::execute("SELECT * FROM event WHERE idevent = ?", array($idevent));
         $data = $query->fecth();
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new event( $data["title"], $data["whole_day"], $data["start"],   
+            return new event($data["title"], $data["whole_day"], $data["start"],   
                               $data["finish"], $data["description"], $data["idevent"]);
         }       
     }

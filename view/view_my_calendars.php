@@ -53,7 +53,7 @@
                                 <input class="color" name="color" type="color" value="">
                             </td>
                             <td>
-                                    <input class="btn" type="submit" value="create" name="Create a calenar">
+                                    <input class="btn" type="submit" value="create" name="Create a calendar">
                             </td>
                         </tr>
                     </table>
