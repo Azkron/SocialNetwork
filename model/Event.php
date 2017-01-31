@@ -27,7 +27,7 @@ class Member extends Model {
     }  
     
     //new event
-    public static function add_event($event, $calendar) {
+    public static function add_event($event, $user) {
         self::execute("INSERT INTO event(title,whole_day,start,finish,description,idcalendar)
                        VALUES(:title,:whole_day,:start,:finish,:description,:idcalendar)", 
                        array( 'title' => $event->title,
@@ -63,5 +63,19 @@ class Member extends Model {
             return new event($data["title"], $data["whole_day"], $data["start"],   
                               $data["finish"], $data["description"], $data["idevent"]);
         }       
+    }
+    
+    public static function show_events($user) {
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, description,
+                                FROM event
+                                WHERE iduser = :iduser", array("iduser" => $user->iduser));
+        
+        $data = $query->fetchAll();
+        $events = [];
+        foreach ($data as $row) 
+            $events[] = new Event($row['title'], $row['whole_day'], $row['start'],
+                                   $row['finish'], $row['description'], $row['idevent']);
+        
+        return $events;
     }
 }
