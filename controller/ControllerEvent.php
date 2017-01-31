@@ -39,10 +39,10 @@ class ControllerEvent extends Controller {
             Event::update_event($_POST["title"], $_POST["whole_day"], $_POST["start"], $_POST["finish"],
                                 $_POST["description"], $_POST['$idevent']);
             
-            $success = "The calendar has been successfully updated.";
+            $success = "The event has been successfully updated.";
         }
         else
-            throw new Exception("Missing parameters for calendar creation!");
+            throw new Exception("Missing parameters for event update!");
         
         $this->my_events();
     }
@@ -50,7 +50,7 @@ class ControllerEvent extends Controller {
     public function edit_or_delete()
     {
         if(isset($_POST["delete"]) && $_POST["delete"])
-            $this->confirm_delete();
+            $this->delete();
         else if(isset($_POST["edit"]) && $_POST["edit"])
             $this->edit();       
     }
@@ -72,14 +72,5 @@ class ControllerEvent extends Controller {
             Event::delete_event($_POST['idevent']);
         } else 
             throw new Exception("Missing Event ID");
-    }
-    
-    //gestion du suivi d'un membre
-    public function confirm_delete() {
-        if (isset($_POST["idevent"])) 
-            (new View("confirm_event_delete"))->show(array("idevent" => $_POST["idevent"]));
-        else 
-            throw new Exception("Missing Event ID");
-    }
-    
+    }    
 }
