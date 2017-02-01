@@ -15,28 +15,33 @@
         <div class="main">
             <br><br>
                 <form class="calendarForm" action="event/create_event" method="post">
-                    <td>
-                        <p>Title: <input class="title" name="title" type="text" size="16" value=""></p>
-                    </td>
-                    <td>
-                        <p>Calendar: <input class="calendar" name="calendar" type="calendar" value=""></p>
-                    </td>
-                    <td>
-                        <p>Description: <input class="description" name="description" type="text" size="16" value=""></p>
-                    </td>
-                    <td>
-                        <p>Start time: <input class="DateTime" name="startTime" type="text" size="16" value=""></p>
-                    </td>
-                    <td>
-                        <p>Finish time: <input class="DateTime" name="finishTime" type="text" size="16" value=""></p>
-                    </td>
-                    <td>
-                        <p><input type="checkbox" name="whole_day[]" value="1">Whole day event</p>
-                    </td>
-                    <td>
+                    <table>
+                        <tr>
+                            <td>Title:</td>
+                            <td><input class="title" name="title" type="text" value=""></td>
+                        </tr>
+                        <tr>
+                            <td>Calendar:</td>
+                            <td><input class="calendar" name="calendar" type="calendar" value=""></td>
+                        </tr>
+                        <tr>
+                            <td>Description:</td> 
+                            <td><textarea name="description" rows=4 cols=50 value=""></textarea></td>
+                        </tr>
+                        <tr>
+                            <td>Start time:</td> 
+                            <td><input class="datetime" name="startTime" type="datetime-local" value=""></td>
+                        </tr>
+                        <tr>
+                            <td>Finish time:</td>
+                            <td><input class="datetime" name="finishTime" type="datetime-local"  value=""></td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" name="whole_day[]" value="1">Whole day event</td>
+                        </tr>
+                    </table>
                         <input class="btn" type="submit" name = "create" value="Create">
-                        <input class="btn" type="submit" name = "cancel" value="Cancel">
-                    </td>
+                        <input class="btn" type="submit" name = "cancel" value="Cancel">               
                 </form>
         </div>
     </body>

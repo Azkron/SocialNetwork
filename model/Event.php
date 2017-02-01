@@ -17,7 +17,7 @@ class Member extends Model {
         $this->title = $title;
         $this->whole_day = $whole_day;
         $this->start = $start;
-        if($whole_day == true)
+        if(!empty($whole_day))
             $this->finish = $start;
         else
             $this->finish = $finish;

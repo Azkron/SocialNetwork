@@ -1,6 +1,6 @@
 <?php
 
-//require_once 'model/User.php';
+require_once 'model/User.php';
 require_once 'model/Calendar.php';
 require_once 'model/Event.php';
 require_once 'framework/View.php';
