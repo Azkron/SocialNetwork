@@ -22,7 +22,15 @@
                         </tr>
                         <tr>
                             <td>Calendar:</td>
-                            <td><input class="calendar" name="calendar" type="calendar" value=""></td>
+                            <td>
+                                <select>
+                                    <?php
+                                    if (count($calendars) != 0) 
+                                        foreach($calendars as $value)
+                                            echo '<option value="'.$value.'">'.$value.'</option>';                                   
+                                    ?>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
                             <td>Description:</td> 
