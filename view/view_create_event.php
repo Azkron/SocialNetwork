@@ -14,7 +14,7 @@
         </div>
         <div class="main">
             <br><br>
-                <form class="calendarForm" action="event/create_event" method="post">
+                <form class="eventForm" action="event/create_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>
@@ -47,9 +47,13 @@
                         <tr>
                             <td><input type="checkbox" name="whole_day[]" value="1">Whole day event</td>
                         </tr>
+                        <tr>
+                            <td>
+                                <input class="btn" type="submit" name = "create" value="Create">
+                                <input class="btn" type="submit" name = "cancel" value="Cancel"> 
+                            </td>
+                        </tr>                                          
                     </table>
-                        <input class="btn" type="submit" name = "create" value="Create">
-                        <input class="btn" type="submit" name = "cancel" value="Cancel">               
                 </form>
         </div>
     </body>
