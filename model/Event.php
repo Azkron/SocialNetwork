@@ -17,14 +17,40 @@ class Member extends Model {
         $this->title = $title;
         $this->whole_day = $whole_day;
         $this->start = $start;
-        if(!empty($whole_day))
+        if(count($whole_day)!= 0)
             $this->finish = $start;
         else
             $this->finish = $finish;
         $his->description = $description;
         $this->idevent = $idevent;     
         return true;
-    }  
+    } 
+    
+    public static function events_in_week($start, $finish) {
+        $query = self::execute("SELECT * FROM event WHERE (:finish >= start && :start <= finish)", 
+                        array('start' => $start, 
+                              'finish' => $finish));
+        $data = $query->fecth();
+        $events = [];
+        foreach ($data as $row) 
+            $events[] = new event($row['title'], $row['whole_day'], $row['start'],
+                                   $row['finish'], $row['description'], $row['idevent']);
+        
+        $week = [][][]; // [day][event][idevent, description, time]
+            //$week[3][1][0]
+        $day = $start;
+        for($i=0; $i < 7; $i++) {
+            // replace time() with the time stamp you want to add one day to    
+            $e = 0;
+            foreach ($events as $event) {            
+                if($event->start <= $day  && $event->finish >= $day) {
+                    $week[$i][$e++][$day]
+                }
+            }
+            $start->modify('+1 day');
+        }
+    }
+
     
     //new event
     public static function add_event($event, $user) {
@@ -54,7 +80,7 @@ class Member extends Model {
         return true;
     }
     
-    public static function show_event($idevent) {
+    public static function get_event($idevent) {
         $query = self::execute("SELECT * FROM event WHERE idevent = ?", array($idevent));
         $data = $query->fecth();
         if ($query->rowCount() == 0) {
@@ -65,8 +91,8 @@ class Member extends Model {
         }       
     }
     
-    public static function show_events($user) {
-        $query = self::execute("SELECT idevent, start, finish, whole_day, title, description,
+    public static function get_events($user) {
+        $query = self::execute("SELECT *
                                 FROM event
                                 WHERE iduser = :iduser", array("iduser" => $user->iduser));
         

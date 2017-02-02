@@ -11,6 +11,7 @@
         <div class="title">My Planning</div>
         <div class="menu">
             <a href="index.php">Home</a>
+            
         </div>
         <div class="main">
             
