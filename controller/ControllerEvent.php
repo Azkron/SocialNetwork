@@ -9,14 +9,20 @@ require_once 'framework/Controller.php';
 class ControllerEvent extends Controller {
 
     
-    public function my_events() {
+    public function my_planning() {
         $user = $this->get_user_or_redirect();
-        (new View("my_planning"))->show(array("events" => Event::get_events($user)));
+        $monday = 0;
+        if(isset($_POST['monday']))
+            $monday = $_POST['monday'];
+        else
+            $monday = strtotime('monday this week');
+        
+        (new View("my_planning"))->show(array("monday" => $monday, "events" => Event::events_in_week($user, $monday)));
     }
     
     //page d'accueil. 
     public function index() {
-        $this->my_events();
+        $this->my_planning();
     }
     
     public function create_event()
@@ -27,7 +33,7 @@ class ControllerEvent extends Controller {
             isset($_POST['finish']) && isset($_POST['description'])) 
                 Event::add_event(new event($_POST["title"], $_POST["whole_day"], $_POST["start"], $_POST["finish"],
                                            $_POST["description"], $_POST['$idevent']), $user);
-        $this->my_events();
+        $this->my_planning();
     }
     
     public function edit() {
@@ -44,7 +50,7 @@ class ControllerEvent extends Controller {
         else
             throw new Exception("Missing parameters for event update!");
         
-        $this->my_events();
+        $this->my_planning();
     }
     
     public function edit_or_delete()
@@ -63,7 +69,7 @@ class ControllerEvent extends Controller {
         //else if(isset($_POST["cancel"]) && $_POST["cancel"])
             //$this->edit();
         
-        $this->my_events();
+        $this->my_planning();
         
     }
     

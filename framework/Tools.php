@@ -25,4 +25,14 @@ class Tools {
         return md5($prefix_salt . $password . $suffix_salt);
     }
 
+    
+    private static function get_timestamp($timeStamp = 0, $days = 0, $hours = 0)
+    {
+        return $timeStamp + $days*24*60*60*1000 + $hours*60*60*1000;
+    }
+    
+    private static function equal_day($date, $date2)
+    {
+        return (date("z,Y", $date) == date("z,Y"));
+    }
 }
