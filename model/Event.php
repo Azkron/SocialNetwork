@@ -1,10 +1,9 @@
 <?php
 
 require_once "framework/Model.php";
-require_once "Event.php";
-require_once "Tools.php";
+require_once "framework/Tools.php";
 
-class Member extends Model {
+class Event extends Model {
     public $idevent;
     public $idcalendar;
     public $start;
@@ -32,29 +31,40 @@ class Member extends Model {
     public static function get_events_in_week($user, $monday = 0) 
     {
         if($monday == 0)
-            $monday = strtotime('monday this week');
+        {
+            $monday = date('Y-m-d H:i:s', strtotime('monday this week'));
+        }
         $start = $monday;
-        $finish = Tools::get_timestamp($start, 7);
-        $query = self::execute("SELECT event.idevent, event.start, event.finish, event.whole_day, event.title, event.description, event.idcalendar, calendar.color
-                                FROM event, calendar WHERE event.idcalendar = calendar.idcalendar && calendar.iduser = :iduser &&  (:finish >= start && :start <= finish)", 
-                                array('iduser' => $user,
-                                        'start' => $start, 
-                                        'finish' => $finish));
-        $data = $query->fecth();
+        $finish = Tools::get_datetime($start, 7);
+//        $start = mb_convert_encoding($start, "UTF-8");
+//        $finish = mb_convert_encoding($finish, "UTF-8");
+        $query = self::execute("SELECT event.idevent, event.start, event.finish, event.whole_day, event.title, event.description, event.idcalendar, calendar.color "
+                                . "FROM event, calendar WHERE event.idcalendar = calendar.idcalendar && calendar.iduser = :iduser "
+                                //. "&&  (DATE(:finish) >= DATE(start) && DATE(:start) <= DATE(finish))", 
+                                . "&&  (:finish >= start && :start <= finish)", 
+                                array('iduser' => $user->iduser,
+                                       'start' => $start, 
+                                       'finish' => $finish));
+        $data = $query->fetchAll();
         
         $events = [];
-        foreach ($data as $row) 
-            $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
-                                   $row['finish'], $row['description'], $row['color'], $row['idevent']);
-        //$week = [][]; Apparently not needed
-        $week = get_events_in_week_array($events, $start);
+        if(count($data) > 0)
+        {
+            echo "data size :" .$data;
+            foreach ($data as $row) 
+                $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
+                                       $row['finish'], $row['description'], $row['color'], $row['idevent']);
+            //$week = [][]; Apparently not needed
+            return get_events_in_week_array($events, $start);
+        }
+        else
+            return NULL;
         
-        return $week;
     }
     
     private static function get_events_in_week_array(&$events, $monday)
     {
-        $week = [][];
+        $week;
         $day = $monday;
         for($i=0; $i < 7; $i++) 
         {

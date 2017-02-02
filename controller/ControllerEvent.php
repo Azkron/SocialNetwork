@@ -5,6 +5,8 @@ require_once 'model/Calendar.php';
 require_once 'model/Event.php';
 require_once 'framework/View.php';
 require_once 'framework/Controller.php';
+require_once "framework/Tools.php";
+require_once "model/Event.php";
 
 class ControllerEvent extends Controller {
 
@@ -14,10 +16,8 @@ class ControllerEvent extends Controller {
         $monday = 0;
         if(isset($_POST['monday']))
             $monday = $_POST['monday'];
-        else
-            $monday = strtotime('monday this week');
         
-        (new View("my_planning"))->show(array("monday" => $monday, "week" => Event::events_in_week($user, $monday)));
+        (new View("my_planning"))->show(array("monday" => $monday, "week" => Event::get_events_in_week($user, $monday)));
     }
     
     //page d'accueil. 

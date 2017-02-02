@@ -26,13 +26,13 @@ class Tools {
     }
 
     
-    public static function get_timestamp($timeStamp = 0, $days = 0, $hours = 0)
+    public static function get_datetime($datetime, $days = 0)
     {
-        return $timeStamp + $days*24*60*60*1000 + $hours*60*60*1000;
+        return date('Y-m-d H:i:s', strtotime($datetime." + $days days"));
     }
     
     public static function equal_day($date, $date2)
     {
-        return (date("z,Y", $date) == date("z,Y"));
+        return (date("z,Y", strtotime($date)) == date("z,Y", strtotime($date2)));
     }
 }
