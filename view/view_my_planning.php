@@ -21,43 +21,43 @@
                         <td>Next week</td>
                     </tr>
                 </table>
-                <?php if (count($calendars) != 0): ?>
-                    <?php foreach ($calendars as $calendar): ?>
-                <form class="calendarForm" action="calendar/edit_or_delete" method="post">
-                    <table>
-                        <tr>
-                            <td>
-                                <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
-                            </td>
-                            <td>
-                                <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
-                            </td>
-                            <td>
-                                    <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
-                                    <input class="btn" type="submit" name="edit" value="Edit">
-                                    <input class="btn" type="submit" name="delete" value="Delete">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
-                    <?php endforeach; ?>
+            <table>
+                <?php if (count($week) != 0): ?>
+                    <?php for ($i = 0; $i < 7; ++$i): ?>
+                <tr class="dayRow">
+                    <th><?=date("D j\/n\/Y", Tools::get_timestamp($monday, i))?></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                        <?php if (count($week[$i]) != 0): ?>
+                            <?php foreach ($week[$i] as $event): ?>
+                <tr class="eventRow">
+                    <td>
+                        <?= $event->get_hour_string; ?>
+                    </td>
+                    <td>
+                        <?= $event->description; ?>
+                    </td>
+                    <td>
+                        <form class="buttonForm" action="event/update_event" method="post">
+                            <input type="hidden" name="monday" value="<?= $monday; ?>"/>
+                            <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
+                            <input class="btn" type="submit" name="edit_event" value="Edit event">
+                        </form>
+                    </td>
+                </tr>
+                
+                
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endfor; ?>
                 <?php endif; ?>
+            </table>
             
-                <form class="calendarForm" action="calendar/create_calendar" method="post">
-                    <table>
-                        <tr>
-                            <td>
-                                <input class="description" name="description" type="text" size="16" value="">
-                            </td>
-                            <td>
-                                <input class="color" name="color" type="color" value="">
-                            </td>
-                            <td>
-                                    <input class="btn" type="submit" value="create" name="Create a calendar">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
+            <form class="buttonForm" action="event/create_event" method="post">
+                <input type="hidden" name="monday" value="<?= $monday; ?>"/>
+                <input class="btn" type="submit" value="create" name="Create a calendar">
+            </form>
         </div>
     </body>
 </html>

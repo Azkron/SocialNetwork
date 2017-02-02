@@ -47,12 +47,12 @@ class Member extends Model {
             $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
                                    $row['finish'], $row['description'], $row['color'], $row['idevent']);
         //$week = [][]; Apparently not needed
-        $week = create_events_in_week_array($events, $start);
+        $week = get_events_in_week_array($events, $start);
         
         return $week;
     }
     
-    private static function create_events_in_week_array(&$events, $monday)
+    private static function get_events_in_week_array(&$events, $monday)
     {
         $week = [][];
         $day = $monday;

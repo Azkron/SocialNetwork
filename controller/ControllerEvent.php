@@ -17,7 +17,7 @@ class ControllerEvent extends Controller {
         else
             $monday = strtotime('monday this week');
         
-        (new View("my_planning"))->show(array("monday" => $monday, "events" => Event::events_in_week($user, $monday)));
+        (new View("my_planning"))->show(array("monday" => $monday, "week" => Event::events_in_week($user, $monday)));
     }
     
     //page d'accueil. 
@@ -34,6 +34,11 @@ class ControllerEvent extends Controller {
                 Event::add_event(new event($_POST["title"], $_POST["whole_day"], $_POST["start"], $_POST["finish"],
                                            $_POST["description"], $_POST['$idevent']), $user);
         $this->my_planning();
+    }
+    
+    public function update_event()
+    {
+        
     }
     
     public function edit() {
