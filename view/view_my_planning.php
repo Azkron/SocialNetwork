@@ -20,12 +20,16 @@
                         <td>My Planning</td>
                         <td>Next week</td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></td>
+                        <td></td>
+                    </tr>
                 </table>
             <table>
                 <?php if (count($week) != 0): 
-                            $day = Date::monday($weekMod);
+                            
                             for ($i = 0; $i < 7; ++$i): ?>
-                                <?php $day->next_day();?>
                 <tr class="dayRow">
                     <th><?=$day->day_string()?></th>
                     <th></th>
@@ -34,11 +38,11 @@
                         <?php if (count($week[$i]) != 0): ?>
                             <?php foreach ($week[$i] as $event): ?>
                 <tr class="eventRow">
-                    <td>
+                    <td style="color:#<?=$event->color?>">
                         <?= $event->get_time_string($day); ?>
                     </td>
-                    <td>
-                        <?= $event->description; ?>
+                    <td style="color:#<?=$event->color?>">
+                        <?= $event->title; ?>
                     </td>
                     <td>
                         <form class="buttonForm" action="event/update_event" method="post">
@@ -48,10 +52,10 @@
                         </form>
                     </td>
                 </tr>
-                
-                
                             <?php endforeach; ?>
                         <?php endif; ?>
+                
+                        <?php $day->next_day();?>
                     <?php endfor; ?>
                 <?php endif; ?>
             </table>

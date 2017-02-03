@@ -38,11 +38,11 @@
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="start" type="datetime-local" value=""></td>
+                            <td><input class="datetime" name="start" type="datetime-local"></td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finish" type="datetime-local"  value=""></td>
+                            <td><input class="datetime" name="finish"  type="datetime-local"></td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="whole_day" value="1">Whole day event</td>

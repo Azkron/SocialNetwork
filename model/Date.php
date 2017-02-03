@@ -22,7 +22,7 @@ class Date {
     public static function monday($mod = 0) // the week relative to current week
     {
         $date = new Date('monday this week');
-        $date->modify("-1 day");// for some reason it gives 1 day after( Tuesday)
+        //$date->modify("-1 day");// for some reason it gives 1 day after( Tuesday)
         if($mod != 0)
             $date->modify("+$mod weeks");
         
@@ -32,7 +32,7 @@ class Date {
     public static function sunday($mod = 0) // the week relative to current week
     {
         $date = new Date('sunday this week');
-        $date->modify("-1 day");// for some reason it gives 1 day after( monday)
+        //$date->modify("-1 day");// for some reason it gives 1 day after( monday)
         if($mod != 0)
             $date->modify("+$mod weeks");
         
@@ -58,9 +58,9 @@ class Date {
         return $this->dateTime->getTimeStamp();
     }
     
-    public function set_timestamp()
+    public function set_timestamp($timestamp)
     {
-        return $this->dateTime->setTimeStamp();
+        return $this->dateTime->setTimeStamp($timestamp);
     }
     
     public function compare($other)
@@ -103,8 +103,20 @@ class Date {
         return $this->dateTime->format('Y-m-d');
     }
     
+    public function date_string_normal()// 1988-03-05
+    {
+        return $this->dateTime->format('d/m/Y');
+    }
+    
     public function day_string()// Mon 15/3/2017
     {
         return $this->dateTime->format('D j/n/Y');
+    }
+    
+    public function week_string()// Mon 15/3/2017
+    {
+        $sunday = $this->copy();
+        $sunday->add_days(6);
+        return "From ".$this->date_string_normal()." to ".$sunday->date_string_normal();
     }
 }

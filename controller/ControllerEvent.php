@@ -34,10 +34,24 @@ class ControllerEvent extends Controller {
     
     public function create()
     {
-        if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['description']) 
-                && isset($_POST['whole_day']) && isset($_POST['start']) &&  isset($_POST['finish'])) 
-                Event::add_event(new event($_POST["title"], $_POST["whole_day"], $_POST["start"], 
-                        $_POST['idcalendar'], $_POST["finish"], $_POST["description"]));
+        if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
+        {
+            $whole_day = isset($_POST['whole_day']) ? 1 : 0;
+            
+            if(isset($_POST['finish']))
+                $finish = $_POST['finish'];
+            else
+                $finish = NULL;
+            
+            if(isset($_POST['description']))
+                $description = $_POST['description'];
+            else
+                $description = NULL;
+            
+            Event::add_event(new event($_POST["title"], $whole_day, $_POST["start"], 
+                        $_POST['idcalendar'], $finish, $description));
+        }
+                
         $this->my_planning();
     }
     

@@ -22,7 +22,9 @@ class Event extends Model {
         $this->title = $title;
         $this->whole_day = $whole_day;
         $this->start = new Date($start);
-        $this->finish = new Date($finish);
+        $this->finish = $finish;
+        if($this->finish != NULL)
+            $this->finish = new Date($finish);
         $this->description = $description;
         $this->idevent = $idevent;   
         $this->idcalendar = $idcalendar;
@@ -48,16 +50,19 @@ class Event extends Model {
     {
         $start = Date::monday($weekMod);
         $finish = Date::sunday($weekMod);
-//        $start = mb_convert_encoding($start, "UTF-8");
-//        $finish = mb_convert_encoding($finish, "UTF-8");
-        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color "
-                                . "FROM event, calendar WHERE event.idcalendar = calendar.idcalendar && calendar.iduser = :iduser "
-                                . "&&  (:finish >= start && :start <= finish)", 
-                                array('iduser' => $user->iduser,
-                                       'start' => $start->datetime_string(), 
-                                       'finish' => $finish->datetime_string())
-                );
-        
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color 
+                                FROM event, calendar WHERE event.idcalendar = calendar.idcalendar AND calendar.iduser = :iduser 
+                                AND ( 
+                                        (CAST(start AS DATE) >= CAST(:start AS DATE) AND CAST(start AS DATE) <= CAST(:finish AS DATE)) 
+                                        OR ( 
+                                            finish IS NOT NULL  
+                                            AND (CAST(start AS DATE) <= CAST(:finish AS DATE) AND CAST(finish AS DATE) >= CAST(:start AS DATE))
+                                            ) 
+                                    )", 
+                        array('iduser' => $user->iduser,
+                               'start' => $start->datetime_string(), 
+                               'finish' => $finish->datetime_string())
+        );
         $data = $query->fetchAll();
         
         $events = [];
@@ -83,8 +88,20 @@ class Event extends Model {
         {
             $week[$i] = [];
             foreach ($events as $event) 
-                if($event->start->compare($day) <= 0  && $event->finish->compare($day) >= 0) 
+            {
+                $insert = false;
+                if($event->finish != NULL)
+                {
+                    
+                    if($event->start->compare_date($day) <= 0 && $event->finish->compare_date($day) >= 0) 
+                        $insert = true;
+                }
+                else if($event->start->compare_date($day) == 0)
+                    $insert = true;
+                
+                if($insert)
                     self::insert_by_hour($week[$i], $event, $day);
+            }
                 
             $day->next_day();
         }
@@ -94,12 +111,11 @@ class Event extends Model {
 
     private static function insert_by_hour(&$array, $event, $day) // noticed the & before $array, arrays are not passed by refference by default
     {
-        $pos = 0;
+        $pos = NULL;
         if(!$event->whole_day && ($event->start->compare_date($day) == 0 || $event->finish->compare_date($day) == 0))
         {
             $i = 0;
-            $pos = count($array);
-            while($pos == count($array) && $i < count($array))
+            while($pos == NULL && $i < count($array))
             {
                 if(!$array[$i]->whole_day && ($event->start->compare($array[$i]->start) < 0))
                     $pos = $i;
@@ -107,11 +123,14 @@ class Event extends Model {
             }
         }
         
-        if($pos < count($array))
+        if($pos != NULL)
+        {
             for($i = count($array)-1; $i > $pos; --$i)
                 $array[$i] = $array[$i-1];
-        
-        $array[$pos] = $event; 
+            $array[$pos] = $event; 
+        }
+        else
+            $array[] = $event;
     }
     
     
@@ -140,17 +159,27 @@ class Event extends Model {
             if($this->start->compare_date($day) == 0)
                 $startTime = $this->start->time_string();
             
-            if($this->finish != NULL && $this->finish->compare_date($day) == 0)
-                    $finishTime = $this->finish->time_string();
+            if($this->finish != NULL)
+                if($this->finish->compare_date($day) == 0)
+                {
+                    if($startTime != NULL)
+                        $finishTime = " - ".$this->finish->time_string();
+                    else
+                        $finishTime = " >> ".$this->finish->time_string();
+                    
+                }
+                else if($startTime != NULL)
+                    $finishTime = " >>";
+                
                 
             if($startTime == NULL && $finishTime == NULL)
                 return "All day";
             else if($startTime != NULL && $finishTime != NULL)
-                return $startTime + " - " + $finishTime;
+                return $startTime.$finishTime;
             else if($startTime != NULL)
-                return $startTime + " >>";
+                return $startTime;
             else if($finishTime != NULL)
-                return ">> " + $finishTime;
+                return $finishTime;
         }
             
     }
