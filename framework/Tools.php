@@ -28,7 +28,7 @@ class Tools {
     
     public static function get_datetime($datetime, $days = 0)
     {
-        return date('Y-m-d H:i:s', strtotime($datetime." + $days days"));
+        return date('Y-m-d H:i:s', strtotime("+1$days days",$datetime));
     }
     
     public static function equal_day($date, $date2)
