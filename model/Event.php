@@ -2,6 +2,7 @@
 
 require_once "framework/Model.php";
 require_once "framework/Tools.php";
+require_once "model/Date.php";
 
 class Event extends Model {
     public $idevent;
@@ -20,8 +21,8 @@ class Event extends Model {
     {      
         $this->title = $title;
         $this->whole_day = $whole_day;
-        $this->start = $start;
-        $this->finish = $finish;
+        $this->start = new Date($start);
+        $this->finish = new Date($finish);
         $this->description = $description;
         $this->idevent = $idevent;   
         $this->idcalendar = $idcalendar;
@@ -29,23 +30,34 @@ class Event extends Model {
         return true;
     } 
     
-    public static function get_events_in_week($user, $monday = 0) 
+    public function start_string()
     {
-        if($monday == 0)
-        {
-            $monday = date('Y-m-d H:i:s', strtotime('monday this week'));
-        }
-        $start = $monday;
-        $finish = Tools::get_datetime($start, 7);
+        return $this->start->datetime_string();
+    }
+    
+    public function finish_string()
+    {
+        if($this->finish != NULL)
+            return $this->finish->datetime_string();
+        else
+            return NULL;
+    }
+    
+    // $weekMod argument is te index of the week relative to the current week
+    public static function get_events_in_week($user, $weekMod = 0) 
+    {
+        $start = Date::monday($weekMod);
+        $finish = Date::sunday($weekMod);
 //        $start = mb_convert_encoding($start, "UTF-8");
 //        $finish = mb_convert_encoding($finish, "UTF-8");
         $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color "
                                 . "FROM event, calendar WHERE event.idcalendar = calendar.idcalendar && calendar.iduser = :iduser "
-                                //. "&&  (DATE(:finish) >= DATE(start) && DATE(:start) <= DATE(finish))", 
                                 . "&&  (:finish >= start && :start <= finish)", 
                                 array('iduser' => $user->iduser,
-                                       'start' => $start, 
-                                       'finish' => $finish));
+                                       'start' => $start->datetime_string(), 
+                                       'finish' => $finish->datetime_string())
+                );
+        
         $data = $query->fetchAll();
         
         $events = [];
@@ -62,17 +74,17 @@ class Event extends Model {
         
     }
     
-    private static function get_events_in_week_array(&$events, $monday)
+    private static function get_events_in_week_array(&$events, $start)
     {
         $week;
-        $day = $monday;
+        $day = $start;
         for($i=0; $i < 7; $i++) 
         {
             foreach ($events as $event) 
-                if($event->start <= $day  && $event->finish >= $day) 
+                if($event->start->compare($day) <= 0  && $event->finish->compare($day) >= 0) 
                     self::insert_by_hour($week[$i], $event, $day);
                 
-            $day = Tools::get_datetime($day, 1); // adds one day, I made the function
+            $day->nextDay();
         }
         
         return $week;
@@ -81,13 +93,13 @@ class Event extends Model {
     private static function insert_by_hour(&$array, $event, $day) // noticed the & before $array, arrays are not passed by refference by default
     {
         $pos = 0;
-        if(!$event->whole_day && (Tools::equal_day($day, $event->start) || Tools::equal_day($day, $event->finish)))
+        if(!$event->whole_day && ($event->start->compare_date($day) == 0 || $event->finish->compare_date($day) == 0))
         {
             $i = 0;
             $pos = count($array);
             while($pos == count($array) && $i < count($array))
             {
-                if(!$array[$i]->whole_day && (($array[$i]->start) > ($event->start)))
+                if(!$array[$i]->whole_day && ($event->start->compare($array[$i]->start) < 0))
                     $pos = $i;
                 ++$i;
             }
@@ -101,7 +113,7 @@ class Event extends Model {
     }
     
     
-    public function get_hour_string($day)
+    public function get_time_string($day)
     {
         if($this->whole_day)
             return "All day";
@@ -129,8 +141,8 @@ class Event extends Model {
                        VALUES(:title, :whole_day, :start, :idcalendar, :finish, :description)", 
                        array( 'title' => $event->title,
                               'whole_day'=> $event->whole_day,
-                              'start' => $event->start, 
-                              'finish' => $event->finish,                                                        
+                              'start' => $event->start_string(), 
+                              'finish' => $event->finish_string(),                                                        
                               'description' => $event->description, 
                               'idcalendar' => $event->idcalendar));
         

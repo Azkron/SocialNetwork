@@ -24,15 +24,4 @@ class Tools {
         $suffix_salt = "QUaLtRs7";
         return md5($prefix_salt . $password . $suffix_salt);
     }
-
-    
-    public static function get_datetime($datetime, $days = 0)
-    {
-        return date('Y-m-d H:i:s', strtotime("+1$days days",$datetime));
-    }
-    
-    public static function equal_day($date, $date2)
-    {
-        return (date("z,Y", strtotime($date)) == date("z,Y", strtotime($date2)));
-    }
 }

@@ -22,10 +22,12 @@
                     </tr>
                 </table>
             <table>
-                <?php if (count($week) != 0): ?>
-                    <?php for ($i = 0; $i < 7; ++$i): ?>
+                <?php if (count($week) != 0): 
+                            $day = Date::monday($weekMod);
+                            for ($i = 0; $i < 7; ++$i): ?>
+                                <?php $day->nextDay();?>
                 <tr class="dayRow">
-                    <th><?=date("D j/n/Y", Tools::get_datetime($monday, $i))?></th>
+                    <th><?=$day->day_string()?></th>
                     <th></th>
                     <th></th>
                 </tr>

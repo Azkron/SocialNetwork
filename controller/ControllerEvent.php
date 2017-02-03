@@ -13,11 +13,11 @@ class ControllerEvent extends Controller {
     
     public function my_planning() {
         $user = $this->get_user_or_redirect();
-        $monday = 0;
-        if(isset($_POST['monday']))
-            $monday = $_POST['monday'];
+        $weekMod = 0;
+        if(isset($_POST['weekMod']))
+            $weekMod = $_POST['weekMod'];
         
-        (new View("my_planning"))->show(array("monday" => $monday, "week" => Event::get_events_in_week($user, $monday)));
+        (new View("my_planning"))->show(array("weekMod" => $weekMod, "week" => Event::get_events_in_week($user, $weekMod)));
     }
     
     //page d'accueil. 
