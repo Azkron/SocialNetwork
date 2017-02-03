@@ -9,9 +9,6 @@
     </head>
     <body>
         <div class="title">Create event</div>
-        <div class="menu">
-            <a href="index.php">Home</a>
-        </div>
         <div class="main">
             <br><br>
                 <form class="eventForm" action="Event/create_or_cancel" method="post">
