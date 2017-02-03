@@ -25,7 +25,7 @@
                 <?php if (count($week) != 0): ?>
                     <?php for ($i = 0; $i < 7; ++$i): ?>
                 <tr class="dayRow">
-                    <th><?=date("D j\/n\/Y", Tools::get_timestamp($monday, i))?></th>
+                    <th><?=date("D j/n/Y", Tools::get_datetime($monday, $i))?></th>
                     <th></th>
                     <th></th>
                 </tr>

@@ -14,7 +14,7 @@
         </div>
         <div class="main">
             <br><br>
-                <form class="eventForm" action="event/create_event" method="post">
+                <form class="eventForm" action="Event/create_or_cancel" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>
@@ -23,11 +23,11 @@
                         <tr>
                             <td>Calendar:</td>
                             <td>
-                                <select>
+                                <select name="idcalendar">
                                     <?php
                                     if (count($calendars) != 0) 
-                                        foreach($calendars as $value)
-                                            echo '<option value="'.$value.'">'.$value.'</option>';                                   
+                                        foreach($calendars as $calendar)
+                                            echo '<option value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';                                   
                                     ?>
                                 </select>
                             </td>
@@ -38,14 +38,14 @@
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="startTime" type="datetime-local" value=""></td>
+                            <td><input class="datetime" name="start" type="datetime-local" value=""></td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finishTime" type="datetime-local"  value=""></td>
+                            <td><input class="datetime" name="finish" type="datetime-local"  value=""></td>
                         </tr>
                         <tr>
-                            <td><input type="checkbox" name="whole_day[]" value="1">Whole day event</td>
+                            <td><input type="checkbox" name="whole_day" value="1">Whole day event</td>
                         </tr>
                         <tr>
                             <td>

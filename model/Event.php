@@ -15,7 +15,8 @@ class Event extends Model {
     //public $idcalendar;
     
 
-    public function __construct($title, $whole_day, $start, $idcalendar, $finish = NULL, $description = NULL, $color = NULL, $idevent = NULL) 
+    public function __construct($title, $whole_day, $start, $idcalendar, $finish = NULL, 
+                                $description = NULL, $color = NULL, $idevent = NULL) 
     {      
         $this->title = $title;
         $this->whole_day = $whole_day;
@@ -38,7 +39,7 @@ class Event extends Model {
         $finish = Tools::get_datetime($start, 7);
 //        $start = mb_convert_encoding($start, "UTF-8");
 //        $finish = mb_convert_encoding($finish, "UTF-8");
-        $query = self::execute("SELECT event.idevent, event.start, event.finish, event.whole_day, event.title, event.description, event.idcalendar, calendar.color "
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color "
                                 . "FROM event, calendar WHERE event.idcalendar = calendar.idcalendar && calendar.iduser = :iduser "
                                 //. "&&  (DATE(:finish) >= DATE(start) && DATE(:start) <= DATE(finish))", 
                                 . "&&  (:finish >= start && :start <= finish)", 
@@ -50,12 +51,11 @@ class Event extends Model {
         $events = [];
         if(count($data) > 0)
         {
-            echo "data size :" .$data;
             foreach ($data as $row) 
                 $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
                                        $row['finish'], $row['description'], $row['color'], $row['idevent']);
             //$week = [][]; Apparently not needed
-            return get_events_in_week_array($events, $start);
+            return self::get_events_in_week_array($events, $start);
         }
         else
             return NULL;
@@ -70,9 +70,9 @@ class Event extends Model {
         {
             foreach ($events as $event) 
                 if($event->start <= $day  && $event->finish >= $day) 
-                    insert_by_hour($week[$i],$event,$day);
+                    self::insert_by_hour($week[$i], $event, $day);
                 
-            $day = Tools::get_timestamp($day, 1); // adds one day, I made the function
+            $day = Tools::get_datetime($day, 1); // adds one day, I made the function
         }
         
         return $week;
@@ -87,14 +87,14 @@ class Event extends Model {
             $pos = count($array);
             while($pos == count($array) && $i < count($array))
             {
-                if(!$array[$i]->whole_day && (($array[$i]->start-$day) > ($event->start-$day)))
+                if(!$array[$i]->whole_day && (($array[$i]->start) > ($event->start)))
                     $pos = $i;
                 ++$i;
             }
         }
         
         if($pos < count($array))
-            for($i = count($array); $i >= $pos; --$i)
+            for($i = count($array)-1; $i > $pos; --$i)
                 $array[$i] = $array[$i-1];
         
         $array[$pos] = $event; 
@@ -123,16 +123,16 @@ class Event extends Model {
     
     
     //new event
-    public static function add_event($event, $user) 
+    public static function add_event($event) 
     {
-        self::execute("INSERT INTO event(title,whole_day,start,finish,description,idcalendar)
-                       VALUES(:title,:whole_day,:start,:finish,:description,:idcalendar)", 
+        self::execute("INSERT INTO event(title, whole_day, start, idcalendar, finish, description)
+                       VALUES(:title, :whole_day, :start, :idcalendar, :finish, :description)", 
                        array( 'title' => $event->title,
                               'whole_day'=> $event->whole_day,
                               'start' => $event->start, 
                               'finish' => $event->finish,                                                        
-                              'description'=>$event->description, 
-                              'idcalendar'=>$calendar->idcalendar));
+                              'description' => $event->description, 
+                              'idcalendar' => $event->idcalendar));
         
         $event->idevent = self::lastInsertId();
         return true;
@@ -155,16 +155,18 @@ class Event extends Model {
     
     public static function get_event($idevent) 
     {
-        $query = self::execute("SELECT * FROM event WHERE idevent = ?", array($idevent));
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color
+                                FROM event, calendar WHERE idevent event.idcalendar = calendar.idcalendar", array($idevent));
         $data = $query->fecth();
+        
         if ($query->rowCount() == 0) {
             return false;
         } else {
-            return new event($data["title"], $data["whole_day"], $data["start"],   
-                              $data["finish"], $data["description"], $data["idevent"]);
+            return new event($data["title"], $data["whole_day"], $data["start"], $data["idcalendar"],   
+                              $data["finish"], $data["description"], $data["color"], $data["idevent"]);
         }       
     }
-    
+    /* NOT NEEDED AS WE TAKE THE EVENTS PER WEEK
     public static function get_events($user) 
     {
         $query = self::execute("SELECT *
@@ -179,4 +181,6 @@ class Event extends Model {
         
         return $events;
     }
+     * 
+     */
 }

@@ -28,12 +28,25 @@ class ControllerEvent extends Controller {
     public function create_event()
     {
         $user = $this->get_user_or_redirect();
-        $id = $user->iduser;
-        if (isset($_POST['title']) && isset($_POST['whole_day']) && isset($_POST['start']) && 
-            isset($_POST['finish']) && isset($_POST['description'])) 
-                Event::add_event(new event($_POST["title"], $_POST["whole_day"], $_POST["start"], $_POST["finish"],
-                                           $_POST["description"], $_POST['$idevent']), $user);
+        $calendars = Calendar::get_calendars($user);
+        (new View("create_event"))->show(array("calendars" => $calendars));
+    }
+    
+    public function create()
+    {
+        if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['description']) 
+                && isset($_POST['whole_day']) && isset($_POST['start']) &&  isset($_POST['finish'])) 
+                Event::add_event(new event($_POST["title"], $_POST["whole_day"], $_POST["start"], 
+                        $_POST['idcalendar'], $_POST["finish"], $_POST["description"]));
         $this->my_planning();
+    }
+    
+    public function create_or_cancel()
+    {
+        if(isset($_POST["create"]))
+            $this->create();
+        else 
+            $this->my_planning();
     }
     
     public function update_event()
