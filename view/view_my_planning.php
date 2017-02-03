@@ -10,15 +10,25 @@
     <body>
         <div class="title">My Planning</div>
         <div class="menu">
-            <a href="index.php">Home</a>
+            <a href="main/welcome">Back</a>
         </div>
         <div class="main">
             <br><br>
                 <table>
                     <tr>
-                        <td>Previous week</td>
+                        <td>
+                        <form class="buttonForm" action="event/my_planning" method="post">
+                            <input type="hidden" name="weekMod" value="<?=$weekMod-1; ?>"/>
+                            <input class="btn" type="submit" name="change_week" value="<< Previous week">
+                        </form>
+                        </td>
                         <td>My Planning</td>
-                        <td>Next week</td>
+                        <td>
+                        <form class="buttonForm" action="event/my_planning" method="post">
+                            <input type="hidden" name="weekMod" value="<?=$weekMod+1; ?>"/>
+                            <input class="btn" type="submit" name="change_week" value="Next week >>">
+                        </form>
+                        </td>
                     </tr>
                     <tr>
                         <td></td>
