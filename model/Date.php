@@ -22,6 +22,7 @@ class Date {
     public static function monday($mod = 0) // the week relative to current week
     {
         $date = new Date('monday this week');
+        $date->modify("-1 day");// for some reason it gives 1 day after( Tuesday)
         if($mod != 0)
             $date->modify("+$mod weeks");
         
@@ -31,11 +32,14 @@ class Date {
     public static function sunday($mod = 0) // the week relative to current week
     {
         $date = new Date('sunday this week');
+        $date->modify("-1 day");// for some reason it gives 1 day after( monday)
         if($mod != 0)
             $date->modify("+$mod weeks");
         
         return $date;
     }
+    
+    
     
     public function modify($string)
     {
@@ -74,7 +78,7 @@ class Date {
         return strcmp($this->time_string(), $other->time_string());
     }
     
-    public function nextDay()
+    public function next_day()
     {
         $this->dateTime->modify("+1 day");
     }
@@ -91,7 +95,7 @@ class Date {
     
     public function time_string()// 00:00:00
     {
-        return $this->dateTime->format('H:i:s');
+        return $this->dateTime->format('H\hi');
     }
     
     public function date_string()// 1988-03-05

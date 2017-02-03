@@ -67,24 +67,26 @@ class Event extends Model {
                 $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
                                        $row['finish'], $row['description'], $row['color'], $row['idevent']);
             //$week = [][]; Apparently not needed
-            return self::get_events_in_week_array($events, $start);
+            return self::get_week($events, $start);
         }
         else
             return NULL;
         
     }
     
-    private static function get_events_in_week_array(&$events, $start)
+    
+    private static function get_week(&$events, $start)
     {
         $week;
         $day = $start;
         for($i=0; $i < 7; $i++) 
         {
+            $week[$i] = [];
             foreach ($events as $event) 
                 if($event->start->compare($day) <= 0  && $event->finish->compare($day) >= 0) 
                     self::insert_by_hour($week[$i], $event, $day);
                 
-            $day->nextDay();
+            $day->next_day();
         }
         
         return $week;
@@ -113,22 +115,42 @@ class Event extends Model {
     }
     
     
+    public function is_in_day($day)
+    {
+        if($this->finish == NULL)
+        {
+            if($this->start->compare($day) == 0)
+                return true;
+        }
+        else if($this->finish->compare($day) >= 0)
+                if($this->start->compare($day) <= 0)
+                    return true;
+            
+    }
+    
     public function get_time_string($day)
     {
         if($this->whole_day)
             return "All day";
         else
         {
-            $start = Tools::equal_day($day, $this->start);
-            $finish = Tools::equal_day($day, $this->finish);
-            if(!$start && !$finish)
+            $startTime = NULL;
+            $finishTime = NULL;
+            
+            if($this->start->compare_date($day) == 0)
+                $startTime = $this->start->time_string();
+            
+            if($this->finish != NULL && $this->finish->compare_date($day) == 0)
+                    $finishTime = $this->finish->time_string();
+                
+            if($startTime == NULL && $finishTime == NULL)
                 return "All day";
-            else if($start && $finish)
-                return date("H\hi", $this->start) + " - " + date("H\hi", $this->start);
-            else if($start)
-                return date("H\hi", $this->start) + " >>";
-            else if($finish)
-                return ">> " + date("H\hi", $this->finish);
+            else if($startTime != NULL && $finishTime != NULL)
+                return $startTime + " - " + $finishTime;
+            else if($startTime != NULL)
+                return $startTime + " >>";
+            else if($finishTime != NULL)
+                return ">> " + $finishTime;
         }
             
     }

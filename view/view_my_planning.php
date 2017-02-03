@@ -25,7 +25,7 @@
                 <?php if (count($week) != 0): 
                             $day = Date::monday($weekMod);
                             for ($i = 0; $i < 7; ++$i): ?>
-                                <?php $day->nextDay();?>
+                                <?php $day->next_day();?>
                 <tr class="dayRow">
                     <th><?=$day->day_string()?></th>
                     <th></th>
@@ -35,14 +35,14 @@
                             <?php foreach ($week[$i] as $event): ?>
                 <tr class="eventRow">
                     <td>
-                        <?= $event->get_hour_string; ?>
+                        <?= $event->get_time_string($day); ?>
                     </td>
                     <td>
                         <?= $event->description; ?>
                     </td>
                     <td>
                         <form class="buttonForm" action="event/update_event" method="post">
-                            <input type="hidden" name="monday" value="<?= $monday; ?>"/>
+                            <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                             <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
                             <input class="btn" type="submit" name="edit_event" value="Edit event">
                         </form>
@@ -57,7 +57,7 @@
             </table>
             
             <form class="buttonForm" action="event/create_event" method="post">
-                <input type="hidden" name="monday" value="<?= $monday; ?>"/>
+                <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                 <input class="btn" type="submit" value="create" name="Create a calendar">
             </form>
         </div>
