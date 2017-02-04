@@ -58,7 +58,7 @@ class User extends Model {
             $errors[] = "This user already exists.";
         } if ($pseudo == '') {
             $errors[] = "Pseudo is required.";
-        } /*if (strlen($pseudo) < 3 || strlen($pseudo) > 16) {
+        } if (strlen($pseudo) < 3 || strlen($pseudo) > 16) {
             $errors[] = "Pseudo length must be between 3 and 16.";
         } if (!preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $pseudo)) {
             $errors[] = "Pseudo must start by a letter and must contain only letters and numbers.";
@@ -68,7 +68,7 @@ class User extends Model {
             $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
         } if ($password != $password_confirm) {
             $errors[] = "You have to enter twice the same password.";
-        }*/
+        }
         return $errors;
     }
 

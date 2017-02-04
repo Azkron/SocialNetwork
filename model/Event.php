@@ -241,6 +241,38 @@ class Event extends Model {
         else
             return NULL;
     }
+    
+    public static function validate($title, $whole_day, $start, $idcalendar, $finish, $description) 
+    {
+        $errors = [];
+        if($finish != NULL) 
+            $finish = (new Date($finish))->datetime_string();
+        if($title == "") 
+            $errors[] = "Title is required.";
+        if($start == NULL) {
+            $errors[] = "Start time is required.";
+            if($finish != NULL)
+                if($finish <= $start)
+                    $errors[] = "Start time must be earlier than finish time.";
+        }
+        if(count($errors)==0) {
+            $query = self::execute("SELECT event WHERE title = :title, whole_day = :whole_day, 
+                        start = :start, idcalendar = :idcalendar,
+                        finish = :finish, description = :description", 
+                        array( 'title' => $title,
+                              'whole_day'=> $whole_day,
+                              'start' => (new Date($start))->datetime_string(), 
+                              'finish' => $finish,                                                        
+                              'description' => $description, 
+                              'idcalendar' => $idcalendar));
+            $data = $query->fetchAll();
+            if(count($data) != 0)
+                $errors[] = "This is a duplicate of another event."; 
+        }
+        return $errors;
+    }
+    
+    
     /* NOT NEEDED AS WE TAKE THE EVENTS PER WEEK
     public static function get_events($user) 
     {

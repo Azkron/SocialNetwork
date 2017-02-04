@@ -36,7 +36,10 @@ class Calendar extends Model {
     
     public static function delete_calendar($idcalendar)
     {
-        self::execute("DELETE FROM Calendar WHERE  idcalendar=? ", 
+        self::execute("DELETE FROM event WHERE idcalendar=?", 
+                array($idcalendar));
+        
+        self::execute("DELETE FROM calendar WHERE idcalendar=?", 
                 array($idcalendar));
         return true;
     }
@@ -61,6 +64,28 @@ class Calendar extends Model {
             $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar']);
         
         return $calendars;
+    }
+    
+    //renvoie un tableau de strings en fonction des erreurs de signup.
+    public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
+        $errors = [];
+        $user = self::get_user($pseudo);
+        if ($user) {
+            $errors[] = "This user already exists.";
+        } if ($pseudo == '') {
+            $errors[] = "Pseudo is required.";
+        } if (strlen($pseudo) < 3 || strlen($pseudo) > 16) {
+            $errors[] = "Pseudo length must be between 3 and 16.";
+        } if (!preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $pseudo)) {
+            $errors[] = "Pseudo must start by a letter and must contain only letters and numbers.";
+        } if (strlen($password) < 8 || strlen($password) > 16) {
+            $errors[] = "Password length must be between 8 and 16.";
+        } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?\\-]/", $password))) {
+            $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
+        } if ($password != $password_confirm) {
+            $errors[] = "You have to enter twice the same password.";
+        }
+        return $errors;
     }
 
     //renvoie un tableau de strings en fonction des erreurs de signup.

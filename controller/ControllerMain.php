@@ -61,6 +61,7 @@ class ControllerMain extends Controller {
                 $this->log_user($user);
             }
         }
+        
         (new View("signup"))->show(array("pseudo" => $pseudo, "email" => $email, "full_name" => $full_name, 
             "password" => $password, "password_confirm" => $password_confirm, "errors" => $errors));
     }

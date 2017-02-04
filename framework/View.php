@@ -22,4 +22,16 @@ class View {
         }
     }
 
+    //erreurs
+    public static function print_errors($errors) {
+        if (isset($errors) && count($errors) != 0) {
+            echo "<div class='errors'>";
+                echo "<br><br><p>Please correct the following error(s) :</p>";
+                echo "<ul>";
+                    foreach ($errors as $error)
+                        echo "<li>$error</li>";
+                echo "</ul>";
+             echo "</div>";
+        }
+    }
 }

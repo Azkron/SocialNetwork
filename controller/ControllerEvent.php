@@ -34,11 +34,24 @@ class ControllerEvent extends Controller {
     
     public function create()
     {
+        $title = '';
+        $whole_day = '';
+        $start = '';
+        $finish = '';
+        $description = '';
+        
+        
+        
         if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
         {
             $whole_day = isset($_POST['whole_day']) ? 1 : 0;
             
-            if(isset($_POST['finish']))
+            if($_POST['start'] != "")
+                $start = $_POST['start'];
+            else
+                $start = NULL;
+            
+            if(isset($_POST['finish']) && $_POST['finish'] != "")
                 $finish = $_POST['finish'];
             else
                 $finish = NULL;
@@ -48,11 +61,13 @@ class ControllerEvent extends Controller {
             else
                 $description = NULL;
             
-            Event::add_event(new event($_POST["title"], $whole_day, $_POST["start"], 
+            //$errors = Event::validate($title, $whole_day, $start, $idcalendar, $finish, $description);
+            
+            Event::add_event(new event($_POST["title"], $whole_day, $start, 
                         $_POST['idcalendar'], $finish, $description));
         }
                 
-        $this->my_planning();
+        $this->redirect("event", "my_planning");
     }
     
     public function create_or_cancel()
