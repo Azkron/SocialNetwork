@@ -9,6 +9,28 @@ class ControllerCalendar extends Controller {
     
     const UPLOAD_ERR_OK = 0;
 
+    
+    public function index() {
+        $this->my_calendars();
+    }
+
+    public function my_calendars() {
+        $user = $this->get_user_or_redirect();
+        
+        if(isset($_POST["delete"]))
+            $this->confirm_delete();
+        else 
+        {
+            if(isset($_POST["edit"]))
+                $this->edit();
+            else if(isset($_POST["create"]))
+                $this->create($user);
+
+
+            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user)));
+        }
+    }
+    
     public function edit() {
         $error = "";
         $success = "";
@@ -22,65 +44,37 @@ class ControllerCalendar extends Controller {
             $success = "The calendar has been successfully updated.";
         }
         else
-            throw new Exception("Missing parameters for calendar creation!");
-        
-        $this->my_calendars();
+            throw new Exception("Missing parameters for calendar edition!");
     }
     
-    public function edit_or_delete()
+    public function create($user)
     {
-        if(isset($_POST["delete"]) && $_POST["delete"])
-            $this->confirm_delete();
-        else if(isset($_POST["edit"]) && $_POST["edit"])
-            $this->edit();
-        
-    }
-    
-    public function delete_or_cancel()
-    {
-        if(isset($_POST["delete"]) && $_POST["delete"])
-            $this->delete();
-        // No need to check for cancel as outcome is to go to  my_calendars anyway
-        //else if(isset($_POST["cancel"]) && $_POST["cancel"])
-            //$this->edit();
-        
-        $this->my_calendars();
-        
-    }
-    
-    public function create_calendar()
-    {
-        $user = $this->get_user_or_redirect();
-        $id = $user->iduser;
         if (isset($_POST["color"]) && isset($_POST["description"]))
-            Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),
-                                    $user);
-        $this->my_calendars();
+            Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);
+        else
+            throw new Exception("Missing parameters for calendar creation!");
     }
  
-    public function index() {
-        $this->my_calendars();
-    }
 
-    public function my_calendars() {
-        $user = $this->get_user_or_redirect();
-        (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user)));
-    }
-
-    public function delete() {
-        if (isset($_POST["idcalendar"])) {
-            Calendar::delete_calendar($_POST['idcalendar']);
-        } else 
-            throw new Exception("Missing Calendar ID");
-    }
     
     //gestion du suivi d'un membre
     public function confirm_delete() {
         if (isset($_POST["idcalendar"])) 
+        {
+            if(isset($_POST["confirm"]))
+            {
+                Calendar::delete_calendar($_POST['idcalendar']);
+                $this->redirect("calendar","my_calendars");
+            }
+            else if(isset($_POST["cancel"]))
+                $this->redirect("calendar","my_calendars");
+            
             (new View("confirm_calendar_delete"))->show(array("idcalendar" => $_POST["idcalendar"]));
+        }
         else 
             throw new Exception("Missing Calendar ID");
     }
+    
     
     public function prepare_color($color)
     {

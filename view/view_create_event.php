@@ -11,7 +11,7 @@
         <div class="title">Create event</div>
         <div class="main">
             <br><br>
-                <form class="eventForm" action="Event/create_or_cancel" method="post">
+                <form class="eventForm" action="Event/create_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>

@@ -11,7 +11,7 @@
         <div class="title">Update event</div>
         <div class="main">
             <br><br>
-                <form class="eventForm" action="Event/delete_cancel_update" method="post">
+                <form class="eventForm" action="Event/update_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>

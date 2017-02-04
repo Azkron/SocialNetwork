@@ -13,10 +13,10 @@
             <br><br>
             <p>The calendar you are about to delete is not empty!</p>
             <p>Are you certain you want to delete it?</p>
-            <form class="confirmDeleteForm" action="calendar/delete_or_cancel" method="post">
+            <form class="confirmDeleteForm" action="calendar/confirm_delete" method="post">
                 <input type="hidden" name="idcalendar" value="<?= $idcalendar; ?>"/>
                 <input class="btn" type="submit" name="cancel" value="Cancel">
-                <input class="btn" type="submit" name="delete" value="Confirm">
+                <input class="btn" type="submit" name="confirm" value="Confirm">
             </form>
         </div>
     </body>

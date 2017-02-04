@@ -18,7 +18,6 @@ class Calendar extends Model {
         return  true;
     }
 
-
     //pre : user does'nt exist yet
     public static function add_calendar($calendar, $user) {
         self::execute("INSERT INTO calendar(description, color, iduser)

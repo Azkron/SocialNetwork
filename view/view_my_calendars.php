@@ -23,7 +23,7 @@
                 </table>
                 <?php if (count($calendars) != 0): ?>
                     <?php foreach ($calendars as $calendar): ?>
-                <form class="calendarForm" action="calendar/edit_or_delete" method="post">
+                <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <table>
                         <tr>
                             <td>
@@ -43,7 +43,7 @@
                     <?php endforeach; ?>
                 <?php endif; ?>
             
-                <form class="calendarForm" action="calendar/create_calendar" method="post">
+                <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <table>
                         <tr>
                             <td>
@@ -53,7 +53,7 @@
                                 <input class="color" name="color" type="color" value="">
                             </td>
                             <td>
-                                    <input class="btn" type="submit" value="create" name="Create a calendar">
+                                    <input class="btn" type="submit" value="Create a calendar" name="create">
                             </td>
                         </tr>
                     </table>
