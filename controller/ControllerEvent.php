@@ -65,18 +65,48 @@ class ControllerEvent extends Controller {
     
     public function update_event()
     {
-        
+        $user = $this->get_user_or_redirect();
+        if(isset($_POST['idevent']) && isset($_POST['weekMod']))
+        {
+            $event = Event::get_event($_POST['idevent']);
+            $calendars = Calendar::get_calendars($user);
+            if($event != NULL)
+                (new View("update_event"))->show(array("event" => $event, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
+        }
     }
     
-    public function edit() {
+    public function delete_cancel_update()
+    {
+        if(isset($_POST['update']))
+            $this->update();
+        else if(isset($_POST['delete']))
+            $this->delete();
+        else
+            $this->my_planning();
+    }
+    
+    
+    public function update() {
         $error = "";
         $success = "";
 
-        if (isset($_POST['title']) && isset($_POST['whole_day']) && isset($_POST['start']) && 
-            isset($_POST['finish']) && isset($_POST['description']) && isset($_POST['$idevent'])) {
-            Event::update_event($_POST["title"], $_POST["whole_day"], $_POST["start"], $_POST["finish"],
-                                $_POST["description"], $_POST['$idevent']);
+        if (isset($_POST['idevent']) && isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
+        {
+            $whole_day = isset($_POST['whole_day']) ? 1 : 0;
             
+            if(isset($_POST['finish']))
+                $finish = $_POST['finish'];
+            else
+                $finish = NULL;
+            
+            if(isset($_POST['description']))
+                $description = $_POST['description'];
+            else
+                $description = NULL;
+            
+            Event::update_event(new Event($_POST["title"], $whole_day, $_POST["start"], 
+                        $_POST['idcalendar'], $finish, $description, NULL, $_POST['idevent']));
+        
             $success = "The event has been successfully updated.";
         }
         else
@@ -85,29 +115,12 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
-    public function edit_or_delete()
-    {
-        if(isset($_POST["delete"]) && $_POST["delete"])
-            $this->delete();
-        else if(isset($_POST["edit"]) && $_POST["edit"])
-            $this->edit();       
-    }
     
-    public function delete_or_cancel()
-    {
-        if(isset($_POST["delete"]) && $_POST["delete"])
-            $this->delete();
-        // No need to check for cancel as outcome is to go to  my_calendars anyway
-        //else if(isset($_POST["cancel"]) && $_POST["cancel"])
-            //$this->edit();
-        
-        $this->my_planning();
-        
-    }
     
     public function delete() {
         if (isset($_POST["idevent"])) {
             Event::delete_event($_POST['idevent']);
+            $this->my_planning();
         } else 
             throw new Exception("Missing Event ID");
     }    

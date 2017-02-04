@@ -32,17 +32,21 @@ class Event extends Model {
         return true;
     } 
     
-    public function start_string()
-    {
-        return $this->start->datetime_string();
-    }
     
-    public function finish_string()
+    
+    public static function get_event($idevent) 
     {
-        if($this->finish != NULL)
-            return $this->finish->datetime_string();
-        else
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color
+                                FROM event, calendar WHERE idevent = :idevent AND event.idcalendar = calendar.idcalendar", 
+                                array('idevent' => $idevent));
+        $data = $query->fetch();
+        
+        if ($query->rowCount() == 0) {
             return NULL;
+        } else {
+            return new event($data["title"], $data["whole_day"], $data["start"], $data["idcalendar"],   
+                              $data["finish"], $data["description"], $data["color"], $data["idevent"]);
+        }       
     }
     
     // $weekMod argument is te index of the week relative to the current week
@@ -53,10 +57,10 @@ class Event extends Model {
         $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color 
                                 FROM event, calendar WHERE event.idcalendar = calendar.idcalendar AND calendar.iduser = :iduser 
                                 AND ( 
-                                        (CAST(start AS DATE) >= CAST(:start AS DATE) AND CAST(start AS DATE) <= CAST(:finish AS DATE)) 
+                                        (DATE(start) >= DATE(:start) AND DATE(start) <= DATE(:finish)) 
                                         OR ( 
                                             finish IS NOT NULL  
-                                            AND (CAST(start AS DATE) <= CAST(:finish AS DATE) AND CAST(finish AS DATE) >= CAST(:start AS DATE))
+                                            AND (DATE(start) <= DATE(:finish) AND DATE(finish) >= DATE(:start))
                                             ) 
                                     )", 
                         array('iduser' => $user->iduser,
@@ -202,32 +206,40 @@ class Event extends Model {
         
     }
     
-    public static function update_event($title, $whole_day, $start, $finish, $description, $idevent) 
+    public static function update_event($event) 
     {
-        self::execute("UPDATE event SET title=?, whole_day =?, start=?, finish=?, description=? WHERE idevent=?", 
-                array($title, $whole_day, $start, $finish, $description, $idevent));
+        self::execute("UPDATE event SET title = :title, whole_day = :whole_day, 
+                        start = :start, idcalendar = :idcalendar,
+                         finish = :finish, description = :description 
+                         WHERE idevent = :idevent", 
+                       array( 'title' => $event->title,
+                              'whole_day'=> $event->whole_day,
+                              'start' => $event->start_string(), 
+                              'finish' => $event->finish_string(),                                                        
+                              'description' => $event->description, 
+                              'idcalendar' => $event->idcalendar,
+                              'idevent' => $event->idevent));
         return true;
     }
     
     public static function delete_event($idevent) 
     {
-        self::execute("DELETE FROM event WHERE idcalendar=? ", 
+        self::execute("DELETE FROM event WHERE idevent=? ", 
                 array($idevent));
         return true;
     }
     
-    public static function get_event($idevent) 
+    public function start_string()
     {
-        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color
-                                FROM event, calendar WHERE idevent event.idcalendar = calendar.idcalendar", array($idevent));
-        $data = $query->fecth();
-        
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            return new event($data["title"], $data["whole_day"], $data["start"], $data["idcalendar"],   
-                              $data["finish"], $data["description"], $data["color"], $data["idevent"]);
-        }       
+        return $this->start->datetime_string();
+    }
+    
+    public function finish_string()
+    {
+        if($this->finish != NULL)
+            return $this->finish->datetime_string();
+        else
+            return NULL;
     }
     /* NOT NEEDED AS WE TAKE THE EVENTS PER WEEK
     public static function get_events($user) 

@@ -93,6 +93,11 @@ class Date {
         return $this->dateTime->format('Y-m-d H:i:s');
     }
     
+    public function date_input_string()// 1988-03-05 00:00:00
+    {
+        return $this->dateTime->format('Y-m-d\TH:i:s');
+    }
+    
     public function time_string()// 00:00:00
     {
         return $this->dateTime->format('H\hi');
@@ -103,7 +108,7 @@ class Date {
         return $this->dateTime->format('Y-m-d');
     }
     
-    public function date_string_normal()// 1988-03-05
+    public function date_string_normal()// 1988/03/05
     {
         return $this->dateTime->format('d/m/Y');
     }
