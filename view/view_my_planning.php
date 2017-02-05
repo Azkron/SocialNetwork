@@ -74,6 +74,12 @@
                 <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                 <input class="btn" type="submit" value="create" name="Create a calendar">
             </form>
+            
+            <?php
+                if(isset($errors))
+                    View::print_errors($errors);
+            ?>
         </div>
+        
     </body>
 </html>

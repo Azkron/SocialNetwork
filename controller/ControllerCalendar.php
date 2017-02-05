@@ -16,43 +16,60 @@ class ControllerCalendar extends Controller {
 
     public function my_calendars() {
         $user = $this->get_user_or_redirect();
+        $errors = [];
         
         if(isset($_POST["delete"]))
             $this->confirm_delete();
         else 
         {
             if(isset($_POST["edit"]))
-                $this->edit();
+                $errors = $this->edit();
             else if(isset($_POST["create"]))
-                $this->create($user);
-
-
-            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user)));
+                $errors = $this->create($user);
+            
+            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user), "errors" => $errors));
         }
     }
     
     public function edit() {
-        $error = "";
-        $success = "";
+        $errors = [];
 
         if (isset($_POST['description']) && 
             isset($_POST['color']) && 
-            isset($_POST['idcalendar'])) {
-            Calendar::update_calendar($_POST['description'], 
-                       $this->prepare_color($_POST["color"]), $_POST['idcalendar']);
+            isset($_POST['idcalendar'])) 
+        {
+            $description = trim($_POST['description']);
+            $color = $_POST['color'];
+            $idcalendar = $_POST['idcalendar'];
+            $errors = Calendar::validate_update($description, $color, $idcalendar);
             
-            $success = "The calendar has been successfully updated.";
+            if(count($errors) == 0)
+                Calendar::update_calendar($description, $this->prepare_color($color), $idcalendar);
+            
         }
         else
             throw new Exception("Missing parameters for calendar edition!");
+        
+        return $errors;
     }
     
     public function create($user)
     {
+        $errors = [];
         if (isset($_POST["color"]) && isset($_POST["description"]))
-            Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);
+        {
+            $description = trim($_POST['description']);
+            $color = $_POST['color'];
+            $errors = Calendar::validate_creation($description, $color);
+            
+            if(count($errors) == 0)
+                Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);
+       
+        }
         else
             throw new Exception("Missing parameters for calendar creation!");
+        
+        return $errors;
     }
  
 

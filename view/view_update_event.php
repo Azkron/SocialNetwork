@@ -40,14 +40,14 @@
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="start" type="datetime-local"  <?php echo 'value="'.$event->start->date_input_string().'"'?>></td>
+                            <td><input class="datetime" name="start" type="datetime-local"  <?php echo 'value="'.$event->start->date_input_string().'"'; ?>></td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finish"  type="datetime-local" <?php if($event->finish != NULL) echo 'value="'.$event->finish->date_input_string().'"'?>></td>
+                            <td><input class="datetime" name="finish"  type="datetime-local" <?php if($event->finish != NULL) echo 'value="'.$event->finish->date_input_string().'"'; ?>></td>
                         </tr>
                         <tr>
-                            <td><input type="checkbox" name="whole_day" value="1">Whole day event</td>
+                            <td><input type="checkbox" name="whole_day" value="1" <?php if($event->whole_day)echo "checked"; ?>>Whole day event</td>
                         </tr>
                         <tr>
                             <td>

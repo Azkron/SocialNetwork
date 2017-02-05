@@ -43,7 +43,8 @@ class Calendar extends Model {
         return true;
     }
 
-    public static function get_calendar($idcalendar) {
+    public static function get_calendar($idcalendar) 
+    {
         $query = self::execute("SELECT * FROM calendar where idcalendar = ?", array($idcalendar));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) 
@@ -52,7 +53,22 @@ class Calendar extends Model {
             return new calendar($data["description"], $data["color"], $data["idcalendar"]);
     }
     
-    public static function get_calendars($user) {
+    public static function check_duplicate($description) // just to check  for duplicates
+    {
+        $query = self::execute("SELECT * FROM calendar where description = ?", array($description));
+        $data = $query->fetch(); // un seul résultat au maximum
+        return $query->rowCount() != 0;
+    }
+    
+    public static function check_duplicate_on_update($description, $idcalendar) // just to check  for duplicates
+    {
+        $query = self::execute("SELECT * FROM calendar where description = ? && idcalendar != ?", array($description, $idcalendar));
+        $data = $query->fetch(); // un seul résultat au maximum
+        return $query->rowCount() != 0;
+    }
+    
+    public static function get_calendars($user) 
+    {
         $query = self::execute("SELECT idcalendar, description, color
               FROM calendar 
               WHERE iduser = :iduser", array("iduser" => $user->iduser));
@@ -65,25 +81,22 @@ class Calendar extends Model {
         return $calendars;
     }
     
-    //renvoie un tableau de strings en fonction des erreurs de signup.
-    public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
+    
+    public static function validate_creation($description, $color) {
         $errors = [];
-        $user = self::get_user($pseudo);
-        if ($user) {
-            $errors[] = "This user already exists.";
-        } if ($pseudo == '') {
-            $errors[] = "Pseudo is required.";
-        } if (strlen($pseudo) < 3 || strlen($pseudo) > 16) {
-            $errors[] = "Pseudo length must be between 3 and 16.";
-        } if (!preg_match("/^[a-zA-Z][a-zA-Z0-9]*$/", $pseudo)) {
-            $errors[] = "Pseudo must start by a letter and must contain only letters and numbers.";
-        } if (strlen($password) < 8 || strlen($password) > 16) {
-            $errors[] = "Password length must be between 8 and 16.";
-        } if (!((preg_match("/[A-Z]/", $password)) && preg_match("/\d/", $password) && preg_match("/['\";:,.\/?\\-]/", $password))) {
-            $errors[] = "Password must contain one uppercase letter, one number and one punctuation mark.";
-        } if ($password != $password_confirm) {
-            $errors[] = "You have to enter twice the same password.";
-        }
+        if(strlen($description) < 1 || strlen($description) > 50 )
+            $errors[] = "The calendar description must be between 1 and 50 characters.";
+        else if (self::check_duplicate($description)) 
+            $errors[] = "A calendar with this description already exists.";
+        return $errors;
+    }
+    
+    public static function validate_update($description, $color, $idcalendar) {
+        $errors = [];
+        if(strlen($description) < 1 || strlen($description) > 50 )
+            $errors[] = "The calendar description must be between 1 and 50 characters.";
+        else if (self::check_duplicate_on_update($description, $idcalendar)) 
+            $errors[] = "A calendar with this description already exists.";
         return $errors;
     }
 
