@@ -41,7 +41,7 @@ class ControllerCalendar extends Controller {
             $description = trim($_POST['description']);
             $color = $_POST['color'];
             $idcalendar = $_POST['idcalendar'];
-            $errors = Calendar::validate_update($description, $color, $idcalendar);
+            $errors = Calendar::validate($description, $color, $idcalendar);
             
             if(count($errors) == 0)
                 Calendar::update_calendar($description, $this->prepare_color($color), $idcalendar);
@@ -60,7 +60,7 @@ class ControllerCalendar extends Controller {
         {
             $description = trim($_POST['description']);
             $color = $_POST['color'];
-            $errors = Calendar::validate_creation($description, $color);
+            $errors = Calendar::validate($description, $color);
             
             if(count($errors) == 0)
                 Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);

@@ -53,20 +53,6 @@ class Calendar extends Model {
             return new calendar($data["description"], $data["color"], $data["idcalendar"]);
     }
     
-    public static function check_duplicate($description) // just to check  for duplicates
-    {
-        $query = self::execute("SELECT * FROM calendar where description = ?", array($description));
-        $data = $query->fetch(); // un seul résultat au maximum
-        return $query->rowCount() != 0;
-    }
-    
-    public static function check_duplicate_on_update($description, $idcalendar) // just to check  for duplicates
-    {
-        $query = self::execute("SELECT * FROM calendar where description = ? && idcalendar != ?", array($description, $idcalendar));
-        $data = $query->fetch(); // un seul résultat au maximum
-        return $query->rowCount() != 0;
-    }
-    
     public static function get_calendars($user) 
     {
         $query = self::execute("SELECT idcalendar, description, color
@@ -82,22 +68,26 @@ class Calendar extends Model {
     }
     
     
-    public static function validate_creation($description, $color) {
+    public static function validate($description, $color, $idcalendar = NULL) {
         $errors = [];
         if(strlen($description) < 1 || strlen($description) > 50 )
             $errors[] = "The calendar description must be between 1 and 50 characters.";
-        else if (self::check_duplicate($description)) 
-            $errors[] = "A calendar with this description already exists.";
+        else if(self::check_duplicate($description, $idcalendar)) 
+                $errors[] = "A calendar with this description already exists.";
+        
         return $errors;
     }
     
-    public static function validate_update($description, $color, $idcalendar) {
-        $errors = [];
-        if(strlen($description) < 1 || strlen($description) > 50 )
-            $errors[] = "The calendar description must be between 1 and 50 characters.";
-        else if (self::check_duplicate_on_update($description, $idcalendar)) 
-            $errors[] = "A calendar with this description already exists.";
-        return $errors;
+    
+    public static function check_duplicate($description, $idcalendar = NULL) // just to check  for duplicates
+    {
+        $query;
+        if($idcalendar == NULL)
+            $query = self::execute("SELECT * FROM calendar where description = ?", array($description));
+        else
+            $query = self::execute("SELECT * FROM calendar where description = ? && idcalendar != ?", array($description, $idcalendar));
+        
+        return $query->rowCount() != 0;
     }
 
     //renvoie un tableau de strings en fonction des erreurs de signup.

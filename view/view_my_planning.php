@@ -22,63 +22,62 @@
                             <input class="btn" type="submit" name="change_week" value="<< Previous week">
                         </form>
                         </td>
-                        <td>My Planning</td>
+                        <td><h1>My Planning</h1></td>
                         <td>
                         <form class="buttonForm" action="event/my_planning" method="post">
                             <input type="hidden" name="weekMod" value="<?=$weekMod+1; ?>"/>
                             <input class="btn" type="submit" name="change_week" value="Next week >>">
                         </form>
                         </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></td>
-                        <td></td>
-                    </tr>
                 </table>
+                        <h2><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></h2>
             <table>
+                
+            <div class="events">
                 <?php if (count($week) != 0): 
-                            
-                            for ($i = 0; $i < 7; ++$i): ?>
-                <tr class="dayRow">
-                    <th><?=$day->day_string()?></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                    for ($i = 0; $i < 7; ++$i): ?>
+
+                <div class="eventHeader">
+                    <span class="eventHour"><?=$day->day_string()?></span>
+                </div>
                         <?php if (count($week[$i]) != 0): ?>
                             <?php foreach ($week[$i] as $event): ?>
-                <tr class="eventRow">
-                    <td style="color:#<?=$event->color?>">
-                        <?= $event->get_time_string($day); ?>
-                    </td>
-                    <td style="color:#<?=$event->color?>">
-                        <?= $event->title; ?>
-                    </td>
-                    <td>
-                        <form class="buttonForm" action="event/update_event" method="post">
-                            <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                            <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
-                            <input class="btn" type="submit" name="edit_event" value="Edit event">
-                        </form>
-                    </td>
-                </tr>
+
+                <div class="eventRow">
+                    <form class="buttonForm" action="event/update_event" method="post">
+                        <span style="color:#<?=$event->color?>" class="eventHour">
+                            <?= $event->get_time_string($day); ?>
+                        </span>
+                        <span style="color:#<?=$event->color?>" class="eventTitle">
+                            <?= $event->title; ?>
+                        </span>
+                        <span class="eventEdit">
+                                <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                                <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
+                                <input class="btn" type="submit" name="edit_event" value="Edit event">
+                        </span>
+                    </form>
+                </div>
                             <?php endforeach; ?>
                         <?php endif; ?>
-                
+
                         <?php $day->next_day();?>
+
                     <?php endfor; ?>
                 <?php endif; ?>
-            </table>
-            
-            <form class="buttonForm" action="event/create_event" method="post">
-                <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                <input class="btn" type="submit" value="create" name="Create a calendar">
-            </form>
-            
-            <?php
-                if(isset($errors))
-                    View::print_errors($errors);
-            ?>
+
+                <form class="buttonForm" action="event/create_event" method="post">
+                    <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                    <input class="btn" type="submit" value="create" name="Create a calendar">
+                </form>
+
+                <?php
+                    if(isset($errors))
+                        View::print_errors($errors);
+                ?>
+            </div>
+                
+
         </div>
         
     </body>
