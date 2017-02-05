@@ -17,6 +17,12 @@ class Calendar extends Model {
         $this->idcalendar = $idcalendar;
         return  true;
     }
+    
+    public static  function calendar_count($user)
+    {
+        $query = self::execute("SELECT * FROM calendar WHERE iduser=?", array($user->iduser));
+        return $query->rowCount();
+    }
 
     //pre : user does'nt exist yet
     public static function add_calendar($calendar, $user) {

@@ -17,7 +17,11 @@ class ControllerEvent extends Controller {
         if(isset($_POST['weekMod']))
             $weekMod = $_POST['weekMod'];
         
-        (new View("my_planning"))->show(array("weekMod" => $weekMod, "week" => Event::get_events_in_week($user, $weekMod)));
+        $errors = [];
+        if(!self::calendars_exist($user))
+            $errors[] = "You must create at least one calendar before being able to create an event";
+        
+        (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => Event::get_events_in_week($user, $weekMod)));
     }
     
     //page d'accueil. 
@@ -25,11 +29,17 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
+    public static function calendars_exist($user)
+    {
+        return Calendar::calendar_count($user) != 0;
+    }
+    
     public function create_event()
     {
         $user = $this->get_user_or_redirect();
         
-        if (isset($_POST["cancel"]))
+        
+        if (!self::calendars_exist($user) || isset($_POST["cancel"]))
             $this->redirect("event", "my_planning");
         
         $title = '';
@@ -74,7 +84,6 @@ class ControllerEvent extends Controller {
                     $this->redirect("event", "my_planning");
                 }
             }
-        
         
         $calendars = Calendar::get_calendars($user);
         (new View("create_event"))->show(array("calendars" => $calendars, "errors" => $errors, "title" => $title, "whole_day" => $whole_day, 

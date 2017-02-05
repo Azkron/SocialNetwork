@@ -15,7 +15,7 @@
                     <table>
                         <tr>
                             <td>Title:</td>
-                            <td><input class="title" name="title" type="text" value=""></td>
+                            <td><input class="title" name="title" type="text" value="<?=$title?>"></td>
                         </tr>
                         <tr>
                             <td>Calendar:</td>
@@ -24,25 +24,30 @@
                                     <?php
                                     if (count($calendars) != 0) 
                                         foreach($calendars as $calendar)
-                                            echo '<option value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';                                   
+                                        {
+                                            $selected = '';
+                                            if($calendar->idcalendar == $idcalendar)
+                                                $selected = 'selected="selected"';
+                                            echo '<option '.$selected.' value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';  
+                                        }                                 
                                     ?>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td>Description:</td> 
-                            <td><textarea name="description" rows=4 cols=50 ></textarea></td>
+                            <td><textarea name="description" rows=4 cols=50 ><?=$description?></textarea></td>
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="start" type="datetime-local"></td>
+                            <td><input class="datetime" name="start" type="datetime-local" <?php if($start != NULL) echo 'value="'.$start.'"'; ?>></td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finish"  type="datetime-local"></td>
+                            <td><input class="datetime" name="finish"  type="datetime-local" <?php if($finish != NULL) echo 'value="'.$finish.'"'; ?>></td>
                         </tr>
                         <tr>
-                            <td><input type="checkbox" name="whole_day" value="1">Whole day event</td>
+                            <td><input type="checkbox" name="whole_day" value="1" <?php if($whole_day == 1)echo "checked"; ?>>Whole day event</td>
                         </tr>
                         <tr>
                             <td>

@@ -245,7 +245,6 @@ class Event extends Model {
     public static function validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description, $idevent = NULL) 
     {
         $errors = [];
-        
         if(strlen($title) < 1 || strlen($title) > 50 )
             $errors[] = "The event title must be between 1 and 50 characters.";
         if($description != NULL && strlen($description) > 500 )
