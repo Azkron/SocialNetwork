@@ -14,8 +14,10 @@
 class Date {
     private $dateTime = NULL;
     
+    
     public function __construct($string = '')
     {
+        date_default_timezone_set("Europe/Brussels");
         $this->dateTime = new DateTime($string);
     }
     
