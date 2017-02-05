@@ -115,19 +115,7 @@ form.link input[type="submit"] {
     border          : 1px solid black;
     cursor          : pointer;
 }
-/*
-table, th, td {
-    border-top:  1px solid black;
-    
-    border-radius: 5px;
-    margin: 10px;
-    padding: 10px;
-}
-*/
 
-table {
-    border-width: medium;
-}
 table, th, td {
     border-collapse:collapse;
     border:1px solid black;
@@ -135,7 +123,6 @@ table, th, td {
     margin: 10px;
     padding: 10px;
     text-align: left;
-
  }
  
 th {
