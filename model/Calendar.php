@@ -68,24 +68,24 @@ class Calendar extends Model {
     }
     
     
-    public static function validate($description, $color, $idcalendar = NULL) {
+    public static function validate($user, $description, $color, $idcalendar = NULL) {
         $errors = [];
         if(strlen($description) < 1 || strlen($description) > 50 )
             $errors[] = "The calendar description must be between 1 and 50 characters.";
-        else if(self::check_duplicate($description, $idcalendar)) 
+        else if(self::check_duplicate($user, $description, $idcalendar)) 
                 $errors[] = "A calendar with this description already exists.";
         
         return $errors;
     }
     
     
-    public static function check_duplicate($description, $idcalendar = NULL) // just to check  for duplicates
+    public static function check_duplicate($user, $description, $idcalendar = NULL) // just to check  for duplicates
     {
         $query;
         if($idcalendar == NULL)
-            $query = self::execute("SELECT * FROM calendar where description = ?", array($description));
+            $query = self::execute("SELECT * FROM calendar where description = ? && iduser = ?", array($description, $user->iduser));
         else
-            $query = self::execute("SELECT * FROM calendar where description = ? && idcalendar != ?", array($description, $idcalendar));
+            $query = self::execute("SELECT * FROM calendar where description = ? && iduser = ? && idcalendar != ?", array($description, $user->iduser, $idcalendar));
         
         return $query->rowCount() != 0;
     }

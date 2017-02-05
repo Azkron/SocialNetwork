@@ -47,11 +47,18 @@
                         <tr>
                             <td>
                                 <input class="btn" type="submit" name = "create" value="Create">
+                            </td>
+                            <td>
                                 <input class="btn" type="submit" name = "cancel" value="Cancel"> 
                             </td>
                         </tr>                                          
                     </table>
                 </form>
+            
+            <?php
+                if(isset($errors))
+                    View::print_errors($errors);
+            ?>
         </div>
     </body>
 </html>

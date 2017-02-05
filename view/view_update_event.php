@@ -60,6 +60,11 @@
                         </tr>                                          
                     </table>
                 </form>
+            
+            <?php
+                if(isset($errors))
+                    View::print_errors($errors);
+            ?>
         </div>
     </body>
 </html>

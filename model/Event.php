@@ -242,35 +242,46 @@ class Event extends Model {
             return NULL;
     }
     
-    public static function validate($title, $whole_day, $start, $idcalendar, $finish, $description) 
+    public static function validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description, $idevent = NULL) 
     {
         $errors = [];
-        if($finish != NULL) 
-            $finish = (new Date($finish))->datetime_string();
-        if($title == "") 
-            $errors[] = "Title is required.";
-        if($start == NULL) {
+        
+        if(strlen($title) < 1 || strlen($title) > 50 )
+            $errors[] = "The event title must be between 1 and 50 characters.";
+        if($description != NULL && strlen($description) > 500 )
+            $errors[] = "The event title must have a maximum 500 characters.";
+        
+        if($start == NULL) 
             $errors[] = "Start time is required.";
-            if($finish != NULL)
-                if($finish <= $start)
+        else if($finish != NULL)
+                if($start >= $finish)
                     $errors[] = "Start time must be earlier than finish time.";
-        }
-        if(count($errors)==0) {
-            $query = self::execute("SELECT event WHERE title = :title, whole_day = :whole_day, 
-                        start = :start, idcalendar = :idcalendar,
-                        finish = :finish, description = :description", 
-                        array( 'title' => $title,
-                              'whole_day'=> $whole_day,
-                              'start' => (new Date($start))->datetime_string(), 
-                              'finish' => $finish,                                                        
-                              'description' => $description, 
-                              'idcalendar' => $idcalendar));
-            $data = $query->fetchAll();
-            if(count($data) != 0)
-                $errors[] = "This is a duplicate of another event."; 
-        }
+        
+        if(count($errors)==0)
+            if(self::check_duplicate($user, $title, $start, $idevent))
+                $errors[] = "A duplicate of this event already exists with same title and starting time";
+            
         return $errors;
     }
+    
+    public static function check_duplicate($user, $title, $start, $idevent = NULL)
+    {
+        $query;
+        if($idevent == NULL)
+        {
+            $query = self::execute("SELECT * FROM event, calendar 
+                                    WHERE event.idcalendar = calendar.idcalendar && calendar.iduser=? && title=? && start=?", 
+                                    array($user->iduser, $title, (new Date($start))->datetime_string()));
+        }
+        else 
+            $query = self::execute("SELECT * FROM event, calendar 
+                                    WHERE event.idcalendar = calendar.idcalendar && calendar.iduser=? && title=? && start=? && idevent!=?", 
+                                    array($user->iduser, $title, (new Date($start))->datetime_string(), $idevent));
+        
+        return $query->rowCount() != 0;
+    }
+    
+    
     
     
     /* NOT NEEDED AS WE TAKE THE EVENTS PER WEEK

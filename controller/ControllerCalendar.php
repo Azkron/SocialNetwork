@@ -23,7 +23,7 @@ class ControllerCalendar extends Controller {
         else 
         {
             if(isset($_POST["edit"]))
-                $errors = $this->edit();
+                $errors = $this->edit($user);
             else if(isset($_POST["create"]))
                 $errors = $this->create($user);
             
@@ -31,7 +31,7 @@ class ControllerCalendar extends Controller {
         }
     }
     
-    public function edit() {
+    public function edit($user) {
         $errors = [];
 
         if (isset($_POST['description']) && 
@@ -41,7 +41,7 @@ class ControllerCalendar extends Controller {
             $description = trim($_POST['description']);
             $color = $_POST['color'];
             $idcalendar = $_POST['idcalendar'];
-            $errors = Calendar::validate($description, $color, $idcalendar);
+            $errors = Calendar::validate($user, $description, $color, $idcalendar);
             
             if(count($errors) == 0)
                 Calendar::update_calendar($description, $this->prepare_color($color), $idcalendar);
@@ -58,9 +58,9 @@ class ControllerCalendar extends Controller {
         $errors = [];
         if (isset($_POST["color"]) && isset($_POST["description"]))
         {
-            $description = trim($_POST['description']);
+            $description = $_POST['description'];
             $color = $_POST['color'];
-            $errors = Calendar::validate($description, $color);
+            $errors = Calendar::validate($user, $description, $color);
             
             if(count($errors) == 0)
                 Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);

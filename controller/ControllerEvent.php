@@ -44,6 +44,9 @@ class ControllerEvent extends Controller {
         if(isset($_POST["create"]))
             if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
             {
+                $title = trim($_POST['title']);
+                $idcalendar = $_POST['idcalendar'];
+                
                 $whole_day = isset($_POST['whole_day']) ? 1 : 0;
 
                 if($_POST['start'] != "")
@@ -57,11 +60,11 @@ class ControllerEvent extends Controller {
                     $finish = NULL;
 
                 if(isset($_POST['description']))
-                    $description = $_POST['description'];
+                    $description = trim($_POST['description']);
                 else
                     $description = NULL;
 
-                //$errors = Event::validate($title, $whole_day, $start, $idcalendar, $finish, $description);
+                $errors = Event::validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description);
 
                 if(count($errors) == 0)
                 {
@@ -82,16 +85,9 @@ class ControllerEvent extends Controller {
     public function update_event()
     {
         $user = $this->get_user_or_redirect();
+        $errors = [];
         if(isset($_POST['idevent']) && isset($_POST['weekMod']))
         {
-            $title = '';
-            $whole_day = '';
-            $start = '';
-            $finish = '';
-            $description = '';
-            $idcalendar = NULL;
-            $errors = [];
-            
             if(isset($_POST['cancel']))
                 $this->redirect("event", "my_planning");
             if(isset($_POST['delete']))
@@ -101,28 +97,36 @@ class ControllerEvent extends Controller {
             }
             else if(isset($_POST['update']))
             {
-                $success = "";
-
-                if (isset($_POST['idevent']) && isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
+                
+                if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start']) && isset($_POST['idevent'])) 
                 {
+                    $title = trim($_POST['title']);
+                    $idcalendar = $_POST['idcalendar'];
+                    $idevent = $_POST['idevent'];
+
                     $whole_day = isset($_POST['whole_day']) ? 1 : 0;
 
-                    if(isset($_POST['finish']))
+                    if($_POST['start'] != "")
+                        $start = $_POST['start'];
+                    else
+                        $start = NULL;
+
+                    if(isset($_POST['finish']) && $_POST['finish'] != "")
                         $finish = $_POST['finish'];
                     else
                         $finish = NULL;
 
                     if(isset($_POST['description']))
-                        $description = $_POST['description'];
+                        $description = trim($_POST['description']);
                     else
                         $description = NULL;
+
+                    $errors = Event::validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description, $idevent);
 
                     if(count($errors) == 0)
                     {
                         Event::update_event(new Event($_POST["title"], $whole_day, $_POST["start"], 
                                     $_POST['idcalendar'], $finish, $description, NULL, $_POST['idevent']));
-
-                        $success = "The event has been successfully updated.";
                         $this->redirect("event", "my_planning");
                     }
                 }
@@ -132,7 +136,7 @@ class ControllerEvent extends Controller {
             
             $event = Event::get_event($_POST['idevent']);
             $calendars = Calendar::get_calendars($user);
-            (new View("update_event"))->show(array("event" => $event, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
+            (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
         }
         else 
             throw new Exception("Missing parameters for update event!");
