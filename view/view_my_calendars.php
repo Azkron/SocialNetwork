@@ -14,17 +14,19 @@
         </div>
         <div class="main">
             <br><br>
+                <?php $check = true;?>
                 <table>
+                    <thead>
                     <tr>
-                        <td>Description</td>
-                        <td>Color</td>
-                        <td>Actions</td>
+                        <th>Description</th>
+                        <th>Color</th>
+                        <th>Actions</th>
                     </tr>
-                </table>
+                    </thead>
                 <?php if (count($calendars) != 0): ?>
                     <?php foreach ($calendars as $calendar): ?>
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
-                    <table>
+                    <tbody>
                         <tr>
                             <td>
                                 <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
@@ -38,13 +40,13 @@
                                     <input class="btn" type="submit" name="delete" value="Delete">
                             </td>
                         </tr>
-                    </table>
-                </form>
+                    </tbody>
+                </form>                  
                     <?php endforeach; ?>
                 <?php endif; ?>
             
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
-                    <table>
+                    <tfoot>
                         <tr>
                             <td>
                                 <input class="description" name="description" type="text" size="16" value="">
@@ -56,8 +58,9 @@
                                     <input class="btn" type="submit" value="Create a calendar" name="create">
                             </td>
                         </tr>
-                    </table>
+                    </tfoot>                 
                 </form>
+                </table>
         </div>
     </body>
 </html>

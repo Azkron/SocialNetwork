@@ -25,7 +25,7 @@
                         <td><input id="password" name="password" type="password" value="<?= $password ?>"></td>
                     </tr>
                 </table>
-                <input type="submit" value="Log In">
+                <input class = "btn" type="submit" value="Log In">
             </form>
             <?php if ($error): ?>
                 <div class='errors'><br><br><?= $error ?></div>
