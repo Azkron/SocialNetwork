@@ -33,7 +33,7 @@
                 
             </form>
             <?php if ($error): ?>
-                <div class='errors'><br><br><?= $error ?></div>
+                <div class='errors'><?= $error ?></div>
                 <?php endif; ?>
             </div>
         </div>

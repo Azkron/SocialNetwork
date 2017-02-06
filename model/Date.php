@@ -75,7 +75,7 @@ class Date {
         return strcmp($this->date_string(), $other->date_string());
     }
     
-    public function compare_hour($other)
+    public function compare_time($other)
     {
         return strcmp($this->time_string(), $other->time_string());
     }

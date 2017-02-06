@@ -10,7 +10,7 @@
     <body>
         <div class="title">My Calendars</div>
         <div class="menu">
-            <a href="index.php">Home</a>
+            <a href="index.php">Back</a>
         </div>
         <div class="main">
             <br><br>
