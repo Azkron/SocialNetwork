@@ -115,21 +115,22 @@ class Event extends Model {
 
     private static function insert_by_hour(&$array, $event, $day) // noticed the & before $array, arrays are not passed by refference by default
     {
-        $pos = NULL;
+        $pos = -1;
         if(!$event->whole_day && ($event->start->compare_date($day) == 0 || $event->finish->compare_date($day) == 0))
         {
             $i = 0;
-            while($pos == NULL && $i < count($array))
+            while($pos == -1 && $i < count($array))
             {
-                if(!$array[$i]->whole_day && ($event->start->compare($array[$i]->start) < 0))
-                    $pos = $i;
+                if(!$array[$i]->whole_day && ($event->start->compare_time($array[$i]->start) < 0))
+                    $pos = $i; 
                 ++$i;
             }
         }
         
-        if($pos != NULL)
+        
+        if($pos != -1)
         {
-            for($i = count($array)-1; $i > $pos; --$i)
+            for($i = count($array); $i > $pos; --$i)
                 $array[$i] = $array[$i-1];
             $array[$pos] = $event; 
         }
