@@ -15,43 +15,43 @@
         <div class="main">
             <br><br>
             
-            <div id="calendarDiv"></div>
+            <div id="calendars">
             <div class="calendarHeader">
-                <span class="calendarDescription">Description</span>
-                <span class="calendarColor">Color</span>
-                <span class="calendarActions">Actions</span>
+                <div class="calendarDescriptionHeader">Description</div>
+                <div class="calendarColorheader">Color</div>
+                <div class="calendarActionsHeader">Actions</div>
             </div>
             
                 <?php if (count($calendars) != 0): ?>
                     <?php foreach ($calendars as $calendar): ?>
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
-                    <span class="calendarDescription">
+                    <div class="calendarDescription">
                         <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
-                    </span>
-                    <span class="calendarColor">
+                    </div>
+                    <div class="calendarColor">
                         <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
-                    </span>
-                    <span class="calendarActions">
+                    </div>
+                    <div class="calendarActions">
                         <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
-                    </span>
+                    </div>
                 </form>         
             </div>         
                     <?php endforeach; ?>
                 <?php endif; ?>
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
-                    <span class="calendarDescription">
+                    <div class="calendarDescription">
                         <input class="description" name="description" type="text" size="16" value="">
-                    </span>
-                    <span class="calendarColor">
+                    </div>
+                    <div class="calendarColor">
                         <input class="color" name="color" type="color" value="">
-                    </span>
-                    <span class="calendarActions">
-                        <input class="btn" type="submit" value="Create a calendar" name="create">
-                    </span>
+                    </div>
+                    <div class="calendarActions">
+                        <input class="btn" type="submit" value="Create calendar" name="create">
+                    </div>
                 </form>         
             </div>       
             
@@ -59,6 +59,7 @@
                 if(isset($errors))
                     View::print_errors($errors);
             ?>
+                </div>
         </div>
     </body>
 </html>

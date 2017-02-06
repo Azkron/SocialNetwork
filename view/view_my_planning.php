@@ -38,24 +38,24 @@
                     for ($i = 0; $i < 7; ++$i): ?>
 
                 <div class="eventHeader">
-                    <span class="eventHour"><?=$day->day_string()?></span>
+                    <div class="eventHour"><?=$day->day_string()?></div>
                 </div>
                         <?php if (count($week[$i]) != 0): ?>
                             <?php foreach ($week[$i] as $event): ?>
 
                 <div class="eventRow">
                     <form class="buttonForm" action="event/update_event" method="post">
-                        <span style="color:#<?=$event->color?>" class="eventHour">
+                        <div style="color:#<?=$event->color?>" class="eventHour">
                             <?= $event->get_time_string($day); ?>
-                        </span>
-                        <span style="color:#<?=$event->color?>" class="eventTitle">
+                        </div>
+                        <div style="color:#<?=$event->color?>" class="eventTitle">
                             <?= $event->title; ?>
-                        </span>
-                        <span class="eventEdit">
+                        </div>
+                        <div class="eventEdit">
                                 <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                                 <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
                                 <input class="btn" type="submit" name="edit_event" value="Edit event">
-                        </span>
+                        </div>
                     </form>
                 </div>
                             <?php endforeach; ?>
@@ -68,7 +68,7 @@
 
                 <form class="buttonForm" action="event/create_event" method="post">
                     <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                    <input class="btn" type="submit" value="create" name="Create a calendar">
+                    <input class="btn" type="submit" value="create" name="create">
                 </form>
 
                 <?php

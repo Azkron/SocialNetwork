@@ -11,11 +11,12 @@
         <div class="title">Create event</div>
         <div class="main">
             <br><br>
+            <div class="tableForm">
                 <form class="eventForm" action="Event/create_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>
-                            <td><input class="title" name="title" type="text" value="<?=$title?>"></td>
+                            <td><input name="title" type="text" value="<?=$title?>"></td>
                         </tr>
                         <tr>
                             <td>Calendar:</td>
@@ -51,9 +52,9 @@
                         </tr>
                         <tr>
                             <td>
-                                <input class="btn" type="submit" name = "create" value="Create">
                             </td>
                             <td>
+                                <input class="btn" type="submit" name = "create" value="Create">
                                 <input class="btn" type="submit" name = "cancel" value="Cancel"> 
                             </td>
                         </tr>                                          
@@ -64,6 +65,7 @@
                 if(isset($errors))
                     View::print_errors($errors);
             ?>
+             </div>
         </div>
     </body>
 </html>

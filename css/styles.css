@@ -16,21 +16,60 @@ and open the template in the editor.
 body {
     width       :700px;
     margin      :20px auto;
-    background  :lightyellow;
-    border      :1px solid green;
+    background  :white;
     border-style: double 6px;
     box-shadow  :6px 6px 6px #888;
     border-radius: 5px;
 }
 
 html {
-    background  : lightcyan;
+    background  : white;
 }
 
 .main {
     padding     : 20px;
-    text-align  : center; 
+    text-align:center;
+     
 }
+
+.tableForm {
+    width: 60%;
+    margin:auto;
+    text-align:left;
+}
+
+.eventHeader div{
+    text-align:left;
+    border-bottom:1px solid black;
+    margin-bottom: 10px;
+    margin-up: 100px;
+}
+
+.eventRow div{
+    width:33%;
+    float:left;
+    height:35px;
+}
+
+#calendars{
+    margin:auto;
+    display:inline-block;
+    width:75%;
+}
+
+.calendarHeader div {
+    width:32%;
+    float:left;
+    height:35px;
+}
+
+.calendarRow div {
+    width:32%;
+    float:left;
+    height:35px;
+    margin:1px;
+}
+
 
 form * {
     font-family: inherit;
@@ -44,24 +83,32 @@ form * {
 
 .title {
     text-align  :center;
-    background  :darkblue;
-    color       :red;
+    background  :lightblue;
+    color       :white;
     font-family :helvetica;
     font-size   :20pt;
     font-weight :bold;
     padding     :8px;
+    text-shadow :1px 1px 1px black;
+    width:50%;
+    border-radius: 5px;
+    margin:auto;
 }
 
 .menu a {
     display           :inline;
     padding           :4px 6px;
-    border            :1px solid #777;
-    background        :green;
-    color             :yellow;
+    background        :lightblue;
     margin-right      :8px;
     border-radius     :3px;
-    box-shadow        :2px 2px 2px #888;
+    color             :white;
+    text-shadow :1px 1px 1px black;
     text-decoration   :none;
+}
+.menu a:hover {
+    box-shadow        :2px 2px 2px #888;
+    background:white;
+    color:lightblue;
 }
 /*
 .menu a:hover {
@@ -110,16 +157,21 @@ form.link input[type="submit"] {
 }
 
 .btn {
-    margin          : 10px;
     border-radius   : 5px;
-    border          : 1px solid black;
     cursor          : pointer;
+    background :white;
+    color: lightblue;
+    text-shadow :1px 1px 1px black;
+}
+
+.btn:hover {
+    background:lightblue;
+    color             :white;
+    box-shadow        :2px 2px 2px black;
 }
 
 table, th, td {
     border-collapse:collapse;
-    border:1px solid black;
-    border-radius: 5px;
     margin: 10px;
     padding: 10px;
     text-align: left;

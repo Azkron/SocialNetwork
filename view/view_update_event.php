@@ -11,11 +11,12 @@
         <div class="title">Update event</div>
         <div class="main">
             <br><br>
+            <div class="tableForm">
                 <form class="eventForm" action="Event/update_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>
-                            <td><input class="title" name="title" type="text" value="<?=$event->title?>"></td>
+                            <td><input name="title" type="text" value="<?=$event->title?>"></td>
                         </tr>
                         <tr>
                             <td>Calendar:</td>
@@ -50,12 +51,13 @@
                             <td><input type="checkbox" name="whole_day" value="1" <?php if($event->whole_day)echo "checked"; ?>>Whole day event</td>
                         </tr>
                         <tr>
+                            <td></td>
                             <td>
                                 <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                                 <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
-                                <input class="btn" type="submit" name = "delete" value="Delete"> 
-                                <input class="btn" type="submit" name = "cancel" value="Cancel"> 
                                 <input class="btn" type="submit" name = "update" value="Update">
+                                <input class="btn" type="submit" name = "cancel" value="Cancel"> 
+                                <input class="btn" type="submit" name = "delete" value="Delete"> 
                             </td>
                         </tr>                                          
                     </table>
@@ -65,6 +67,7 @@
                 if(isset($errors))
                     View::print_errors($errors);
             ?>
+            </div>
         </div>
     </body>
 </html>

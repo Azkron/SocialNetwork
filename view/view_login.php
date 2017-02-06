@@ -14,6 +14,7 @@
             <a href="main/signup">Sign Up</a>
         </div>
         <div class="main">
+            <div class="tableForm">
             <form action="main/login" method="post">
                 <table>
                     <tr>
@@ -24,12 +25,17 @@
                         <td>Password:</td>
                         <td><input id="password" name="password" type="password" value="<?= $password ?>"></td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td><input class = "btn" type="submit" value="Log In"></td>
+                    </tr>
                 </table>
-                <input class = "btn" type="submit" value="Log In">
+                
             </form>
             <?php if ($error): ?>
                 <div class='errors'><br><br><?= $error ?></div>
                 <?php endif; ?>
+            </div>
         </div>
     </body>
 </html>

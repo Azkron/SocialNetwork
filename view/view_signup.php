@@ -15,6 +15,7 @@
         <div class="main">
             Please enter the following details to sign up :
             <br><br>
+            <div class="tableForm">
             <form id="signupForm" action="main/signup" method="post">
                 <table>
                     <tr>
@@ -37,13 +38,18 @@
                         <td>Confirm Password:</td>
                         <td><input id="passwordConfirm" name="password_confirm" size="16" type="password" value="<?= $password_confirm ?>"></td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td><input class="btn" type="submit" value="Sign Up"></td>
+                    </tr>
                 </table>
-                <input class="btn" type="submit" value="Sign Up">
+                
             </form>
             <?php
                 if(isset($errors))
                     View::print_errors($errors);
             ?>
+            </div>
         </div>
     </body>
 </html>
