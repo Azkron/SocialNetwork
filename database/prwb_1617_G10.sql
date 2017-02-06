@@ -2,10 +2,10 @@
 -- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Ven 09 Décembre 2016 à 16:47
--- Version du serveur :  5.7.11
--- Version de PHP :  5.6.18
+-- Host: localhost
+-- Generation Time: Feb 06, 2017 at 01:55 AM
+-- Server version: 5.7.11
+-- PHP Version: 5.6.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,15 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `prwb_calendar_GXX`
+-- Database: `prwb_calendar_g10`
 --
-CREATE DATABASE IF NOT EXISTS `prwb_calendar_G10` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `prwb_calendar_G10`;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `calendar`
+-- Table structure for table `calendar`
 --
 
 CREATE TABLE `calendar` (
@@ -35,10 +33,21 @@ CREATE TABLE `calendar` (
   `iduser` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `calendar`
+--
+
+INSERT INTO `calendar` (`idcalendar`, `description`, `color`, `iduser`) VALUES
+(31, 'EPFC', '0080ff', 14),
+(32, 'FAMILY', 'ff80c0', 14),
+(34, 'EPFC', 'ff0000', 15),
+(35, 'Job', '000000', 15),
+(36, 'Personal', 'ff80ff', 15);
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `event`
+-- Table structure for table `event`
 --
 
 CREATE TABLE `event` (
@@ -51,10 +60,26 @@ CREATE TABLE `event` (
   `idcalendar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `event`
+--
+
+INSERT INTO `event` (`idevent`, `start`, `finish`, `whole_day`, `title`, `description`, `idcalendar`) VALUES
+(82, '2017-02-07 09:00:00', '2017-02-10 18:00:00', 0, 'Correct Web Projects', 'Starting by the project of Hugo and Tidianne', 31),
+(83, '2017-02-06 18:00:00', '2017-02-06 20:00:00', 0, 'Go to the park', 'It is a nice park', 32),
+(84, '2017-02-06 17:00:00', NULL, 0, 'Net class', 'I am going to make my students sweat. Poor bastards, they don´t know what they are in for.', 31),
+(85, '2017-02-11 00:00:00', '2017-02-12 00:00:00', 1, 'Weekend!!', '', 32),
+(86, '2017-02-12 21:03:00', '2017-02-18 13:21:00', 0, 'Important teacher stuff that matters', 'Important things that matter', 31),
+(87, '2017-02-02 23:04:00', NULL, 1, 'Random thing', '', 31),
+(88, '2017-02-11 08:00:00', '2017-02-11 16:30:00', 0, 'Work at market', 'This job sucks balls', 35),
+(89, '2017-02-12 04:45:00', '2017-02-12 17:45:00', 0, 'Work at market', 'This job sucks even more on Sunday.', 35),
+(90, '2017-02-06 08:00:00', '2017-02-10 18:00:00', 0, 'Study', '', 34),
+(91, '2017-02-01 23:21:00', '2017-02-16 21:03:00', 1, 'Making videogames', '', 36);
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -66,25 +91,33 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Index pour les tables exportées
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`iduser`, `pseudo`, `password`, `email`, `full_name`) VALUES
+(14, 'Ben', 'e82688a4779e3d15f38c3e83f0002d9a', 'ben@gmail.com', 'Benoit'),
+(15, 'Hugo', 'e82688a4779e3d15f38c3e83f0002d9a', 'hugobeny@gmail.com', 'Hugo Barbachano');
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `calendar`
+-- Indexes for table `calendar`
 --
 ALTER TABLE `calendar`
   ADD PRIMARY KEY (`idcalendar`),
   ADD KEY `fk_calendar_user_idx` (`iduser`);
 
 --
--- Index pour la table `event`
+-- Indexes for table `event`
 --
 ALTER TABLE `event`
   ADD PRIMARY KEY (`idevent`),
   ADD KEY `fk_event_calendar1_idx` (`idcalendar`);
 
 --
--- Index pour la table `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`iduser`),
@@ -92,36 +125,36 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
 
 --
--- AUTO_INCREMENT pour les tables exportées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `calendar`
+-- AUTO_INCREMENT for table `calendar`
 --
 ALTER TABLE `calendar`
-  MODIFY `idcalendar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcalendar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
--- AUTO_INCREMENT pour la table `event`
+-- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `idevent` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idevent` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 --
--- AUTO_INCREMENT pour la table `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
--- Contraintes pour les tables exportées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `calendar`
+-- Constraints for table `calendar`
 --
 ALTER TABLE `calendar`
   ADD CONSTRAINT `fk_calendar_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`);
 
 --
--- Contraintes pour la table `event`
+-- Constraints for table `event`
 --
 ALTER TABLE `event`
   ADD CONSTRAINT `fk_event_calendar` FOREIGN KEY (`idcalendar`) REFERENCES `calendar` (`idcalendar`);
