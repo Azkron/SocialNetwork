@@ -70,18 +70,16 @@ html {
     width:32%;
     float:left;
     height:35px;
+    text-align:center;
 }
 
 .calendarRow div {
-    width:32%;
     float:left;
     height:35px;
     margin:1px;
+    
 }
-.calendarActions 
-{
-    width:100%;
-}
+
 
 
 form * {
