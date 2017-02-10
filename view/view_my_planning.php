@@ -31,7 +31,6 @@
                         </td>
                 </table>
                         <h2><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></h2>
-            <table>
                 
             <div class="events">
                 <?php if (count($week) != 0): 
