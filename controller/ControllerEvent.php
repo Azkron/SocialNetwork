@@ -29,7 +29,7 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
-    public static function calendars_exist($user)
+    private static function calendars_exist($user)
     {
         return Calendar::calendar_count($user) != 0;
     }
@@ -153,7 +153,7 @@ class ControllerEvent extends Controller {
 
     
     
-    public function delete() {
+    private function delete() {
         if (isset($_POST["idevent"])) {
             Event::delete_event($_POST['idevent']);
         } else 

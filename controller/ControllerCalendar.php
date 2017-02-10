@@ -31,7 +31,7 @@ class ControllerCalendar extends Controller {
         }
     }
     
-    public function edit($user) {
+    private function edit($user) {
         $errors = [];
 
         if (isset($_POST['description']) && 
@@ -53,7 +53,7 @@ class ControllerCalendar extends Controller {
         return $errors;
     }
     
-    public function create($user)
+    private function create($user)
     {
         $errors = [];
         if (isset($_POST["color"]) && isset($_POST["description"]))
@@ -76,6 +76,7 @@ class ControllerCalendar extends Controller {
     
     //gestion du suivi d'un membre
     public function confirm_delete() {
+        $user = $this->get_user_or_redirect();
         if (isset($_POST["idcalendar"])) 
         {
             if(isset($_POST["confirm"]))
@@ -93,7 +94,7 @@ class ControllerCalendar extends Controller {
     }
     
     
-    public function prepare_color($color)
+    private function prepare_color($color)
     {
         return str_replace("#","",$color);
     }
