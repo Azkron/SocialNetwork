@@ -36,6 +36,7 @@
                         <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
+                        <input class="btn" type="submit" name="share" value="Share">
                     </div>
                 </form>         
             </div>         

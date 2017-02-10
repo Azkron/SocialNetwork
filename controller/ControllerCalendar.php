@@ -18,6 +18,8 @@ class ControllerCalendar extends Controller {
         $user = $this->get_user_or_redirect();
         $errors = [];
         
+        if(isset($_POST["share"]))
+            $this->sharing_settings();
         if(isset($_POST["delete"]))
             $this->confirm_delete();
         else 
@@ -29,6 +31,19 @@ class ControllerCalendar extends Controller {
             
             (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user), "errors" => $errors));
         }
+    }
+    
+    public function sharing_settings()
+    {
+        $user = $this->get_user_or_redirect();
+        if (isset($_POST['idcalendar'])) 
+        {
+            
+        }
+        else
+            throw new Exception("Missing parameters for calendar edition!");
+        
+        // new view blalball
     }
     
     private function edit($user) {

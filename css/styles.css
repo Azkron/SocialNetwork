@@ -78,6 +78,10 @@ html {
     height:35px;
     margin:1px;
 }
+.calendarActions 
+{
+    width:100%;
+}
 
 
 form * {
