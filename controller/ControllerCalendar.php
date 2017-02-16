@@ -36,14 +36,17 @@ class ControllerCalendar extends Controller {
     public function sharing_settings()
     {
         $user = $this->get_user_or_redirect();
+        $errors = [];     
         if (isset($_POST['idcalendar'])) 
         {
-            
+            $idcalendar = $_POST['idcalendar'];
+            $shared_calendars = Calendar::get_shared($idcalendar);
+            $not_shared_calendars = Calendar::get_not_shared($idcalendar);
         }
         else
             throw new Exception("Missing parameters for calendar edition!");
         
-        // new view blalball
+        (new View("sharing_settings"))->show(array("shared_calendars" => $shared_calendars, "not_shared_calendars" => $not_shared_calendars)); 
     }
     
     private function edit($user) {

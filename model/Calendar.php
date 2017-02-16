@@ -18,6 +18,43 @@ class Calendar extends Model {
         return  true;
     }
     
+    public static function get_shared($idcalendar) {
+        $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
+                                 WHERE idcalendar = ? ", array($idcalendar));
+        
+        $data = $query->fetchAll();
+        $shared_calendars = [];
+        foreach ($data as $row) 
+            $shared_calendars[] = array($row['pseudo'], $row['read_only'],$row['idcalendar']);
+        return $shared_calendars;
+    }
+    
+    public static function get_not_shared($idcalendar) {
+        $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
+                                 WHERE idcalendar != ?", array($idcalendar));
+        
+        $data = $query->fetchAll();
+        $not_shared_calendars = [];
+        foreach ($data as $row) 
+            $not_shared_calendars[] = array($row['pseudo'], $row['read_only'],$row['idcalendar']);
+        return $not_shared_calendars;
+    }
+    
+    
+    /*
+    public static function not_shared_users($idcalendar) {
+        $query =  self::execute("SELECT pseudo, read_only FROM user, share
+                                 WHERE calendar.iduser != user.iduser
+                                 AND idcalendar = share.idcalendar", array($user->iduser));
+        
+        $data = $query->fetchAll();
+        $not_shared_users = [];
+        foreach ($data as $row) 
+            $not_shared_users[] = array($row['pseudo'], $row['read_only']);
+        return $not_shared_users;
+    }
+     */
+    
     public static  function calendar_count($user)
     {
         $query = self::execute("SELECT * FROM calendar WHERE iduser=?", array($user->iduser));

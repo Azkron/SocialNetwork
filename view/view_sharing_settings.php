@@ -10,44 +10,50 @@
     <body>
         <div class="title">Sharing Settings</div>
         <div class="menu">
-            <a href="calendar/my_calendars">My Calendars</a>
+            <a href="calendar/my_calendars">Back</a>
         </div>
         <div class="main">
-            <br><br>
-            
+            <br><br>     
             <div id="Sharing">
             <div class="SharingHeader">
                 <div class="SharingPseudoHeader">Pseudo</div>
-                <div class="SharingActions">Actions</div>
+                <div class="SharingActionsHeader">Actions</div>
             </div>
-            // pseudo, write_permissions, calendar, read_only
-                <?php if (count($calendars) != 0): ?>
-                    <?php foreach ($calendars as $calendar): ?>
+                <?php if (count($shared_calendars) != 0): ?>
+                    <?php foreach ($shared_calendars as $shared_calendar): ?>
             <div class="SharingRow">
                 <form class="SharingForm" action="calendar/sharing_settings" method="post">
-                    <div class="SharingPseudoHeader">
-                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $user->pseudo; ?>">
+                    <div class="SharingPseudo">
+                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_calendar['pseudo']; ?>">
                     </div>      
                     <div class="SharingActions">                  
                         <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
+                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_calendar->write_permission == 0) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
-                        <input class="btn" type="submit" name="share" value="Share">
                     </div>
                 </form>         
             </div>         
                     <?php endforeach; ?>
                 <?php endif; ?>
-            <div class="calendarRow">
-                <form class="calendarForm" action="calendar/my_calendars" method="post">
-                    <div class="calendarDescription">
-                        <input class="description" name="description" type="text" size="16" value="">
+            <div class="SharingRow">
+                <form class="SharingForm" action="calendar/sharing_settings" method="post">
+                    <div class="SharingPseudo">
+                        <select name="iduser">
+                            <?php
+                            if (count($not_shared_calendars) == 0) 
+                                foreach($not_shared_calendars as $not_shared)
+                                {
+                                    $selected = '';
+                                    $selected = 'selected="selected"';
+                                    echo '<option value="'.$not_shared->pseudo.'"selected >"'."Select Pseudo".'</option>';
+                                }                                   
+                            ?>
+                        </select>
                     </div>
-                    <div class="calendarColor">
-                        <input class="color" name="color" type="color" value="">
-                    </div>
-                    <div class="calendarActions">
-                        <input class="btn" type="submit" value="Create calendar" name="create">
+                    <div class="SharingActions">
+                         <input type="checkbox" name="write_permission" value="1">Write permission</td>
+                         <input class="btn" type="submit" name="share" value="Share my calendar">
                     </div>
                 </form>         
             </div>       
