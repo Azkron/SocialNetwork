@@ -20,7 +20,7 @@ class ControllerCalendar extends Controller {
         
         if(isset($_POST["share"]))
             $this->sharing_settings();
-        if(isset($_POST["delete"]))
+        else if(isset($_POST["delete"]))
             $this->confirm_delete();
         else 
         {

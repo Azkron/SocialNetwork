@@ -19,16 +19,16 @@
                 <div class="SharingPseudoHeader">Pseudo</div>
                 <div class="SharingActionsHeader">Actions</div>
             </div>
-                <?php if (count($shared_calendars) != 0): ?>
-                    <?php foreach ($shared_calendars as $shared_calendar): ?>
+                <?php if (count($shared_users) != 0): ?>
+                    <?php foreach ($shared_users as $shared_user): ?>
             <div class="SharingRow">
                 <form class="SharingForm" action="calendar/sharing_settings" method="post">
                     <div class="SharingPseudo">
-                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_users['pseudo']; ?>">
+                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_user['pseudo']; ?>">
                     </div>      
                     <div class="SharingActions">                  
-                        <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
-                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_users['write_permission'] == 0) echo "checked"; ?>>Write permission</td>
+                        <input type="hidden" name="idcalendar" value="<?= $shared_user['idcalendar']; ?>"/>
+                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_user['write_permission'] == 0) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
                     </div>
@@ -41,12 +41,12 @@
                     <div class="SharingPseudo">
                         <select name="iduser">
                             <?php
-                            if (count($not_shared_users) == 0) 
+                            if (count($not_shared_users) != 0) 
                                 foreach($not_shared_users as $not_shared)
                                 {
                                     $selected = '';
                                     $selected = 'selected="selected"';
-                                    echo '<option value="'.$not_shared['pseudo'].'"selected >"'."Select Pseudo".'</option>';
+                                    echo '<option '.$selected.' value="'.$not_shared.'</option>';
                                 }                                   
                             ?>
                         </select>
