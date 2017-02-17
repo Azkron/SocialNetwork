@@ -9,14 +9,17 @@ class Calendar extends Model {
     public $idcalendar;
     public $description;
     public $color;
+    public $shared_pseudo;
     
 
-    public function __construct($description, $color , $idcalendar = NULL) {
+    public function __construct($description, $color , $idcalendar = NULL, $shared_pseudo = false) {
         $this->description = $description;
         $this->color = $color;
         $this->idcalendar = $idcalendar;
+        $this->shared_pseudo = $shared_pseudo;
         return  true;
     }
+    
     
     public static function get_shared($idcalendar) {
         $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
@@ -93,15 +96,26 @@ class Calendar extends Model {
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) 
             return false;
-        else 
+        else
             return new calendar($data["description"], $data["color"], $data["idcalendar"]);
     }
     
     public static function get_calendars($user) 
     {
-        $query = self::execute("SELECT idcalendar, description, color
-              FROM calendar 
-              WHERE iduser = :iduser", array("iduser" => $user->iduser));
+        $query = self::execute("SELECT calendar.idcalendar, description, color
+              FROM calendar, share
+              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"
+                , array("iduser" => $user->iduser));
+//        $query = self::execute("SELECT calendar.idcalendar, description, color, (SELECT pseudo FROM share, calendar, user WHERE share.iduser = :iduser AND share.idcalendar = calendar.idcalendar AND calendar.iduser = user.iduser)
+//              FROM calendar, share
+//              WHERE calendar.iduser = :iduser OR 
+//              ( :iduser = share.iduser AND share.idcalendar = calendar.idcalendar)"
+//                , array("iduser" => $user->iduser));
+//        $query = self::execute("SELECT calendar.idcalendar, description, color, pseudo
+//              FROM calendar, share, user
+//              WHERE calendar.iduser = :iduser OR 
+//              ( :iduser = share.iduser AND share.idcalendar = calendar.idcalendar AND calendar.iduser = user.iduser)"
+//                , array("iduser" => $user->iduser));
         
         $data = $query->fetchAll();
         $calendars = [];
