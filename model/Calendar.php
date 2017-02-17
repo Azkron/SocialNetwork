@@ -29,7 +29,9 @@ class Calendar extends Model {
         $data = $query->fetchAll();
         $shared_calendars = [];
         foreach ($data as $row) 
-            $shared_calendars[] = array($row['pseudo'], $row['read_only'],$row['idcalendar']);
+            $shared_calendars[] = array("pseudo" => $row['pseudo'],
+                                        "read_only" => $row['read_only'],
+                                        "idcalendar" => $row['idcalendar']);
         return $shared_calendars;
     }
     
@@ -41,7 +43,7 @@ class Calendar extends Model {
         $data = $query->fetchAll();
         $not_shared_calendars = [];
         foreach ($data as $row) 
-            $not_shared_calendars[] = array($row['pseudo']);
+            $not_shared_calendars[] = array("pseudo" => $row['pseudo']);
         return $not_shared_calendars;
     }    
     

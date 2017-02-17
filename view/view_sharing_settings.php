@@ -28,7 +28,7 @@
                     </div>      
                     <div class="SharingActions">                  
                         <input type="hidden" name="idcalendar" value="<?= $shared_user['idcalendar']; ?>"/>
-                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_user['write_permission'] == 0) echo "checked"; ?>>Write permission</td>
+                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_user['read_only'] == 0) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
                     </div>
