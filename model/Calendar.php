@@ -20,7 +20,8 @@ class Calendar extends Model {
     
     public static function get_shared($idcalendar) {
         $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
-                                 WHERE idcalendar = ? ", array($idcalendar));
+                                 WHERE share.iduser = user.iduser AND idcalendar = ? ", 
+                                array($idcalendar));
         
         $data = $query->fetchAll();
         $shared_calendars = [];
@@ -30,16 +31,16 @@ class Calendar extends Model {
     }
     
     public static function get_not_shared($idcalendar) {
-        $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
-                                 WHERE idcalendar != ?", array($idcalendar));
+        $query =  self::execute("SELECT pseudo FROM user, share
+                                    WHERE share.iduser != user.iduser OR idcalendar != ? ",
+                                array($idcalendar));
         
         $data = $query->fetchAll();
         $not_shared_calendars = [];
         foreach ($data as $row) 
-            $not_shared_calendars[] = array($row['pseudo'], $row['read_only'],$row['idcalendar']);
+            $not_shared_calendars[] = array($row['pseudo']);
         return $not_shared_calendars;
-    }
-    
+    }    
     
     /*
     public static function not_shared_users($idcalendar) {

@@ -24,11 +24,11 @@
             <div class="SharingRow">
                 <form class="SharingForm" action="calendar/sharing_settings" method="post">
                     <div class="SharingPseudo">
-                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_calendar['pseudo']; ?>">
+                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_users['pseudo']; ?>">
                     </div>      
                     <div class="SharingActions">                  
                         <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
-                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_calendar->write_permission == 0) echo "checked"; ?>>Write permission</td>
+                        <input type="checkbox" name="write_permission" value="1" <?php if($shared_users['write_permission'] == 0) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
                     </div>
@@ -41,12 +41,12 @@
                     <div class="SharingPseudo">
                         <select name="iduser">
                             <?php
-                            if (count($not_shared_calendars) == 0) 
-                                foreach($not_shared_calendars as $not_shared)
+                            if (count($not_shared_users) == 0) 
+                                foreach($not_shared_users as $not_shared)
                                 {
                                     $selected = '';
                                     $selected = 'selected="selected"';
-                                    echo '<option value="'.$not_shared->pseudo.'"selected >"'."Select Pseudo".'</option>';
+                                    echo '<option value="'.$not_shared['pseudo'].'"selected >"'."Select Pseudo".'</option>';
                                 }                                   
                             ?>
                         </select>

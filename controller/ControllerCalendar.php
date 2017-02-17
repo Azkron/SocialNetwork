@@ -40,13 +40,13 @@ class ControllerCalendar extends Controller {
         if (isset($_POST['idcalendar'])) 
         {
             $idcalendar = $_POST['idcalendar'];
-            $shared_calendars = Calendar::get_shared($idcalendar);
-            $not_shared_calendars = Calendar::get_not_shared($idcalendar);
+            $shared_users = Calendar::get_shared($idcalendar);
+            $not_shared_users = Calendar::get_not_shared($idcalendar);
         }
         else
             throw new Exception("Missing parameters for calendar edition!");
         
-        (new View("sharing_settings"))->show(array("shared_calendars" => $shared_calendars, "not_shared_calendars" => $not_shared_calendars)); 
+        (new View("sharing_settings"))->show(array("shared_users" => $shared_users, "not_shared_users" => $not_shared_users)); 
     }
     
     private function edit($user) {
