@@ -9,22 +9,22 @@ class Calendar extends Model {
     public $idcalendar;
     public $description;
     public $color;
-    public $shared_pseudo;
+    //public $shared_pseudo;
     
 
-    public function __construct($description, $color , $idcalendar = NULL, $shared_pseudo = false) {
+    public function __construct($description, $color , $idcalendar = NULL) {
         $this->description = $description;
         $this->color = $color;
         $this->idcalendar = $idcalendar;
-        $this->shared_pseudo = $shared_pseudo;
+        //$this->shared_pseudo = $shared_pseudo;
         return  true;
     }
     
     
-    public static function get_shared($idcalendar) {
+    public static function get_shared($idcalendar, $user) {
         $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
-                                 WHERE share.iduser = user.iduser AND idcalendar = ? ", 
-                                array($idcalendar));
+                                 WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?", 
+                                array($idcalendar, $user->iduser));
         
         $data = $query->fetchAll();
         $shared_calendars = [];
@@ -35,11 +35,10 @@ class Calendar extends Model {
         return $shared_calendars;
     }
     
-    public static function get_not_shared($idcalendar) {
-        $query =  self::execute("SELECT pseudo FROM user, share
-                                    WHERE share.iduser != user.iduser OR idcalendar != ? ",
-                                array($idcalendar));
-        
+    public static function get_not_shared($user) {
+        $query =  self::execute("SELECT pseudo FROM user
+                                 WHERE user.iduser != ? AND user.iduser NOT IN (select share.iduser FROM share)",
+                                 array($user->iduser));
         $data = $query->fetchAll();
         $not_shared_calendars = [];
         foreach ($data as $row) 
@@ -47,19 +46,26 @@ class Calendar extends Model {
         return $not_shared_calendars;
     }    
     
-    /*
-    public static function not_shared_users($idcalendar) {
-        $query =  self::execute("SELECT pseudo, read_only FROM user, share
-                                 WHERE calendar.iduser != user.iduser
-                                 AND idcalendar = share.idcalendar", array($user->iduser));
-        
-        $data = $query->fetchAll();
-        $not_shared_users = [];
-        foreach ($data as $row) 
-            $not_shared_users[] = array($row['pseudo'], $row['read_only']);
-        return $not_shared_users;
+    public static function add_share($pseudo, $idcalendar, $read_only) {
+        $shared_user = User::get_user($pseudo);
+        self::execute("INSERT INTO share(iduser, idcalendar, read_only)
+                       VALUES(?,?,?)", array($shared_user->iduser, $idcalendar, $read_only));
+        return true;
     }
-     */
+    
+    public static function update_share($pseudo, $idcalendar, $read_only) {
+        $shared_user = User::get_user($pseudo);
+        self::execute("UPDATE share SET idcalendar=?, read_only=? WHERE share.iduser=? ", 
+                array($idcalendar, $read_only, $shared_user->iduser));
+        return true;
+    }
+    
+    public static function delete_share($pseudo) {
+        $shared_user = User::get_user($pseudo);
+        self::execute("DELETE FROM share WHERE iduser=?", 
+                array($shared_user->iduser));
+        return true;
+    }
     
     public static  function calendar_count($user)
     {
@@ -104,10 +110,13 @@ class Calendar extends Model {
     
     public static function get_calendars($user) 
     {
-        $query = self::execute("SELECT calendar.idcalendar, description, color
-              FROM calendar, share
-              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"
-                , array("iduser" => $user->iduser));
+        $query = self::execute("SELECT idcalendar, description, color
+                                FROM calendar 
+                             WHERE iduser = :iduser", array("iduser" => $user->iduser));
+//        $query = self::execute("SELECT calendar.idcalendar, description, color
+//              FROM calendar, share
+//              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"
+//                , array("iduser" => $user->iduser));
 //        $query = self::execute("SELECT calendar.idcalendar, description, color, (SELECT pseudo FROM share, calendar, user WHERE share.iduser = :iduser AND share.idcalendar = calendar.idcalendar AND calendar.iduser = user.iduser)
 //              FROM calendar, share
 //              WHERE calendar.iduser = :iduser OR 

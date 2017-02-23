@@ -80,7 +80,25 @@ html {
     
 }
 
+#Sharing{
+    margin:auto;
+    display:inline-block;
+    width:90%;
+}
 
+.SharingHeader div {
+    width:35%;
+    float:left;
+    height:35px;
+    text-align:center;
+}
+
+.SharingRow div {
+    float:left;
+    height:35px;
+    margin:1px;
+    
+}
 
 form * {
     font-family: inherit;
@@ -194,14 +212,3 @@ table, th, td {
     padding: 10px;
     text-align: left;
  }
- 
-th {
-    color : green;
-    text-decoration: underline;
- }
- 
- thead {
-     border:1px solid black;
-     border-bottom: 6px solid black;
- }
-
