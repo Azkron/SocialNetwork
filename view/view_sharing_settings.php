@@ -24,11 +24,12 @@
             <div class="SharingRow">
                 <form class="SharingForm" action="calendar/sharing_settings" method="post">
                     <div class="SharingPseudo">
-                        <input class="pseudo" name="pseudo" type="text" size="16" value="<?= $shared_user['pseudo']; ?>">
+                        <input class="pseudo" name="pseudo" type="text" size="16" disabled value="<?= $shared_user['pseudo']; ?>">
                     </div>      
-                    <div class="SharingActions">                  
+                    <div class="SharingActions">
+                        <input type="hidden" name="iduser" value="<?= $shared_user['iduser']; ?>"/>
                         <input type="hidden" name="idcalendar" value="<?= $shared_user['idcalendar']; ?>"/>
-                        <input type="checkbox" name="read_only" value="0" <?php if($shared_user['read_only'] == 0) echo "checked"; ?>>Write permission</td>
+                        <input type="checkbox" name="read_only" value="1" <?php if($shared_user['read_only'] == 1) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
                     </div>

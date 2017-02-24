@@ -20,50 +20,63 @@ class Calendar extends Model {
         return  true;
     }
     
+    public static function get_shared_user($iduser) {
+        $query = self::execute("SELECT iduser, read_only FROM share WHERE iduser = ?",
+                                array($iduser));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data;
+        }
+    }
+    
     
     public static function get_shared($idcalendar, $user) {
-        $query =  self::execute("SELECT pseudo, read_only, idcalendar FROM user, share
+        $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?", 
                                 array($idcalendar, $user->iduser));
         
         $data = $query->fetchAll();
         $shared_calendars = [];
         foreach ($data as $row) 
-            $shared_calendars[] = array("pseudo" => $row['pseudo'],
+            $shared_calendars[] = array("iduser" => $row['iduser'],
+                                        "pseudo" => $row['pseudo'],
                                         "read_only" => $row['read_only'],
                                         "idcalendar" => $row['idcalendar']);
         return $shared_calendars;
     }
     
     public static function get_not_shared($user) {
-        $query =  self::execute("SELECT pseudo FROM user
+        $query =  self::execute("SELECT iduser, pseudo FROM user
                                  WHERE user.iduser != ? AND user.iduser NOT IN (select share.iduser FROM share)",
                                  array($user->iduser));
         $data = $query->fetchAll();
         $not_shared_calendars = [];
         foreach ($data as $row) 
-            $not_shared_calendars[] = array("pseudo" => $row['pseudo']);
+            $not_shared_calendars[] = array("iduser" => $row['iduser'],
+                                            "pseudo" => $row['pseudo']);
         return $not_shared_calendars;
     }    
     
-    public static function add_share($pseudo, $idcalendar, $read_only) {
-        $shared_user = User::get_user($pseudo);
+    public static function add_share($pseudo) {
+        $shared_user_id = User::get_user_id_pseudo($pseudo);
         self::execute("INSERT INTO share(iduser, idcalendar, read_only)
                        VALUES(?,?,?)", array($shared_user->iduser, $idcalendar, $read_only));
         return true;
     }
     
-    public static function update_share($pseudo, $idcalendar, $read_only) {
-        $shared_user = User::get_user($pseudo);
-        self::execute("UPDATE share SET idcalendar=?, read_only=? WHERE share.iduser=? ", 
-                array($idcalendar, $read_only, $shared_user->iduser));
+    public static function update_share($iduser, $read_only) {
+        $shared_user_id = User::get_user_id($iduser);
+        self::execute("UPDATE share SET read_only=? WHERE share.iduser=? ", 
+                array($read_only, $shared_user_id['iduser']));
         return true;
     }
     
-    public static function delete_share($pseudo) {
-        $shared_user = User::get_user($pseudo);
+    public static function delete_share($iduser) {
+        $shared_user_id = User::get_user_id($iduser);
         self::execute("DELETE FROM share WHERE iduser=?", 
-                array($shared_user->iduser));
+                array($shared_user_id['iduser']));
         return true;
     }
     

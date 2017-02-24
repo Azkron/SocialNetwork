@@ -49,6 +49,16 @@ class User extends Model {
             return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
         }
     }
+    
+    public static function get_user_id($iduser) {
+        $query = self::execute("SELECT iduser FROM User where iduser = ?", array($iduser));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return $data;
+        }
+    }    
 
     //renvoie un tableau de strings en fonction des erreurs de signup.
     public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
