@@ -32,7 +32,6 @@
                     <div class="SharingActions">
                         <input type="hidden" name="iduser" value="<?= $shared_user->iduser; ?>"/>
                         <input type="hidden" name="idcalendar" value="<?= $shared_user->idcalendar; ?>"/>
-                        <input type="hidden" name="read_only" value="<?php $shared_user->read_only; ?>"/>
                         <input type="checkbox" name="read_only" value="1" <?php if($shared_user->read_only == 1) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
@@ -44,14 +43,12 @@
             <div class="SharingRow">
                 <form class="SharingForm" action="calendar/sharing_settings" method="post">
                     <div class="SharingPseudo">
-                        <select name="pseudo">
+                        <select name="pseudo[]">
                             <option selected disabled>Select pseudo</option>
                             <?php
                             if (count($not_shared_users) != 0) 
-                                foreach($not_shared_users as $key => $value)
-                                {
-                                    echo '<option value="'.$key.'">'.$value['pseudo'].'</option>'; 
-                                }                                   
+                                foreach($not_shared_users as $value)
+                                    echo '<option value="'.$value['pseudo'].'">'.$value['pseudo'].'</option>'; 
                             ?>
                         </select>
                     </div>
