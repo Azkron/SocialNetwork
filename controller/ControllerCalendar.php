@@ -53,8 +53,10 @@ class ControllerCalendar extends Controller {
             }
             else if (isset($_POST["share_calendar"])) {
                 var_dump($_POST);
-                $shared_user_id = User::get_user($_POST['pseudo']);
-                echo $shared_user_id['pseudo'];
+                if (isset($_POST['pseudo']))
+                    var_dump($_POST['pseudo']);
+//                $shared_user_id = User::get_user($_POST['pseudo']);
+//                var_dump($shared_user_id);
 //                $this->create_share();
             }            
         }

@@ -13,7 +13,7 @@
             <a href="calendar/my_calendars">Back</a>
         </div>
         <?php if (count($calendar) != 0)
-                echo "<h1>Calendar : $calendar->description</h1>";
+                echo '<h1 style="color:#'.$calendar->color.'">Calendar : '.$calendar->description.'</h1>';
         ?>
         <div class="main">
             <br><br>     
