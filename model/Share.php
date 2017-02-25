@@ -69,12 +69,11 @@ class Share extends Model {
         
     }    
     
-    public static function add_share($share) {
-        //$shared_user_id = User::get_user_id_pseudo($pseudo);
-        self::execute("INSERT INTO share(idcalendar, read_only) VALUES(?,?)", 
-                       array($share->idcalendar, $share->read_only));
+    public static function add_share($pseudo, $idcalendar, $read_only) {
+        $shared_user_id = User::get_user($pseudo);
+        self::execute("INSERT INTO share(iduser, idcalendar, read_only) VALUES(?,?,?)", 
+                       array($shared_user_id->iduser, $idcalendar, $read_only));
         
-        $share->iduser = self::lastInsertId();
         return true;
     }
     

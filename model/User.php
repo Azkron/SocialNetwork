@@ -50,15 +50,15 @@ class User extends Model {
         }
     }
     
-    public static function get_user_pseudo($iduser) {
-        $query = self::execute("SELECT * FROM User where iduser = ?", array($iduser));
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            return $data;
-        }
-    }    
+//    public static function get_user_pseudo($iduser) {
+//        $query = self::execute("SELECT * FROM User where iduser = ?", array($iduser));
+//        $data = $query->fetch(); // un seul résultat au maximum
+//        if ($query->rowCount() == 0) {
+//            return false;
+//        } else {
+//            return $data;
+//        }
+//    }    
 
     //renvoie un tableau de strings en fonction des erreurs de signup.
     public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
