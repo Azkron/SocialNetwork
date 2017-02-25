@@ -2,6 +2,7 @@
 
 require_once 'model/User.php';
 require_once 'model/Calendar.php';
+require_once 'model/Share.php';
 require_once 'framework/View.php';
 require_once 'framework/Controller.php';
 
@@ -40,10 +41,11 @@ class ControllerCalendar extends Controller {
         if (isset($_POST['idcalendar'])) 
         {
             $idcalendar = $_POST['idcalendar'];
-            $shared_users = Calendar::get_shared($idcalendar, $user);
-            $not_shared_users = Calendar::get_not_shared($user);
+//            $calendar = Calendar::get_calendar($idcalendar);
+//            $shared_users = Share::get_shared($idcalendar, $user);
+//            $not_shared_users = Share::get_list_not_shared($user);
             if(isset($_POST["edit"])){
-                $shared_user = Calendar::get_shared_user($_POST['iduser']);
+                $shared_user = Share::get_shared_user($_POST['iduser']);
                 $this->edit_share($shared_user['iduser'], $shared_user['read_only']);              
             }
             else if (isset($_POST["delete"])) {
@@ -57,7 +59,9 @@ class ControllerCalendar extends Controller {
         else
             throw new Exception("Missing parameters for calendar edition!");
         
-        (new View("sharing_settings"))->show(array("shared_users" => $shared_users, "not_shared_users" => $not_shared_users)); 
+        (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($idcalendar), 
+                                                   "shared_users" => Share::get_shared($idcalendar, $user),
+                                                    "not_shared_users" => Share::get_list_not_shared($user))); 
     }
     
     private function edit_share($iduser, $read_only) {

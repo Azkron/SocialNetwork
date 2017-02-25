@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Ven 10 Février 2017 à 10:37
+-- Généré le :  Sam 04 Février 2017 à 14:44
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `prwb_calendar_g10`
+-- Base de données :  `prwb_calendar_gxx`
 --
 CREATE DATABASE IF NOT EXISTS `prwb_calendar_g10` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `prwb_calendar_g10`;
