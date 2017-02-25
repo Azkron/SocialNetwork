@@ -22,8 +22,8 @@ class Share extends Model {
     }
     
     public static function get_shared_user($iduser) {
-        $query = self::execute("SELECT pseudo FROM User WHERE iduser = ?",
-                                array($iduser));
+        $query = self::execute("SELECT * FROM share
+                                WHERE iduser = ?", array($iduser));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
@@ -33,7 +33,7 @@ class Share extends Model {
     }
     
     
-    public static function get_shared($idcalendar, $user) {
+    public static function get_list_shared($idcalendar, $user) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?", 
                                 array($idcalendar, $user->iduser));
@@ -78,10 +78,8 @@ class Share extends Model {
         return true;
     }
     
-    public static function update_share($iduser, $read_only) {
-        //$shared_user_id = User::get_user_id($iduser);
-        
-        self::execute("UPDATE share SET read_only=? WHERE share.iduser=? ", 
+    public static function update_share($iduser, $read_only) {        
+        self::execute("UPDATE share SET read_only=? WHERE iduser=? ", 
                       array($read_only, $iduser));
         return true;
     }

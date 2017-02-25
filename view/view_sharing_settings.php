@@ -31,7 +31,7 @@
                     </div>      
                     <div class="SharingActions">
                         <input type="hidden" name="iduser" value="<?= $shared_user->iduser; ?>"/>
-                        <input type="hidden" name="idcalendar" value="<?= $shared_user->idcalendar; ?>"/>
+                        <input type="hidden" name="read_only" value="<?php $shared_user->read_only; ?>"/>
                         <input type="checkbox" name="read_only" value="1" <?php if($shared_user->read_only == 1) echo "checked"; ?>>Write permission</td>
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">

@@ -51,7 +51,7 @@ class User extends Model {
     }
     
     public static function get_user_pseudo($iduser) {
-        $query = self::execute("SELECT pseudo FROM User where iduser = ?", array($iduser));
+        $query = self::execute("SELECT * FROM User where iduser = ?", array($iduser));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
             return false;
