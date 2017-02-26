@@ -71,6 +71,7 @@ class Calendar extends Model {
         $query = self::execute("SELECT idcalendar, description, color
                                 FROM calendar 
                                 WHERE iduser = :iduser", array("iduser" => $user->iduser));
+
 //        $query = self::execute("SELECT calendar.idcalendar, description, color
 //              FROM calendar, share
 //              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"

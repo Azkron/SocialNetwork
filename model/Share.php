@@ -36,7 +36,7 @@ class Share extends Model {
             return $shared_calendars;
         }
         else
-            return false;
+            return NULL;
         
     }
     
@@ -60,7 +60,7 @@ class Share extends Model {
             return $not_shared_calendars;
         }
         else 
-            return false;
+            return NULL;
         
     }    
     
