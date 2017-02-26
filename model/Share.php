@@ -21,21 +21,10 @@ class Share extends Model {
         return  true;
     }
     
-    public static function get_shared_user($iduser) {
-        $query = self::execute("SELECT * FROM share
-                                WHERE iduser = ?", array($iduser));
-        $data = $query->fetch(); // un seul résultat au maximum
-        if ($query->rowCount() == 0) {
-            return false;
-        } else {
-            return $data;
-        }
-    }
-    
-    
     public static function get_list_shared($idcalendar, $user) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
-                                 WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?", 
+                                 WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?
+                                 ORDER BY pseudo", 
                                 array($idcalendar, $user->iduser));
         
         $data = $query->fetchAll();
@@ -47,14 +36,20 @@ class Share extends Model {
             return $shared_calendars;
         }
         else
-            return NULL;
+            return false;
         
     }
     
-    public static function get_list_not_shared($user) {
+    public static function get_list_not_shared($user, $idcalendar) {
         $query =  self::execute("SELECT iduser, pseudo FROM user
-                                 WHERE user.iduser != ? AND user.iduser NOT IN (select share.iduser FROM share)",
-                                 array($user->iduser));
+                                 WHERE user.iduser != ? AND user.iduser NOT IN 
+                                      (select share.iduser FROM share)
+                                 UNION
+                                 SELECT user.iduser, pseudo FROM user 
+                                 join share on share.iduser = user.iduser 
+                                 where user.iduser != ? AND share.idcalendar != ?
+                                 ORDER BY pseudo",
+                                 array($user->iduser, $user->iduser, $idcalendar));
         $data = $query->fetchAll();
         
         $not_shared_calendars = [];
@@ -65,7 +60,7 @@ class Share extends Model {
             return $not_shared_calendars;
         }
         else 
-            return NULL;
+            return false;
         
     }    
     

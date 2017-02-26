@@ -19,6 +19,11 @@ class Calendar extends Model {
         //$this->shared_pseudo = $shared_pseudo;
         return  true;
     }
+    
+    public static function get_calendars_shared($user) {
+        $calendars_shared = [];
+        return $calendars_shared;
+    }
 
     public static  function calendar_count($user)
     {
@@ -65,7 +70,7 @@ class Calendar extends Model {
     {
         $query = self::execute("SELECT idcalendar, description, color
                                 FROM calendar 
-                             WHERE iduser = :iduser", array("iduser" => $user->iduser));
+                                WHERE iduser = :iduser", array("iduser" => $user->iduser));
 //        $query = self::execute("SELECT calendar.idcalendar, description, color
 //              FROM calendar, share
 //              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"

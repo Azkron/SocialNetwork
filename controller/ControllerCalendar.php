@@ -30,6 +30,7 @@ class ControllerCalendar extends Controller {
                 $errors = $this->create($user);
             
             (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user),
+                                                   "calendars_shared" => Calendar::get_calendars_shared($user),
                                                    "errors" => $errors));
         }
     }
@@ -37,9 +38,11 @@ class ControllerCalendar extends Controller {
     public function sharing_settings()
     {
         $user = $this->get_user_or_redirect();
-        $errors = [];     
+        $errors = []; 
+        $idcalendar;
         if (isset($_POST['idcalendar'])) 
-        {            
+        {
+            $idcalendar = $_POST['idcalendar'];     
             if(isset($_POST["edit"])){
                 $errors = $this->edit_share($_POST['iduser']);              
             }
@@ -47,16 +50,15 @@ class ControllerCalendar extends Controller {
                 $errors = $this->delete_share();
             }
             else if (isset($_POST["share_calendar"])) {
-                var_dump($_POST);
                 $errors = $this->create_share();      
             }            
         }
         else
             throw new Exception("Missing parameters for showing share page!");
         
-        (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($_POST['idcalendar']), 
-                                                   "shared_users" => Share::get_list_shared($_POST['idcalendar'], $user),
-                                                   "not_shared_users" => Share::get_list_not_shared($user),
+        (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($idcalendar), 
+                                                   "shared_users" => Share::get_list_shared($idcalendar, $user),
+                                                   "not_shared_users" => Share::get_list_not_shared($user, $idcalendar),
                                                    "errors" => $errors)); 
     }
     
