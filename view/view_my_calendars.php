@@ -27,7 +27,7 @@
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">
-                        <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
+                        <input class="description" name="description" type="text" size="16" <?php echo 'style="color:#'.$calendar->color.'"' ?> value="<?= $calendar->description; ?>">
                     </div>
                     <div class="calendarColor">
                         <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
@@ -42,6 +42,19 @@
             </div>         
                     <?php endforeach; ?>
                 <?php endif; ?>
+            <div class="calendarRow">
+                    <div class="calendarDescription">
+                        <input class="description" name="description" type="text" size="16" value="">
+                    </div>
+                    <div class="calendarColor">
+                        <input class="color" name="color" type="color" value="">
+                    </div>
+                    <div class="calendarActions">
+                        <input class="btn" type="submit" name="edit" value="Edit">
+                        <input class="btn" type="submit" name="delete" value="Delete">
+                        <input class="btn" type="submit" name="share" value="Share">
+                    </div>   
+            </div>   
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">

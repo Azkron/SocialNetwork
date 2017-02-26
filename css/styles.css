@@ -83,7 +83,8 @@ html {
 #Sharing{
     margin:auto;
     display:inline-block;
-    width:90%;
+    /*width:90%;*/
+    width:85%;
 }
 
 .SharingHeader div {
@@ -99,6 +100,7 @@ html {
     margin:1px;
     
 }
+
 
 form * {
     font-family: inherit;

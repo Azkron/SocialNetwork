@@ -70,9 +70,9 @@ class Share extends Model {
     }    
     
     public static function add_share($pseudo, $idcalendar, $read_only) {
-        $shared_user_id = User::get_user($pseudo);
+        $shared_user = User::get_user($pseudo);
         self::execute("INSERT INTO share(iduser, idcalendar, read_only) VALUES(?,?,?)", 
-                       array($shared_user_id->iduser, $idcalendar, $read_only));
+                       array($shared_user->iduser, $idcalendar, $read_only));
         
         return true;
     }
@@ -84,10 +84,16 @@ class Share extends Model {
     }
     
     public static function delete_share($iduser) {
-       // $shared_user_id = User::get_user_id($iduser);
         self::execute("DELETE FROM share WHERE iduser=?", 
                       array($iduser));
         return true;
+    }
+    
+     public static function validate_share($pseudo) {
+        $errors = [];
+        if(strlen($pseudo) == 0)
+            $errors[] = "You need to select a pseudo to share your calendar";      
+        return $errors;
     }
     
     

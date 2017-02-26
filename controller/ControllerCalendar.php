@@ -29,7 +29,8 @@ class ControllerCalendar extends Controller {
             else if(isset($_POST["create"]))
                 $errors = $this->create($user);
             
-            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user), "errors" => $errors));
+            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user),
+                                                   "errors" => $errors));
         }
     }
     
@@ -38,19 +39,16 @@ class ControllerCalendar extends Controller {
         $user = $this->get_user_or_redirect();
         $errors = [];     
         if (isset($_POST['idcalendar'])) 
-        {
-            $idcalendar = $_POST['idcalendar'];
-            
+        {            
             if(isset($_POST["edit"])){
-                $this->edit_share($_POST['iduser']);              
+                $errors = $this->edit_share($_POST['iduser']);              
             }
             else if (isset($_POST["delete"])) {
-                $this->delete_share();
+                $errors = $this->delete_share();
             }
             else if (isset($_POST["share_calendar"])) {
-                if (isset($_POST['pseudo'])) {
-                    $this->create_share();
-                }            
+                var_dump($_POST);
+                $errors = $this->create_share();      
             }            
         }
         else
@@ -58,11 +56,13 @@ class ControllerCalendar extends Controller {
         
         (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($_POST['idcalendar']), 
                                                    "shared_users" => Share::get_list_shared($_POST['idcalendar'], $user),
-                                                   "not_shared_users" => Share::get_list_not_shared($user))); 
+                                                   "not_shared_users" => Share::get_list_not_shared($user),
+                                                   "errors" => $errors)); 
     }
     
     private function edit_share($iduser) 
-    {        
+    {
+        $errors = [];        
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $read_only = isset($_POST['read_only']) ? 1 : 0;
@@ -70,21 +70,30 @@ class ControllerCalendar extends Controller {
             Share::update_share($iduser, $read_only);
         }
         else
-            throw new Exception("Missing parameters for calendar edition!!!!!!!");
+            $errors = "Missing parameters for calendar edition!!!!!!!";
+        
+        return $errors;
         
     }
     
     private function delete_share() 
     {
+        $errors = [];
         if (isset($_POST['iduser'])) {
-            Share::delete_share($_POST['iduser']);
+            $iduser = $_POST['iduser'];
+            
+            Share::delete_share($iduser);
         }
         else
-            throw new Exception("Missing parameters for calendar deletion!");
+            $errors = "Missing parameters for calendar deletion!";
+        
+        return $errors;
     }
     
     private function create_share() 
     {
+        $errors = [];
+        $pseudo = '';
         if (isset($_POST['pseudo'])) {
             foreach($_POST['pseudo'] as $index => $valeur) {
                 if (is_string($valeur)) {
@@ -92,13 +101,15 @@ class ControllerCalendar extends Controller {
                     $pseudo = $index;                   
                 }
             }
-            $read_only = isset($_POST['read_only']) ? 1 : 0;
-            $idcalendar = $_POST['idcalendar'];
-
-            Share::add_share($pseudo, $idcalendar, $read_only);
         }
-        else
-            throw new Exception("Missing parameters for calendar creation!:)");
+        $read_only = isset($_POST['read_only']) ? 1 : 0;
+        $idcalendar = $_POST['idcalendar'];
+        $errors = Share::validate_share($pseudo);
+
+        if (count($errors) == 0)
+            Share::add_share($pseudo, $idcalendar, $read_only);
+
+        return $errors;
     }    
     
     private function edit($user) {
