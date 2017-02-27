@@ -43,10 +43,10 @@ class ControllerCalendar extends Controller {
         {
             $idcalendar = $_POST['idcalendar'];     
             if(isset($_POST["edit"])){
-                $errors = $this->edit_share($_POST['iduser']);              
+                $errors = $this->edit_share($idcalendar);              
             }
             else if (isset($_POST["delete"])) {
-                $errors = $this->delete_share();
+                $errors = $this->delete_share($idcalendar);
             }
             else if (isset($_POST["share_calendar"])) {
                 $errors = $this->create_share();      
@@ -61,14 +61,14 @@ class ControllerCalendar extends Controller {
                                                    "errors" => $errors)); 
     }
     
-    private function edit_share($iduser) 
+    private function edit_share($idcalendar) 
     {
         $errors = [];        
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $read_only = isset($_POST['read_only']) ? 1 : 0;
             
-            Share::update_share($iduser, $read_only);
+            Share::update_share($iduser, $idcalendar, $read_only);
         }
         else
             $errors = "Missing parameters for calendar edition!!!!!!!";
@@ -77,13 +77,13 @@ class ControllerCalendar extends Controller {
         
     }
     
-    private function delete_share() 
+    private function delete_share($idcalendar) 
     {
         $errors = [];
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             
-            Share::delete_share($iduser);
+            Share::delete_share($iduser, $idcalendar);
         }
         else
             $errors = "Missing parameters for calendar deletion!";
@@ -173,14 +173,7 @@ class ControllerCalendar extends Controller {
         }
         else 
             throw new Exception("Missing Calendar ID");
-    }
-    
-    private function prepare_shared_description($owner_pseudo)
-    {
-        if(count($owner_pseudo) != 0)
-            return $owner_pseudo;
-    }
-    
+    }    
     
     private function prepare_color($color)
     {

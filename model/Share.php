@@ -72,15 +72,15 @@ class Share extends Model {
         return true;
     }
     
-    public static function update_share($iduser, $read_only) {        
-        self::execute("UPDATE share SET read_only=? WHERE iduser=? ", 
-                      array($read_only, $iduser));
+    public static function update_share($iduser, $idcalendar, $read_only) {        
+        self::execute("UPDATE share SET read_only=? WHERE iduser=? AND idcalendar = ?", 
+                      array($read_only, $iduser, $idcalendar));
         return true;
     }
     
-    public static function delete_share($iduser) {
-        self::execute("DELETE FROM share WHERE iduser=?", 
-                      array($iduser));
+    public static function delete_share($iduser, $idcalendar) {
+        self::execute("DELETE FROM share WHERE iduser=? AND idcalendar = ?", 
+                      array($iduser, $idcalendar));
         return true;
     }
     
