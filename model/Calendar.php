@@ -9,21 +9,17 @@ class Calendar extends Model {
     public $idcalendar;
     public $description;
     public $color;
-    //public $shared_pseudo;
+    public $owner_pseudo;
     
 
-    public function __construct($description, $color , $idcalendar = NULL) {
+    public function __construct($description, $color , $idcalendar = NULL, $owner_pseudo = NULL) {
         $this->description = $description;
         $this->color = $color;
         $this->idcalendar = $idcalendar;
-        //$this->shared_pseudo = $shared_pseudo;
+        $this->owner_pseudo= $owner_pseudo;
         return  true;
     }
-    
-    public static function get_calendars_shared($user) {
-        $calendars_shared = [];
-        return $calendars_shared;
-    }
+   
 
     public static  function calendar_count($user)
     {

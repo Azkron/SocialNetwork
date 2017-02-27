@@ -30,7 +30,6 @@ class ControllerCalendar extends Controller {
                 $errors = $this->create($user);
             
             (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user),
-                                                   "calendars_shared" => Calendar::get_calendars_shared($user),
                                                    "errors" => $errors));
         }
     }
@@ -39,7 +38,7 @@ class ControllerCalendar extends Controller {
     {
         $user = $this->get_user_or_redirect();
         $errors = []; 
-        $idcalendar;
+        $idcalendar = NULL;
         if (isset($_POST['idcalendar'])) 
         {
             $idcalendar = $_POST['idcalendar'];     
@@ -95,7 +94,7 @@ class ControllerCalendar extends Controller {
     private function create_share() 
     {
         $errors = [];
-        $pseudo = '';
+        $pseudo = NULL;
         if (isset($_POST['pseudo'])) {
             foreach($_POST['pseudo'] as $index => $valeur) {
                 if (is_string($valeur)) {
@@ -174,6 +173,12 @@ class ControllerCalendar extends Controller {
         }
         else 
             throw new Exception("Missing Calendar ID");
+    }
+    
+    private function prepare_shared_description($owner_pseudo)
+    {
+        if(count($owner_pseudo) != 0)
+            return $owner_pseudo;
     }
     
     
