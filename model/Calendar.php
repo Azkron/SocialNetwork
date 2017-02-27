@@ -66,7 +66,12 @@ class Calendar extends Model {
     {
         $query = self::execute("SELECT idcalendar, description, color
                                 FROM calendar 
-                                WHERE iduser = :iduser", array("iduser" => $user->iduser));
+                                WHERE iduser = :iduser
+                                UNION
+                                SELECT share.idcalendar, description, color
+                                FROM share, calendar 
+                                WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != :iduser", 
+                                array("iduser" => $user->iduser));
 
 //        $query = self::execute("SELECT calendar.idcalendar, description, color
 //              FROM calendar, share
@@ -89,6 +94,23 @@ class Calendar extends Model {
             $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar']);
         
         return $calendars;
+    }
+    
+    public static function get_calendars_shared($user) {
+        /*
+         * SELECT share.idcalendar, description, color
+            FROM share, calendar 
+            WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != 1
+         * 
+         select share.iduser, share.idcalendar, read_only 
+            FROM share join calendar on share.idcalendar = calendar.idcalendar
+            WHERE share.iduser = 1
+         * calendar.iduser != 1
+         */
+        $query = self::execute("SELECT share.iduser, share.idcalendar, read_only, description, color 
+                                FROM share join calendar on share.idcalendar = calendar.idcalendar
+                                WHERE calendar.iduser != ?",
+                                array($user->iduser));
     }
     
     

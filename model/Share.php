@@ -21,7 +21,7 @@ class Share extends Model {
         return  true;
     }
     
-    public static function get_list_shared($idcalendar, $user) {
+    public static function get_user_shared($idcalendar, $user) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?
                                  ORDER BY pseudo", 
@@ -40,7 +40,7 @@ class Share extends Model {
         
     }
     
-    public static function get_list_not_shared($user, $idcalendar) {
+    public static function get_user_not_shared($user, $idcalendar) {
         $query =  self::execute("SELECT iduser, pseudo FROM user
                                  WHERE user.iduser != ? AND user.iduser NOT IN 
                                       (select share.iduser FROM share)

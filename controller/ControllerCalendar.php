@@ -56,8 +56,8 @@ class ControllerCalendar extends Controller {
             throw new Exception("Missing parameters for showing share page!");
         
         (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($idcalendar), 
-                                                   "shared_users" => Share::get_list_shared($idcalendar, $user),
-                                                   "not_shared_users" => Share::get_list_not_shared($user, $idcalendar),
+                                                   "shared_users" => Share::get_user_shared($idcalendar, $user),
+                                                   "not_shared_users" => Share::get_user_not_shared($user, $idcalendar),
                                                    "errors" => $errors)); 
     }
     
