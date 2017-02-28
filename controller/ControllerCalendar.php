@@ -18,6 +18,11 @@ class ControllerCalendar extends Controller {
         $user = $this->get_user_or_redirect();
         $errors = [];
         
+//        $test_read_only = Share::get_properties_shared_calendar(1, 4);
+//        $test_owner = Calendar::get_owner_calendar(4) ;
+//        var_dump($test_owner['iduser']);
+//        var_dump($test_read_only['read_only']);
+        
         if(isset($_POST["share"]))
             $this->sharing_settings();
         else if(isset($_POST["delete"]))
@@ -56,8 +61,8 @@ class ControllerCalendar extends Controller {
             throw new Exception("Missing parameters for showing share page!");
         
         (new View("sharing_settings"))->show(array("calendar" => Calendar::get_calendar($idcalendar), 
-                                                   "shared_users" => Share::get_user_shared($idcalendar, $user),
-                                                   "not_shared_users" => Share::get_user_not_shared($user, $idcalendar),
+                                                   "shared_users" => Share::get_shared_users($idcalendar, $user),
+                                                   "not_shared_users" => Share::get_not_shared_users($user, $idcalendar),
                                                    "errors" => $errors)); 
     }
     

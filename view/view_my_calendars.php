@@ -21,8 +21,8 @@
                 <div class="calendarColorheader">Color</div>
                 <div class="calendarActionsHeader">Actions</div>
             </div>
-            
-                <?php if (count($calendars) != 0): ?>
+                
+                <?php if (count($calendars) != 0) : ?>
                     <?php foreach ($calendars as $calendar): ?>
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
@@ -33,10 +33,13 @@
                         <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
                     </div>
                     <div class="calendarActions">
-                        <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
+                        <?php if (strlen($calendar->owner_pseudo) == 0) :?>
+                        <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
                         <input class="btn" type="submit" name="edit" value="Edit">
                         <input class="btn" type="submit" name="delete" value="Delete">
                         <input class="btn" type="submit" name="share" value="Share">
+                        <?php endif; ?>
+                        
                     </div>
                 </form>         
             </div>         

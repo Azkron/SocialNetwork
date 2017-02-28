@@ -21,7 +21,21 @@ class Share extends Model {
         return  true;
     }
     
-    public static function get_user_shared($idcalendar, $user) {
+    public static function get_properties_shared_calendar($iduser, $idcalendar) {
+        $query = self::execute("SELECT read_only 
+                                FROM share
+                                WHERE idcalendar = ? and iduser = ?",
+                                array($idcalendar, $iduser));
+      
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return array("read_only"  => $data["read_only"]);
+        }
+    }
+    
+    public static function get_shared_users($idcalendar, $user) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?
                                  ORDER BY pseudo", 
@@ -40,7 +54,7 @@ class Share extends Model {
         
     }
     
-    public static function get_user_not_shared($user, $idcalendar) {
+    public static function get_not_shared_users($user, $idcalendar) {
         $query =  self::execute("SELECT iduser, pseudo FROM user
                                  WHERE user.iduser != ? AND user.iduser NOT IN 
                                       (select share.iduser FROM share)
@@ -52,12 +66,12 @@ class Share extends Model {
                                  array($user->iduser, $user->iduser, $idcalendar));
         $data = $query->fetchAll();
         
-        $not_shared_calendars = [];
+        $not_shared_users = [];
         if(count($data) > 0) {
             foreach ($data as $row) 
-                $not_shared_calendars[] = array("iduser" => $row['iduser'],
-                                                "pseudo" => $row['pseudo']);
-            return $not_shared_calendars;
+                $not_shared_users[] = array("iduser" => $row['iduser'],
+                                            "pseudo" => $row['pseudo']);
+            return $not_shared_users;
         }
         else 
             return NULL;

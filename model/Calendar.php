@@ -10,14 +10,56 @@ class Calendar extends Model {
     public $description;
     public $color;
     public $owner_pseudo;
+    public $read_only;
     
 
-    public function __construct($description, $color , $idcalendar = NULL, $owner_pseudo = NULL) {
+    public function __construct($description, $color , $idcalendar = NULL, $owner_pseudo = NULL, $read_only = NULL) {
         $this->description = $description;
         $this->color = $color;
         $this->idcalendar = $idcalendar;
         $this->owner_pseudo= $owner_pseudo;
+        $this->read_only= $read_only;
         return  true;
+    }
+
+    public static function get_owner_calendar($idcalendar) {
+        $query = self::execute("SELECT idcalendar, calendar.iduser, pseudo 
+                                FROM calendar, user
+                                WHERE calendar.iduser = user.iduser AND idcalendar = ? AND idcalendar in 
+                                    (SELECT share.idcalendar 
+                                     FROM share, calendar 
+                                     WHERE share.idcalendar = calendar.idcalendar)",
+                                array($idcalendar));
+
+        
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } else {
+            return array("idcalendar" => $data["idcalendar"],
+                         "iduser"     => $data["iduser"], 
+                         "pseudo"     => $data["pseudo"]);
+        }
+    }
+    
+    public static function get_calendars_shared($user) {
+        /*
+         * if count(share_calendar) superieur 0
+         * if calendar->idcalendar = share_calendar->idcalendar
+         * 
+         * SELECT share.idcalendar, description, color
+            FROM share, calendar 
+            WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != 1
+         * 
+         select share.iduser, share.idcalendar, read_only 
+            FROM share join calendar on share.idcalendar = calendar.idcalendar
+            WHERE share.iduser = 1
+         * calendar.iduser != 1
+         */
+        $query = self::execute("select share.iduser, share.idcalendar, description, color, read_only 
+            FROM share join calendar on share.idcalendar = calendar.idcalendar
+            WHERE share.iduser = 4",
+                                array($user->iduser));
     }
    
 
@@ -69,8 +111,8 @@ class Calendar extends Model {
                                 WHERE iduser = :iduser
                                 UNION
                                 SELECT share.idcalendar, description, color
-                                FROM share, calendar 
-                                WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != :iduser", 
+                                FROM share join calendar on share.idcalendar = calendar.idcalendar
+                                WHERE share.iduser = :iduser", 
                                 array("iduser" => $user->iduser));
 
 //        $query = self::execute("SELECT calendar.idcalendar, description, color
@@ -90,30 +132,29 @@ class Calendar extends Model {
         
         $data = $query->fetchAll();
         $calendars = [];
-        foreach ($data as $row) 
-            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar']);
+        foreach ($data as $row)
+        {
+            $test_owner = self::get_owner_calendar($row['idcalendar']);
+            if($test_owner['idcalendar'] == $row['idcalendar'] && $test_owner['iduser'] != $user->iduser) {
+                $owner_pseudo = $test_owner['pseudo'];  
+                $row['description']  .= " (owned by ".$owner_pseudo.")";
+                
+                $test_read_only = Share::get_properties_shared_calendar($user->iduser, $row['idcalendar']);
+                $read_only = $test_read_only['read_only'];
+            }
+                 
+            else {
+                $owner_pseudo = NULL;
+                $read_only = NULL;
+            }
+                
+            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar'], $owner_pseudo, $read_only);
+        }
+            
         
         return $calendars;
     }
-    
-    public static function get_calendars_shared($user) {
-        /*
-         * SELECT share.idcalendar, description, color
-            FROM share, calendar 
-            WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != 1
-         * 
-         select share.iduser, share.idcalendar, read_only 
-            FROM share join calendar on share.idcalendar = calendar.idcalendar
-            WHERE share.iduser = 1
-         * calendar.iduser != 1
-         */
-        $query = self::execute("SELECT share.iduser, share.idcalendar, read_only, description, color 
-                                FROM share join calendar on share.idcalendar = calendar.idcalendar
-                                WHERE calendar.iduser != ?",
-                                array($user->iduser));
-    }
-    
-    
+
     public static function validate($user, $description, $color, $idcalendar = NULL) {
         $errors = [];
         if(strlen($description) < 1 || strlen($description) > 50 )
