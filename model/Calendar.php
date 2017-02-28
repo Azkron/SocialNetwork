@@ -135,7 +135,7 @@ class Calendar extends Model {
             $test_owner = self::get_owner_calendar($row['idcalendar']);
             if($test_owner['idcalendar'] == $row['idcalendar'] && $test_owner['iduser'] != $user->iduser) {
                 $owner_pseudo = $test_owner['pseudo'];  
-                $row['description']  .= " (owned by ".$owner_pseudo.")";
+//                $row['description']  .= " (owned by ".$owner_pseudo.")";
                 
                 $test_read_only = Share::get_properties_shared_calendar($user->iduser, $row['idcalendar']);
                 $read_only = $test_read_only['read_only'];

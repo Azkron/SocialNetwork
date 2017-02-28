@@ -27,20 +27,31 @@
             <div class="calendarRow">
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">
-                        <input class="description" name="description" type="text" size="16" <?php echo 'style="color:#'.$calendar->color.'"' ?> value="<?= $calendar->description; ?>">
-                    </div>
-                    <div class="calendarColor">
-                        <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
-                    </div>
-                    <div class="calendarActions">
                         <?php if (strlen($calendar->owner_pseudo) == 0) :?>
-                        <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
-                        <input class="btn" type="submit" name="edit" value="Edit">
-                        <input class="btn" type="submit" name="delete" value="Delete">
-                        <input class="btn" type="submit" name="share" value="Share">
-                        <?php endif; ?>
+                            <input class="description" name="description" type="text" size="16" <?php echo 'style="color:#'.$calendar->color.'"' ?> value="<?= $calendar->description; ?>">
+                        <?php else:?>
+                            <div class="description" <?php echo 'style="color:#'.$calendar->color.'"' ?>>
+                                <?= $calendar->description; ?>
+                            </div>
+                            <div class="description">
+                                (Owned by <?= $calendar->owner_pseudo; ?>)
+                            </div>
                         
+                            
+                        <?php endif; ?>
                     </div>
+                    <?php if (strlen($calendar->owner_pseudo) == 0) :?>
+                        <div class="calendarColor">
+                            <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
+                        </div>
+                        <div class="calendarActions">
+                            <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
+                            <input class="btn" type="submit" name="edit" value="Edit">
+                            <input class="btn" type="submit" name="delete" value="Delete">
+                            <input class="btn" type="submit" name="share" value="Share">
+
+                        </div>
+                    <?php endif; ?>
                 </form>         
             </div>         
                     <?php endforeach; ?>
