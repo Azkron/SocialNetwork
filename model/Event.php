@@ -13,11 +13,12 @@ class Event extends Model {
     public $title;
     public $description;
     public $color;
+    public $read_only;
     //public $idcalendar;
     
 
     public function __construct($title, $whole_day, $start, $idcalendar, $finish = NULL, 
-                                $description = NULL, $color = NULL, $idevent = NULL) 
+                                $description = NULL, $color = NULL, $idevent = NULL, $read_only = NULL) 
     {      
         $this->title = $title;
         $this->whole_day = $whole_day;
@@ -29,6 +30,7 @@ class Event extends Model {
         $this->idevent = $idevent;   
         $this->idcalendar = $idcalendar;
         $this->color = $color;
+        $this->read_only= $read_only;
         return true;
     } 
     
@@ -49,7 +51,7 @@ class Event extends Model {
         }       
     }
     
-    // $weekMod argument is te index of the week relative to the current week
+    // $weekMod argument is the index of the week relative to the current week
     public static function get_events_in_week($user, $weekMod = 0) 
     {
         $start = Date::monday($weekMod);
