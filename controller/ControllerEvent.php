@@ -85,7 +85,7 @@ class ControllerEvent extends Controller {
                 }
             }
         
-        $calendars = Calendar::get_calendars($user);
+        $calendars = Calendar::get_writable_calendars($user);
         (new View("create_event"))->show(array("calendars" => $calendars, "errors" => $errors, "title" => $title, "whole_day" => $whole_day, 
                                             "start" => $start, "idcalendar" => $idcalendar, "finish" => $finish, "description" => $description));
     }

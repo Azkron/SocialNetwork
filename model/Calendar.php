@@ -1,6 +1,7 @@
 <?php
 
 require_once 'model/User.php';
+require_once 'model/Share.php';
 require_once "framework/Model.php";
 require_once "framework/Controller.php";
 
@@ -149,6 +150,28 @@ class Calendar extends Model {
             $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar'], $owner_pseudo, $read_only);
         }
             
+        
+        return $calendars;
+    }
+    
+    public static function get_writable_calendars($user) 
+    {
+        $query = self::execute("SELECT idcalendar, description, color
+                                FROM calendar 
+                                WHERE iduser = :iduser
+                                UNION
+                                SELECT share.idcalendar, description, color
+                                FROM share join calendar on share.idcalendar = calendar.idcalendar
+                                WHERE share.iduser = :iduser AND read_only = 0", 
+                                array("iduser" => $user->iduser));
+
+        
+        $data = $query->fetchAll();
+        $calendars = [];
+        foreach ($data as $row)
+        {
+            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar']);
+        }
         
         return $calendars;
     }
