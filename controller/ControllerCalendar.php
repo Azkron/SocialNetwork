@@ -18,11 +18,6 @@ class ControllerCalendar extends Controller {
         $user = $this->get_user_or_redirect();
         $errors = [];
         
-//        $test_read_only = Share::get_properties_shared_calendar(1, 4);
-//        $test_owner = Calendar::get_owner_calendar(4) ;
-//        var_dump($test_owner['iduser']);
-//        var_dump($test_read_only['read_only']);
-        
         if(isset($_POST["share"]))
             $this->sharing_settings();
         else if(isset($_POST["delete"]))
@@ -76,7 +71,7 @@ class ControllerCalendar extends Controller {
             Share::update_share($iduser, $idcalendar, $read_only);
         }
         else
-            $errors = "Missing parameters for calendar edition!!!!!!!";
+            $errors = "Missing parameters for calendar edition!";
         
         return $errors;
         
