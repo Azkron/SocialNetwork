@@ -39,28 +39,7 @@ class Calendar extends Model {
                          "iduser"     => $data["iduser"], 
                          "pseudo"     => $data["pseudo"]);
         }
-    }
-    
-//    public static function get_calendars_shared($user) {
-//        /*
-//         * if count(share_calendar) superieur 0
-//         * if calendar->idcalendar = share_calendar->idcalendar
-//         * 
-//         * SELECT share.idcalendar, description, color
-//            FROM share, calendar 
-//            WHERE share.idcalendar = calendar.idcalendar AND calendar.iduser != 1
-//         * 
-//         select share.iduser, share.idcalendar, read_only 
-//            FROM share join calendar on share.idcalendar = calendar.idcalendar
-//            WHERE share.iduser = 1
-//         * calendar.iduser != 1
-//         */
-//        $query = self::execute("select share.iduser, share.idcalendar, description, color, read_only 
-//            FROM share join calendar on share.idcalendar = calendar.idcalendar
-//            WHERE share.iduser = 4",
-//                                array($user->iduser));
-//    }
-   
+    }   
 
     public static  function calendar_count($user)
     {
@@ -119,20 +98,13 @@ class Calendar extends Model {
         foreach ($data as $row)
         {
             $test_owner = self::get_owner_calendar($row['idcalendar']);
-            if($test_owner['idcalendar'] == $row['idcalendar'] && $test_owner['iduser'] != $user->iduser) {
-                $owner_pseudo = $test_owner['pseudo'];  
-//                $row['description']  .= " (owned by ".$owner_pseudo.")";
-                
-                $test_read_only = Share::get_properties_shared_calendar($user->iduser, $row['idcalendar']);
-                $read_only = $test_read_only['read_only'];
-            }
-                 
-            else {
+            
+            if($test_owner['idcalendar'] == $row['idcalendar'] && $test_owner['iduser'] != $user->iduser)
+                $owner_pseudo = $test_owner['pseudo'];
+            else
                 $owner_pseudo = NULL;
-                $read_only = NULL;
-            }
                 
-            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar'], $owner_pseudo, $read_only);
+            $calendars[] = new Calendar($row['description'], $row['color'], $row['idcalendar'], $owner_pseudo);
         }
             
         
