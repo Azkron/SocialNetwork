@@ -43,7 +43,8 @@ class Calendar extends Model {
 
     public static  function calendar_count($user)
     {
-        $query = self::execute("SELECT * FROM calendar WHERE iduser=?", array($user->iduser));
+        $query = self::execute("SELECT idcalendar FROM calendar WHERE iduser= :iduser UNION
+                                SELECT idcalendar FROM share WHERE iduser= :iduser", array("iduser" => $user->iduser));
         return $query->rowCount();
     }
 
