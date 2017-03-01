@@ -113,21 +113,6 @@ class Calendar extends Model {
                                 FROM share join calendar on share.idcalendar = calendar.idcalendar
                                 WHERE share.iduser = :iduser", 
                                 array("iduser" => $user->iduser));
-
-//        $query = self::execute("SELECT calendar.idcalendar, description, color
-//              FROM calendar, share
-//              WHERE calendar.iduser = :iduser OR (share.iduser = :iduser AND share.idcalendar = calendar.idcalendar)"
-//                , array("iduser" => $user->iduser));
-//        $query = self::execute("SELECT calendar.idcalendar, description, color, (SELECT pseudo FROM share, calendar, user WHERE share.iduser = :iduser AND share.idcalendar = calendar.idcalendar AND calendar.iduser = user.iduser)
-//              FROM calendar, share
-//              WHERE calendar.iduser = :iduser OR 
-//              ( :iduser = share.iduser AND share.idcalendar = calendar.idcalendar)"
-//                , array("iduser" => $user->iduser));
-//        $query = self::execute("SELECT calendar.idcalendar, description, color, pseudo
-//              FROM calendar, share, user
-//              WHERE calendar.iduser = :iduser OR 
-//              ( :iduser = share.iduser AND share.idcalendar = calendar.idcalendar AND calendar.iduser = user.iduser)"
-//                , array("iduser" => $user->iduser));
         
         $data = $query->fetchAll();
         $calendars = [];

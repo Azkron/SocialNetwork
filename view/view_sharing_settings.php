@@ -13,8 +13,7 @@
             <a href="calendar/my_calendars">Back</a>
         </div>
         <?php
-        if (count($calendar) != 0)
-            echo '<h1 style="color:#' . $calendar->color . '">Calendar : ' . $calendar->description . '</h1>';
+            echo '<h1 class="subTitle" style="color:#' . $calendar->color . '">Calendar : ' . $calendar->description . '</h1>';
         ?>
         <div class="main">
             <br><br>     
@@ -34,7 +33,7 @@
                                 <div class="SharingActions">
                                     <input type="hidden" name="iduser" value="<?= $shared_user->iduser; ?>"/>
                                     <input type="hidden" name="idcalendar" value="<?= $shared_user->idcalendar; ?>"/>
-                                    <input type="checkbox" name="read_only" value="1" <?php if ($shared_user->read_only == 1) echo "checked"; ?>>Write permission</td>
+                                    <input type="checkbox" name="write" value="1" <?php if ($shared_user->read_only == 0) echo "checked"; ?>/><label>Write permission </label>
                                     <input class="btn" type="submit" name="edit" value="Edit">
                                     <input class="btn" type="submit" name="delete" value="Delete">
                                 </div>
@@ -56,8 +55,8 @@
                             </select>
                         </div>
                         <div class="SharingActions">
-                            <input type="checkbox" name="read_only" value="1"/><label>Write permission </label>
-                            <input class="btn" type="submit" name="share_calendar" value="Share my calendar"/>
+                            <input type="checkbox" name="write" value="1"/><label>Write permission </label>
+                            <input class="btn" type="submit" name="share_calendar" value="Share calendar"/>
                         </div>
                     </form>         
                 </div>       

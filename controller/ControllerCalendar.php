@@ -71,7 +71,7 @@ class ControllerCalendar extends Controller {
         $errors = [];        
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
-            $read_only = isset($_POST['read_only']) ? 1 : 0;
+            $read_only = isset($_POST['write']) ? 0 : 1;
             
             Share::update_share($iduser, $idcalendar, $read_only);
         }
@@ -108,7 +108,7 @@ class ControllerCalendar extends Controller {
                 }
             }
         }
-        $read_only = isset($_POST['read_only']) ? 1 : 0;
+        $read_only = isset($_POST['write']) ? 0 : 1;
         $idcalendar = $_POST['idcalendar'];
         $errors = Share::validate_share($pseudo);
 

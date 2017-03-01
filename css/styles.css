@@ -38,6 +38,11 @@ html {
     text-align:left;
 }
 
+.subTitle{
+    text-align:center;
+    text-decoration:underline;
+}
+
 
 .eventHeader div{
     float:left;

@@ -57,7 +57,7 @@ class Event extends Model {
     {
         $start = Date::monday($weekMod);
         $finish = Date::sunday($weekMod);
-        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, Null as read_only 
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, 0 as read_only 
                                 FROM event, calendar WHERE event.idcalendar = calendar.idcalendar AND calendar.iduser = :iduser 
                                 AND ( 
                                         (DATE(start) >= DATE(:start) AND DATE(start) <= DATE(:finish)) 
