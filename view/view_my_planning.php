@@ -68,16 +68,17 @@
 
                     <?php endfor; ?>
                 <?php endif; ?>
-
-                <form class="buttonForm" action="event/create_event" method="post">
-                    <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                    <input class="btn" type="submit" value="create" name="create">
-                </form>
-
+                </br>
                 <?php
                     if(isset($errors))
                         View::print_errors($errors);
                 ?>
+                <?php if (!isset($errors) || count($errors) <= 0): ?>
+                <form class="buttonForm" action="event/create_event" method="post">
+                    <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                    <input class="btn" type="submit" value="create" name="create">
+                </form>
+                <?php endif; ?>
             </div>
                 
 

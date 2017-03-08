@@ -19,7 +19,7 @@ class ControllerEvent extends Controller {
         
         $errors = [];
         if(!self::calendars_exist($user))
-            $errors[] = "You must create at least one calendar before being able to create an event";
+            $errors[] = "You must own at least one calendar before being able to create an event";
         
         (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => Event::get_events_in_week($user, $weekMod)));
     }
