@@ -27,9 +27,14 @@
                                         foreach($calendars as $calendar)
                                         {
                                             $selected = '';
-                                            if($calendar->idcalendar == $event->idcalendar)
-                                                $selected = 'selected="selected"';
-                                            echo '<option '.$selected.' value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';
+                                            $isCalendar = $calendar->idcalendar == $event->idcalendar;
+                                            if($isCalendar || $event->read_only == -1)
+                                            {
+                                                if($isCalendar)
+                                                    $selected = 'selected="selected"';
+
+                                                echo '<option '.$selected.' value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';
+                                            }
                                         }                                   
                                     ?>
                                 </select>

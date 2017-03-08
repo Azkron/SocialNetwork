@@ -142,10 +142,13 @@ class ControllerEvent extends Controller {
                 else
                     throw new Exception("Missing parameters for event update!");
             }
-            
-            $event = Event::get_event($_POST['idevent']);
-            $calendars = Calendar::get_calendars($user);
-            (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
+            else if(isset($_POST['read_only']))
+            {
+                $event = Event::get_event($_POST['idevent']);
+                $event->read_only = $_POST['read_only'];
+                $calendars = Calendar::get_calendars($user);
+                (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
+            }
         }
         else 
             throw new Exception("Missing parameters for update event!");

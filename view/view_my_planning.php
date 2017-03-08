@@ -50,10 +50,11 @@
                         <div style="color:#<?=$event->color?>" class="eventTitle">
                             <?= $event->title; ?>
                         </div>
-                        <?php if ($event->read_only == 0): ?>
+                        <?php if ($event->read_only != 1): ?>
                         <div class="eventEdit">
                                 <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                                 <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
+                                <input type="hidden" name="read_only" value="<?= $event->read_only; ?>"/>
                                 <input class="btn" type="submit" name="edit_event" value="Edit event">
                         </div>
                         
