@@ -38,7 +38,6 @@ class ControllerEvent extends Controller {
     {
         $user = $this->get_user_or_redirect();
         
-        
         if (!self::calendars_exist($user) || isset($_POST["cancel"]))
             $this->redirect("event", "my_planning");
         
@@ -49,7 +48,6 @@ class ControllerEvent extends Controller {
         $description = '';
         $idcalendar = NULL;
         $errors = [];
-        
         
         if(isset($_POST["create"]))
             if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
