@@ -6,20 +6,20 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-        <script type ="text/javascript" src='framework/Tools.js'></script>
+        <script type ="text/javascript" src='JS/Tools.js'></script>
         <script>
-            var pseudo, pwd, pwd2, errors = new Array();
+            var pseudo, pwd, pwd2;
             
-            var pseudoReg = [
-                [/^.{3,16}$/ , "The pseudo must be 3-16 characters long"],
-                [/^[a-zA-Z][a-zA-Z0-9]*$/,"The pseudo must be composed of letters and numbers and the first character must be a number"]
+             var pseudoReg = [
+                {reg: /^.{3,16}$/ , msg : "The pseudo must be 3-16 characters long"},
+                {reg: /^[a-zA-Z][a-zA-Z0-9]*$/, msg : "The pseudo must be composed of letters and numbers and the first character must be a number"}
             ];
             
             var pwdReg = [
-                [/^.{8,16}$/,"The password must be 8-16 characters long"],
-                [/[A-Z]/,"The password must conaint at least a mayus letter"],
-                [/\d/,"The password must contain a number"],
-                [/['";:,.\/?\\-]/,"The password must contain a punctuation character"]
+                {reg: /^.{8,16}$/, msg : "The password must be 8-16 characters long"},
+                {reg: /[A-Z]/, msg : "The password must conaint at least a mayus letter"},
+                {reg: /\d/, msg : "The password must contain a number"},
+                {reg: /['";:,.\/?\\-]/, msg : "The password must contain a punctuation character"}
             ];
             
             document.onreadystatechange = function()

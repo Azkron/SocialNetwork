@@ -18,7 +18,7 @@ class ControllerEvent extends Controller {
             $weekMod = $_POST['weekMod'];
         
         $errors = [];
-        if(!self::calendars_exist($user))
+        if(!Calendar::calendars_exist($user))
             $errors[] = "You must own at least one calendar before being able to create an event";
         
         (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => Event::get_events_in_week($user, $weekMod)));
@@ -29,55 +29,62 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
-    private static function calendars_exist($user)
-    {
-        return Calendar::calendar_count($user) != 0;
-    }
-    
     public function create_event()
     {
         $user = $this->get_user_or_redirect();
         
-        if (!self::calendars_exist($user) || isset($_POST["cancel"]))
+        if (!Calendar::calendars_exist($user) || isset($_POST["cancel"]))
             $this->redirect("event", "my_planning");
         
         $title = '';
         $whole_day = '';
-        $start = '';
-        $finish = '';
+        $startDate = '';
+        $startTime = '';
+        $finishDate = '';
+        $finishTime = '';
         $description = '';
         $idcalendar = NULL;
         $errors = [];
         
         if(isset($_POST["create"]))
-            if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start'])) 
+            if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['startDate'])) 
             {
                 $title = trim($_POST['title']);
                 $idcalendar = $_POST['idcalendar'];
                 
                 $whole_day = isset($_POST['whole_day']) ? 1 : 0;
 
-                if($_POST['start'] != "")
-                    $start = $_POST['start'];
+                if($_POST['startDate'] != "")
+                    $startDate = $_POST['startDate'];
                 else
-                    $start = NULL;
+                    $startDate = NULL;
+                
+                if(isset($_POST['startTime']) && $_POST['startTime'] != "")
+                    $startTime = $_POST['startTime'];
+                else
+                    $startTime = NULL;
 
-                if(isset($_POST['finish']) && $_POST['finish'] != "")
-                    $finish = $_POST['finish'];
+                if(isset($_POST['finishDate']) && $_POST['finishDate'] != "")
+                    $finishDate = $_POST['finishDate'];
                 else
-                    $finish = NULL;
+                    $finishDate = NULL;
+
+                if(isset($_POST['finishTime']) && $_POST['finishTime'] != "")
+                    $finishTime = $_POST['finishTime'];
+                else
+                    $finishTime = NULL;
 
                 if(isset($_POST['description']))
                     $description = trim($_POST['description']);
                 else
                     $description = NULL;
 
-                $errors = Event::validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description);
+                $errors = Event::validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description);
 
                 if(count($errors) == 0)
                 {
-                    Event::add_event(new event($_POST["title"], $whole_day, $start, 
-                                $_POST['idcalendar'], $finish, $description));
+                    Event::add_event(new event($_POST["title"], $whole_day, $startDate.$startTime, 
+                                $_POST['idcalendar'], $finishDate.$finishTime, $description));
 
                     $this->redirect("event", "my_planning");
                 }
@@ -85,7 +92,8 @@ class ControllerEvent extends Controller {
         
         $calendars = Calendar::get_writable_calendars($user);
         (new View("create_event"))->show(array("calendars" => $calendars, "errors" => $errors, "title" => $title, "whole_day" => $whole_day, 
-                                            "start" => $start, "idcalendar" => $idcalendar, "finish" => $finish, "description" => $description));
+                                            "startDate" => $startDate, "startTime" => $startTime, "idcalendar" => $idcalendar, "finishDate" => $finishDate, "finishTime" => $finishTime,
+                                            "description" => $description));
     }
     
     
@@ -93,7 +101,7 @@ class ControllerEvent extends Controller {
     {
         $user = $this->get_user_or_redirect();
         $errors = [];
-        if(isset($_POST['idevent']) && isset($_POST['weekMod']))
+        if(isset($_POST['idevent']) && isset($_POST['weekMod']) && isset($_POST['read_only']))
         {
             if(isset($_POST['cancel']))
                 $this->redirect("event", "my_planning");
@@ -105,7 +113,7 @@ class ControllerEvent extends Controller {
             else if(isset($_POST['update']))
             {
                 
-                if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['start']) && isset($_POST['idevent'])) 
+                if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['startDate']) && isset($_POST['idevent'])) 
                 {
                     $title = trim($_POST['title']);
                     $idcalendar = $_POST['idcalendar'];
@@ -113,40 +121,49 @@ class ControllerEvent extends Controller {
 
                     $whole_day = isset($_POST['whole_day']) ? 1 : 0;
 
-                    if($_POST['start'] != "")
-                        $start = $_POST['start'];
+                    if($_POST['startDate'] != "")
+                        $startDate = $_POST['startDate'];
                     else
-                        $start = NULL;
+                        $startDate = NULL;
 
-                    if(isset($_POST['finish']) && $_POST['finish'] != "")
-                        $finish = $_POST['finish'];
+                    if(isset($_POST['startTime']) && $_POST['startTime'] != "")
+                        $startTime = $_POST['startTime'];
                     else
-                        $finish = NULL;
+                        $startTime = NULL;
+
+                    if(isset($_POST['finishDate']) && $_POST['finishDate'] != "")
+                        $finishDate = $_POST['finishDate'];
+                    else
+                        $finishDate = NULL;
+
+                    if(isset($_POST['finishTime']) && $_POST['finishTime'] != "")
+                        $finishTime = $_POST['finishTime'];
+                    else
+                        $finishTime = NULL;
 
                     if(isset($_POST['description']))
                         $description = trim($_POST['description']);
                     else
                         $description = NULL;
 
-                    $errors = Event::validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description, $idevent);
+                    $errors = Event::validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description);
 
                     if(count($errors) == 0)
                     {
-                        Event::update_event(new Event($_POST["title"], $whole_day, $_POST["start"], 
-                                    $_POST['idcalendar'], $finish, $description, NULL, $_POST['idevent']));
+                        Event::update_event(new Event($title, $whole_day, $startDate.$startTime, 
+                                    $idcalendar, $finishDate.$finishTime, $description, NULL, $idevent));
                         $this->redirect("event", "my_planning");
                     }
+                        
                 }
                 else
                     throw new Exception("Missing parameters for event update!");
             }
-            else if(isset($_POST['read_only']))
-            {
-                $event = Event::get_event($_POST['idevent']);
-                $event->read_only = $_POST['read_only'];
-                $calendars = Calendar::get_calendars($user);
-                (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
-            }
+            
+            $event = Event::get_event($_POST['idevent']);
+            $event->read_only = $_POST['read_only'];
+            $calendars = Calendar::get_calendars($user);
+            (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
         }
         else 
             throw new Exception("Missing parameters for update event!");

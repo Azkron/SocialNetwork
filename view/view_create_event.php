@@ -41,11 +41,17 @@
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="start" type="datetime-local" <?php if($start != NULL) echo 'value="'.$start.'"'; ?>></td>
+                            <td>
+                                <input class="datetime" name="startDate" type="date" <?php if($startDate != NULL) echo 'value="'.$startDate.'"'; ?>>
+                                <input class="datetime" name="startTime" type="time" <?php if($startTime != NULL) echo 'value="'.$startTime.'"'; ?>>
+                            </td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finish"  type="datetime-local" <?php if($finish != NULL) echo 'value="'.$finish.'"'; ?>></td>
+                            <td>
+                                <input class="datetime" name="finishDate"  type="date" <?php if($finishDate != NULL) echo 'value="'.$finishDate.'"'; ?>>
+                                <input class="datetime" name="finishTime"  type="time" <?php if($finishTime != NULL) echo 'value="'.$finishTime.'"'; ?>>
+                            </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="whole_day" value="1" <?php if($whole_day == 1)echo "checked"; ?>>Whole day event</td>

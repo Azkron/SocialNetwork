@@ -46,11 +46,17 @@
                         </tr>
                         <tr>
                             <td>Start time:</td> 
-                            <td><input class="datetime" name="start" type="datetime-local"  <?php echo 'value="'.$event->start->date_input_string().'"'; ?>></td>
+                            <td>
+                                <input class="date" name="startDate" type="date"  <?php echo 'value="'.$event->start->date_input_string().'"'; ?>>
+                                <input class="time" name="startTime" type="time"  <?php echo 'value="'.$event->start->hour_input_string().'"'; ?>>
+                            </td>
                         </tr>
                         <tr>
                             <td>Finish time:</td>
-                            <td><input class="datetime" name="finish"  type="datetime-local" <?php if($event->finish != NULL) echo 'value="'.$event->finish->date_input_string().'"'; ?>></td>
+                            <td>
+                                <input class="date" name="finishDate"  type="date" <?php if($event->finish != NULL) echo 'value="'.$event->finish->date_input_string().'"'; ?>>
+                                <input class="time" name="finishTime"  type="time" <?php if($event->finish != NULL) echo 'value="'.$event->finish->hour_input_string().'"'; ?>>
+                            </td>
                         </tr>
                         <tr>
                             <td><input type="checkbox" name="whole_day" value="1" <?php if($event->whole_day)echo "checked"; ?>>Whole day event</td>
@@ -60,6 +66,7 @@
                             <td>
                                 <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
                                 <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
+                                <input type="hidden" name="read_only" value="<?= $event->read_only; ?>"/>
                                 <input class="btn" type="submit" name = "update" value="Update">
                                 <input class="btn" type="submit" name = "cancel" value="Cancel"> 
                                 <input class="btn" type="submit" name = "delete" value="Delete"> 

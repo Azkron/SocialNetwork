@@ -25,9 +25,9 @@ class ControllerCalendar extends Controller {
         else 
         {
             if(isset($_POST["edit"]))
-                $errors = $this->edit($user);
+                $errors = $this->edit();
             else if(isset($_POST["create"]))
-                $errors = $this->create($user);
+                $errors = $this->create();
             
             (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user),
                                                    "errors" => $errors));
@@ -113,7 +113,8 @@ class ControllerCalendar extends Controller {
         return $errors;
     }    
     
-    private function edit($user) {
+    private function edit() {
+        $user = $this->get_user_or_redirect();
         $errors = [];
 
         if (isset($_POST['description']) && 
@@ -123,6 +124,7 @@ class ControllerCalendar extends Controller {
             $description = trim($_POST['description']);
             $color = $_POST['color'];
             $idcalendar = $_POST['idcalendar'];
+            $calendar = new Calendar($user, $description, $color, $idcalendar);
             $errors = Calendar::validate($user, $description, $color, $idcalendar);
             
             if(count($errors) == 0)
@@ -135,8 +137,9 @@ class ControllerCalendar extends Controller {
         return $errors;
     }
     
-    private function create($user)
+    private function create()
     {
+        $user = $this->get_user_or_redirect();
         $errors = [];
         if (isset($_POST["color"]) && isset($_POST["description"]))
         {
@@ -157,11 +160,12 @@ class ControllerCalendar extends Controller {
 
     
     //gestion du suivi d'un membre
-    public function confirm_delete() {
+    private function confirm_delete() {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["idcalendar"])) 
         {
-            if(isset($_POST["confirm"]))
+            $idcalendar = $_POST["idcalendar"];
+            if(isset($_POST["confirm"]) || !Calendar::hasEvents($idcalendar))
             {
                 Calendar::delete_calendar($_POST['idcalendar']);
                 $this->redirect("calendar","my_calendars");
@@ -169,7 +173,7 @@ class ControllerCalendar extends Controller {
             else if(isset($_POST["cancel"]))
                 $this->redirect("calendar","my_calendars");
             
-            (new View("confirm_calendar_delete"))->show(array("idcalendar" => $_POST["idcalendar"]));
+            (new View("confirm_calendar_delete"))->show(array("idcalendar" => $idcalendar));
         }
         else 
             throw new Exception("Missing Calendar ID");

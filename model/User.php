@@ -44,7 +44,17 @@ class User extends Model {
         $query = self::execute("SELECT * FROM User where pseudo = ?", array($pseudo));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) {
-            return false;
+            return null;
+        } else {
+            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
+        }
+    }
+
+    public static function get_user_by_email($email) {
+        $query = self::execute("SELECT * FROM User where email = ?", array($email));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return null;
         } else {
             return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
         }
@@ -64,7 +74,7 @@ class User extends Model {
     public static function validate($pseudo, $password, $password_confirm, $email, $full_name) {
         $errors = [];
         $user = self::get_user($pseudo);
-        if ($user) {
+        if (self::get_user($pseudo) != null || self::get_user_by_email($email) != null) {
             $errors[] = "This user already exists.";
         } if ($pseudo == '') {
             $errors[] = "Pseudo is required.";

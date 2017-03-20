@@ -64,6 +64,10 @@ html {
     margin-bottom:15px;
 }
 
+#createEvent{
+    clear:both;
+}
+
 
 #calendars{
     margin:auto;

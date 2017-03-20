@@ -33,8 +33,7 @@
                         <h2><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></h2>
                 
             <div class="events">
-                <?php if (count($week) != 0): 
-                    for ($i = 0; $i < 7; ++$i): ?>
+                <?php for ($i = 0; $i < 7; ++$i): ?>
 
                 <div class="eventHeader">
                     <div class="eventHour"><?=$day->day_string()?></div>
@@ -67,18 +66,18 @@
                         <?php $day->next_day();?>
 
                     <?php endfor; ?>
-                <?php endif; ?>
-                </br>
-                <?php
-                    if(isset($errors))
-                        View::print_errors($errors);
-                ?>
-                <?php if (!isset($errors) || count($errors) <= 0): ?>
-                <form class="buttonForm" action="event/create_event" method="post">
-                    <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                    <input class="btn" type="submit" value="create" name="create">
-                </form>
-                <?php endif; ?>
+                <div id="createEvent">
+                    <?php
+                        if(isset($errors))
+                            View::print_errors($errors);
+                    ?>
+                    <?php if (!isset($errors) || count($errors) <= 0): ?>
+                    <form class="buttonForm" action="event/create_event" method="post">
+                        <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                        <input class="btn" type="submit" value="create" name="create">
+                    </form>
+                    <?php endif; ?>
+                </div>
             </div>
                 
 

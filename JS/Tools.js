@@ -4,7 +4,30 @@
  * and open the template in the editor.
  */
 
-//erreurs
+ var errors = new Array();
+
+
+
+function checkField(field, regs)
+{
+    var pass = true;
+    var val = parse(field.value);
+    for(var i = 0; i < regs.length; ++i)
+        if(!regs[i].reg.test(val))
+        {
+            pass = false;
+            addError(regs[i].msg);
+        }
+        else
+            eraseError(regs[i].msg);
+   
+        
+    return pass; 
+    // I cant use errors.concat(newErrors) because that replaces the reference 
+    // of the REFERENCE ARGUMENT errors to a new array, but the originally referenced array remains unchanged
+}
+
+
 function displayErrors(errors) {
     
         var errorDiv = document.getElementById("errors");
@@ -32,31 +55,9 @@ function displayErrors(errors) {
         }
 }
 
-
-// the global variable errors must be declared in the .php domument
-function checkField(field, regs)
+function eraseError(errorMsg)
 {
-    var pass = true;
-    var val = parse(field.value);
-    for(var i = 0; i < regs.length; ++i)
-        if(!regs[i][0].test(val))
-        {
-            pass = false;
-            addError(regs[i][1]);
-        }
-        else
-            eraseError(regs[i][1]);
-   
-        
-    return pass; 
-    // I cant use errors.concat(newErrors) because that replaces the reference 
-    // of the REFERENCE ARGUMENT errors to a new array, but the originally referenced array remains unchanged
-}
-
-// the global variable errors must be declared in the .php domument
-function eraseError(item)
-{
-    var index = errors.indexOf(item);
+    var index = errors.indexOf(errorMsg);
     if(index != -1)
         errors.splice(0, 1);
 }

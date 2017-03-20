@@ -18,7 +18,6 @@ class Calendar extends Model {
         $this->color = $color;
         $this->idcalendar = $idcalendar;
         $this->owner_pseudo= $owner_pseudo;
-        return  true;
     }
 
     public static function get_owner_calendar($idcalendar) {
@@ -40,6 +39,11 @@ class Calendar extends Model {
                          "pseudo"     => $data["pseudo"]);
         }
     }   
+    
+    public static function calendars_exist($user)
+    {
+        return Calendar::calendar_count($user) != 0;
+    }
 
     public static  function calendar_count($user)
     {
@@ -112,6 +116,17 @@ class Calendar extends Model {
         return $calendars;
     }
     
+    public static function hasEvents($idcalendar)
+    {
+        $query = self::execute("SELECT COUNT(idevent) 
+                                FROM event
+                                WHERE idcalendar = :idcalendar", 
+                                array("idcalendar" => $idcalendar));
+        
+        $data = $query->fetch();
+        return $data[0] > 0;
+    }
+    
     public static function get_writable_calendars($user) 
     {
         $query = self::execute("SELECT idcalendar, description, color
@@ -147,7 +162,6 @@ class Calendar extends Model {
     
     public static function check_duplicate($user, $description, $idcalendar = NULL) // just to check  for duplicates
     {
-        $query;
         if($idcalendar == NULL)
             $query = self::execute("SELECT * FROM calendar where description = ? && iduser = ?", array($description, $user->iduser));
         else

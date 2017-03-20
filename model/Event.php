@@ -52,6 +52,7 @@ class Event extends Model {
         
     }
     
+    
     // $weekMod argument is the index of the week relative to the current week
     public static function get_events_in_week($user, $weekMod = 0) 
     {
@@ -258,7 +259,7 @@ class Event extends Model {
             return NULL;
     }
     
-    public static function validate($user, $title, $whole_day, $start, $idcalendar, $finish, $description, $idevent = NULL) 
+    public static function validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description, $idevent = NULL) 
     {
         $errors = [];
         if(strlen($title) < 1 || strlen($title) > 50 )
@@ -266,14 +267,26 @@ class Event extends Model {
         if($description != NULL && strlen($description) > 500 )
             $errors[] = "The event title must have a maximum 500 characters.";
         
-        if($start == NULL) 
-            $errors[] = "Start time is required.";
-        else if($finish != NULL)
-                if($start >= $finish)
-                    $errors[] = "Start time must be earlier than finish time.";
+        if($startDate == NULL) 
+            $errors[] = "Start date is required.";
+        else
+        {   
+            if(!$whole_day)
+            {
+                if($startTime == NULL)
+                    $errors[] = "Start hour is required if event is not whole day.";
+                else if($finishDate != NULL)
+                    if($finishTime == NULL)
+                        $errors[] = "Finish hour is required if finish date selected and event is not whole day.";
+                    else if($startDate.$startTime > $finishDate.$finishTime)
+                        $errors[] = "Start time must be earlier than finish time.";
+            }
+            else if($finishDate != NULL && $startDate > $finishDate)
+                        $errors[] = "Start time must be earlier than finish time.";
+        }
         
         if(count($errors)==0)
-            if(self::check_duplicate($user, $title, $start, $idevent))
+            if(self::check_duplicate($user, $title, $startDate.$startTime, $idevent))
                 $errors[] = "A duplicate of this event already exists with same title and starting time";
             
         return $errors;
