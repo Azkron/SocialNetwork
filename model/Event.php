@@ -14,7 +14,6 @@ class Event extends Model {
     public $description;
     public $color;
     public $read_only;
-    //public $idcalendar;
     
 
     public function __construct($title, $whole_day, $start, $idcalendar, $finish = NULL, 
@@ -22,7 +21,9 @@ class Event extends Model {
     {      
         $this->title = $title;
         $this->whole_day = $whole_day;
-        $this->start = new Date($start);
+        $this->start = $start;
+        if($this->start != NULL)
+            $this->start = new Date($start);
         $this->finish = $finish;
         if($this->finish != NULL)
             $this->finish = new Date($finish);
@@ -155,7 +156,7 @@ class Event extends Model {
     }
     
     
-    public function is_in_day($day)
+    /*public function is_in_day($day)
     {
         if($this->finish == NULL)
         {
@@ -166,7 +167,7 @@ class Event extends Model {
                 if($this->start->compare($day) <= 0)
                     return true;
             
-    }
+    }*/
     
     public function get_time_string($day)
     {
@@ -207,42 +208,42 @@ class Event extends Model {
     
     
     //new event
-    public static function add_event($event) 
+    public function add_event() 
     {
         self::execute("INSERT INTO event(title, whole_day, start, idcalendar, finish, description)
                        VALUES(:title, :whole_day, :start, :idcalendar, :finish, :description)", 
-                       array( 'title' => $event->title,
-                              'whole_day'=> $event->whole_day,
-                              'start' => $event->start_string(), 
-                              'finish' => $event->finish_string(),                                                        
-                              'description' => $event->description, 
-                              'idcalendar' => $event->idcalendar));
+                       array( 'title' => $this->title,
+                              'whole_day'=> $this->whole_day,
+                              'start' => $this->start_string(), 
+                              'finish' => $this->finish_string(),                                                        
+                              'description' => $this->description, 
+                              'idcalendar' => $this->idcalendar));
         
-        $event->idevent = self::lastInsertId();
+        $this->idevent = self::lastInsertId();
         return true;
         
     }
     
-    public static function update_event($event) 
+    public function update() 
     {
         self::execute("UPDATE event SET title = :title, whole_day = :whole_day, 
                         start = :start, idcalendar = :idcalendar,
                          finish = :finish, description = :description 
                          WHERE idevent = :idevent", 
-                       array( 'title' => $event->title,
-                              'whole_day'=> $event->whole_day,
-                              'start' => $event->start_string(), 
-                              'finish' => $event->finish_string(),                                                        
-                              'description' => $event->description, 
-                              'idcalendar' => $event->idcalendar,
-                              'idevent' => $event->idevent));
+                       array( 'title' => $this->title,
+                              'whole_day'=> $this->whole_day,
+                              'start' => $this->start_string(), 
+                              'finish' => $this->finish_string(),                                                        
+                              'description' => $this->description, 
+                              'idcalendar' => $this->idcalendar,
+                              'idevent' => $this->idevent));
         return true;
     }
     
-    public static function delete_event($idevent) 
+    public function delete() 
     {
         self::execute("DELETE FROM event WHERE idevent=? ", 
-                array($idevent));
+                array($this->idevent));
         return true;
     }
     
@@ -259,54 +260,43 @@ class Event extends Model {
             return NULL;
     }
     
-    public static function validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description, $idevent = NULL) 
+    public function validate() 
     {
         $errors = [];
-        if(strlen($title) < 1 || strlen($title) > 50 )
+        if(strlen($this->title) < 1 || strlen($this->title) > 50 )
             $errors[] = "The event title must be between 1 and 50 characters.";
-        if($description != NULL && strlen($description) > 500 )
+        if($this->description != NULL && strlen($this->description) > 500 )
             $errors[] = "The event title must have a maximum 500 characters.";
         
-        if($startDate == NULL) 
+        if($this->start == NULL) 
             $errors[] = "Start date is required.";
-        else
-        {   
-            if(!$whole_day)
-            {
-                if($startTime == NULL)
-                    $errors[] = "Start hour is required if event is not whole day.";
-                else if($finishDate != NULL)
-                    if($finishTime == NULL)
-                        $errors[] = "Finish hour is required if finish date selected and event is not whole day.";
-                    else if($startDate.$startTime > $finishDate.$finishTime)
-                        $errors[] = "Start time must be earlier than finish time.";
-            }
-            else if($finishDate != NULL && $startDate > $finishDate)
-                        $errors[] = "Start time must be earlier than finish time.";
-        }
+        else if($this->finish != NULL && $this->start->compare($this->finish) > 0)
+            $errors[] = "Start time must be earlier than finish time.";
+        
+        //$errors[] = $this->start->compare($this->finish) > 0;
         
         if(count($errors)==0)
-            if(self::check_duplicate($user, $title, $startDate.$startTime, $idevent))
+            if($this->has_duplicate())
                 $errors[] = "A duplicate of this event already exists with same title and starting time";
             
         return $errors;
     }
     
-    public static function check_duplicate($user, $title, $start, $idevent = NULL)
+    private function has_duplicate()
     {
-        $query;
-        if($idevent == NULL)
+        if($this->idevent == NULL)
         {
-            $query = self::execute("SELECT * FROM event, calendar 
-                                    WHERE event.idcalendar = calendar.idcalendar && calendar.iduser=? && title=? && start=?", 
-                                    array($user->iduser, $title, (new Date($start))->datetime_string()));
+            $query = self::execute("SELECT COUNT(*) FROM event 
+                                    WHERE event.idcalendar = ? && title=? && start=?", 
+                                    array($this->idcalendar, $this->title, $this->start->datetime_string()));
         }
         else 
-            $query = self::execute("SELECT * FROM event, calendar 
-                                    WHERE event.idcalendar = calendar.idcalendar && calendar.iduser=? && title=? && start=? && idevent!=?", 
-                                    array($user->iduser, $title, (new Date($start))->datetime_string(), $idevent));
+            $query = self::execute("SELECT COUNT(*) FROM event 
+                                    WHERE event.idcalendar = ? && title=? && start=? && idevent!=?", 
+                                    array($this->idcalendar, $this->title, $this->start->datetime_string(), $this->idevent));
+        $data = $query->fetch();
         
-        return $query->rowCount() != 0;
+        return $data[0] != 0;
     }
     
     

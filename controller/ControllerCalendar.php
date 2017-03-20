@@ -122,13 +122,12 @@ class ControllerCalendar extends Controller {
             isset($_POST['idcalendar'])) 
         {
             $description = trim($_POST['description']);
-            $color = $_POST['color'];
+            $color = $this->prepare_color($_POST['color']);
             $idcalendar = $_POST['idcalendar'];
-            $calendar = new Calendar($user, $description, $color, $idcalendar);
-            $errors = Calendar::validate($user, $description, $color, $idcalendar);
-            
+            $calendar = new Calendar($description, $color, $user->iduser, $idcalendar);
+            $errors = $calendar->validate();
             if(count($errors) == 0)
-                Calendar::update_calendar($description, $this->prepare_color($color), $idcalendar);
+                $calendar->update();
             
         }
         else
@@ -144,11 +143,12 @@ class ControllerCalendar extends Controller {
         if (isset($_POST["color"]) && isset($_POST["description"]))
         {
             $description = $_POST['description'];
-            $color = $_POST['color'];
-            $errors = Calendar::validate($user, $description, $color);
+            $color = $this->prepare_color($_POST["color"]);
+            $calendar = new Calendar($description, $color, $user->iduser);
+            $errors = $calendar->validate();
             
             if(count($errors) == 0)
-                Calendar::add_calendar(new calendar($_POST["description"], $this->prepare_color($_POST["color"])),$user);
+                $calendar->add_calendar();
        
         }
         else
@@ -160,14 +160,15 @@ class ControllerCalendar extends Controller {
 
     
     //gestion du suivi d'un membre
-    private function confirm_delete() {
+    public function confirm_delete() {
         $user = $this->get_user_or_redirect();
         if (isset($_POST["idcalendar"])) 
         {
             $idcalendar = $_POST["idcalendar"];
             if(isset($_POST["confirm"]) || !Calendar::hasEvents($idcalendar))
             {
-                Calendar::delete_calendar($_POST['idcalendar']);
+                $calendar = Calendar::get_calendar($idcalendar);
+                $calendar->delete();
                 $this->redirect("calendar","my_calendars");
             }
             else if(isset($_POST["cancel"]))

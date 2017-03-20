@@ -25,10 +25,22 @@
                 <?php if (count($calendars) != 0) : ?>
                     <?php foreach ($calendars as $calendar): ?>
             <div class="calendarRow">
-                <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">
-                        <?php if (strlen($calendar->owner_pseudo) == 0) :?>
-                            <input class="description" name="description" type="text" size="16" <?php echo 'style="color:#'.$calendar->color.'"' ?> value="<?= $calendar->description; ?>">
+                        <?php if ($calendar->read_only == -1) :?>
+                        <form class="calendarForm" action="calendar/my_calendars" method="post">
+                            <div class="description">
+                                <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
+                            </div>
+                            <div class="calendarColor">
+                                <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
+                            </div>
+                            <div class="calendarActions">
+                                <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
+                                <input class="btn" type="submit" name="edit" value="Edit">
+                                <input class="btn" type="submit" name="delete" value="Delete">
+                                <input class="btn" type="submit" name="share" value="Share">
+                            </div>
+                        </form>         
                         <?php else:?>
                             <div class="description" <?php echo 'style="color:#'.$calendar->color.'"' ?>>
                                 <?= $calendar->description; ?>
@@ -40,19 +52,6 @@
                             
                         <?php endif; ?>
                     </div>
-                    <?php if (strlen($calendar->owner_pseudo) == 0) :?>
-                        <div class="calendarColor">
-                            <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
-                        </div>
-                        <div class="calendarActions">
-                            <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
-                            <input class="btn" type="submit" name="edit" value="Edit">
-                            <input class="btn" type="submit" name="delete" value="Delete">
-                            <input class="btn" type="submit" name="share" value="Share">
-
-                        </div>
-                    <?php endif; ?>
-                </form>         
             </div>         
                     <?php endforeach; ?>
                 <?php endif; ?>

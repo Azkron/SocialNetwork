@@ -2,10 +2,10 @@
 -- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Sam 04 Février 2017 à 14:44
--- Version du serveur :  5.7.11
--- Version de PHP :  5.6.18
+-- Host: localhost
+-- Generation Time: Mar 20, 2017 at 08:19 PM
+-- Server version: 5.7.11
+-- PHP Version: 5.6.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `prwb_calendar_gxx`
+-- Database: `prwb_calendar_g10`
 --
 CREATE DATABASE IF NOT EXISTS `prwb_calendar_g10` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `prwb_calendar_g10`;
@@ -25,7 +25,7 @@ USE `prwb_calendar_g10`;
 -- --------------------------------------------------------
 
 --
--- Structure de la table `calendar`
+-- Table structure for table `calendar`
 --
 
 CREATE TABLE `calendar` (
@@ -35,10 +35,22 @@ CREATE TABLE `calendar` (
   `iduser` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `calendar`
+--
+
+INSERT INTO `calendar` (`idcalendar`, `description`, `color`, `iduser`) VALUES
+(21, 'BLACK HUGO', '000000', 8),
+(22, 'RED HUGO', 'ff0000', 8),
+(23, 'GREEN HUGO', '008000', 8),
+(24, 'GREEN TID', '00ff00', 9),
+(25, 'BLUE TID', '00ffff', 9),
+(26, 'BLACK TID', '000000', 9);
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `event`
+-- Table structure for table `event`
 --
 
 CREATE TABLE `event` (
@@ -51,10 +63,21 @@ CREATE TABLE `event` (
   `idcalendar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `event`
+--
+
+INSERT INTO `event` (`idevent`, `start`, `finish`, `whole_day`, `title`, `description`, `idcalendar`) VALUES
+(31, '2017-03-20 00:00:00', NULL, 1, 'event on black hugo', '', 21),
+(32, '2017-03-20 00:00:00', '2017-03-23 23:03:00', 0, 'event on red hugo', '', 22),
+(33, '2017-03-15 00:00:00', '2017-03-22 00:00:00', 1, 'green tid event', 'asdfsdf', 24),
+(34, '2017-03-26 00:00:00', NULL, 0, 'black tid event', '', 26),
+(36, '2017-03-23 00:00:00', '2017-03-25 00:00:00', 1, 'blue tid event', '', 25);
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `share`
+-- Table structure for table `share`
 --
 
 CREATE TABLE `share` (
@@ -63,10 +86,20 @@ CREATE TABLE `share` (
   `read_only` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `share`
+--
+
+INSERT INTO `share` (`iduser`, `idcalendar`, `read_only`) VALUES
+(8, 24, 1),
+(8, 25, 0),
+(9, 21, 1),
+(9, 22, 0);
+
 -- --------------------------------------------------------
 
 --
--- Structure de la table `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -78,32 +111,40 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Index pour les tables exportées
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`iduser`, `pseudo`, `password`, `email`, `full_name`) VALUES
+(8, 'Hugo', 'e82688a4779e3d15f38c3e83f0002d9a', 'hugobeny@gmail.com', 'Hugo Barbachano'),
+(9, 'Tid', 'e82688a4779e3d15f38c3e83f0002d9a', 'Tid@gmail.com', 'Tidiane Toure');
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `calendar`
+-- Indexes for table `calendar`
 --
 ALTER TABLE `calendar`
   ADD PRIMARY KEY (`idcalendar`),
   ADD KEY `fk_calendar_user_idx` (`iduser`);
 
 --
--- Index pour la table `event`
+-- Indexes for table `event`
 --
 ALTER TABLE `event`
   ADD PRIMARY KEY (`idevent`),
   ADD KEY `fk_event_calendar1_idx` (`idcalendar`);
 
 --
--- Index pour la table `share`
+-- Indexes for table `share`
 --
 ALTER TABLE `share`
   ADD PRIMARY KEY (`iduser`,`idcalendar`),
   ADD KEY `idcalendar` (`idcalendar`);
 
 --
--- Index pour la table `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`iduser`),
@@ -111,42 +152,42 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
 
 --
--- AUTO_INCREMENT pour les tables exportées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `calendar`
+-- AUTO_INCREMENT for table `calendar`
 --
 ALTER TABLE `calendar`
-  MODIFY `idcalendar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idcalendar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
--- AUTO_INCREMENT pour la table `event`
+-- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `idevent` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idevent` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
--- AUTO_INCREMENT pour la table `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `iduser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
--- Contraintes pour les tables exportées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `calendar`
+-- Constraints for table `calendar`
 --
 ALTER TABLE `calendar`
   ADD CONSTRAINT `fk_calendar_user` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`);
 
 --
--- Contraintes pour la table `event`
+-- Constraints for table `event`
 --
 ALTER TABLE `event`
   ADD CONSTRAINT `fk_event_calendar` FOREIGN KEY (`idcalendar`) REFERENCES `calendar` (`idcalendar`);
 
 --
--- Contraintes pour la table `share`
+-- Constraints for table `share`
 --
 ALTER TABLE `share`
   ADD CONSTRAINT `share_ibfk_1` FOREIGN KEY (`iduser`) REFERENCES `user` (`iduser`),

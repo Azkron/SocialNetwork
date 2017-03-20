@@ -18,7 +18,7 @@ class User extends Model {
         $this->email = $email;
         $this->full_name = $full_name;
     }
-
+/*
     public function write_event($event) {
         return Calendar::add_event($event);
     }
@@ -30,7 +30,7 @@ class User extends Model {
     public function get_events() {
         return Calendar::get_events($this);
     }
-
+*/
     //pre : user does'nt exist yet
     public static function add_user($user) {
         self::execute("INSERT INTO user(pseudo,password, email, full_name)

@@ -78,13 +78,15 @@ class ControllerEvent extends Controller {
                     $description = trim($_POST['description']);
                 else
                     $description = NULL;
+                
 
-                $errors = Event::validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description);
-
+                $event = new event($title, $whole_day, $startDate.$startTime, $idcalendar, $finishDate.$finishTime, $description);
+                
+                $errors = $event->validate();
+                
                 if(count($errors) == 0)
                 {
-                    Event::add_event(new event($_POST["title"], $whole_day, $startDate.$startTime, 
-                                $_POST['idcalendar'], $finishDate.$finishTime, $description));
+                    $event->add_event();
 
                     $this->redirect("event", "my_planning");
                 }
@@ -146,12 +148,15 @@ class ControllerEvent extends Controller {
                     else
                         $description = NULL;
 
-                    $errors = Event::validate($user, $title, $whole_day, $startDate, $startTime, $idcalendar, $finishDate, $finishTime, $description);
+                    $event = new Event($title, $whole_day, $startDate.$startTime, 
+                                    $idcalendar, $finishDate.$finishTime, $description, NULL, $idevent);
+                    
+                    $errors = $event->validate();
 
                     if(count($errors) == 0)
                     {
-                        Event::update_event(new Event($title, $whole_day, $startDate.$startTime, 
-                                    $idcalendar, $finishDate.$finishTime, $description, NULL, $idevent));
+                        $event->update();
+                        
                         $this->redirect("event", "my_planning");
                     }
                         
@@ -172,9 +177,12 @@ class ControllerEvent extends Controller {
     
     
     private function delete() {
-        if (isset($_POST["idevent"])) {
-            Event::delete_event($_POST['idevent']);
-        } else 
+        if (isset($_POST["idevent"])) 
+        {
+            $event = Event::get_event($_POST["idevent"]);
+            $event->delete();
+        } 
+        else 
             throw new Exception("Missing Event ID");
     }    
 }
