@@ -31,6 +31,54 @@ class User extends Model {
         return Calendar::get_events($this);
     }
 */
+    public function get_shared_users($idcalendar) {
+        $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
+                                 WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?
+                                 ORDER BY pseudo", 
+                                array($idcalendar, $this->iduser));
+        
+        $data = $query->fetchAll();
+        
+        $shared_calendars = [];
+        if(count($data) > 0) {
+            foreach ($data as $row)
+                $shared_calendars[] = new Share($row['iduser'], $row['idcalendar'], $row['pseudo'], $row['read_only']);
+            return $shared_calendars;
+        }
+        else
+            return NULL;
+        
+    }
+    
+    public function get_not_shared_users($idcalendar) {
+                $query =  self::execute("SELECT user.iduser, pseudo FROM user 
+                                 WHERE user.iduser != :iduser AND user.iduser NOT IN 
+                                    (SELECT share.iduser FROM share WHERE share.idcalendar = :idcalendar)
+                                 ORDER BY pseudo",
+                                 array("iduser" => $this->iduser,"idcalendar" => $idcalendar));
+//        $query =  self::execute("SELECT iduser, pseudo FROM user
+//                                 WHERE user.iduser != :iduser AND user.iduser NOT IN 
+//                                      (select share.iduser FROM share)
+//                                 UNION
+//                                 SELECT user.iduser, pseudo FROM user 
+//                                 join share on share.iduser = user.iduser 
+//                                 where user.iduser != :iduser AND share.idcalendar != :idcalendar
+//                                 ORDER BY pseudo",
+//                                 array("iduser" => $this->iduser,"idcalendar" => $idcalendar));
+        $data = $query->fetchAll();
+        
+        $not_shared_users = [];
+        if(count($data) > 0) {
+            foreach ($data as $row) 
+                $not_shared_users[] = array("iduser" => $row['iduser'],
+                                            "pseudo" => $row['pseudo']);
+            return $not_shared_users;
+        }
+        else 
+            return NULL;
+        
+    }    
+    
     //pre : user does'nt exist yet
     public static function add_user($user) {
         self::execute("INSERT INTO user(pseudo,password, email, full_name)
