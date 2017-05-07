@@ -34,8 +34,6 @@ class ControllerCalendar extends Controller {
         }
     }
     
-//    $calendar = new Calendar($description, $color, $user->iduser, $idcalendar);
-    
     public function sharing_settings()
     {
         $user = $this->get_user_or_redirect();
@@ -45,7 +43,8 @@ class ControllerCalendar extends Controller {
         {
             $idcalendar = $_POST['idcalendar'];     
             if(isset($_POST["edit"])){
-                $errors = $this->edit_share($idcalendar);              
+                
+                $errors = $this->edit_share();              
             }
             else if (isset($_POST["delete"])) {
                 $errors = $this->delete_share($idcalendar);
@@ -63,36 +62,28 @@ class ControllerCalendar extends Controller {
                                                    "errors" => $errors)); 
     }
     
-    private function edit_share($idcalendar) 
+    private function edit_share() 
     {
         $user = $this->get_user_or_redirect();
         $errors = [];        
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $read_only = isset($_POST['write']) ? 0 : 1;
+            $idcalendar = $_POST['idcalendar'];
             
-            Share::update_share($iduser, $idcalendar, $read_only);
+            $shared_user = User::get_user_by_iduser($iduser);
+            
+            $share = new Share($iduser, $idcalendar, $read_only, $shared_user->pseudo);
+            
+            $errors = $share->validate_share();
+            if(count($errors) == 0)
+                $share->update_share();
         }
         else
             $errors = "Missing parameters for shared calendar edition!";
         
         return $errors;
         
-    }
-    
-    private function delete_share($idcalendar) 
-    {
-        $user = $this->get_user_or_redirect();
-        $errors = [];
-        if (isset($_POST['iduser'])) {
-            $iduser = $_POST['iduser'];
-            
-            Share::delete_share($iduser, $idcalendar);
-        }
-        else
-            $errors = "Missing parameters for shared calendar deletion!";
-        
-        return $errors;
     }
     
     private function create_share() 
@@ -111,14 +102,33 @@ class ControllerCalendar extends Controller {
         $read_only = isset($_POST['write']) ? 0 : 1;
         $idcalendar = $_POST['idcalendar'];
         
-        $share =  new Share();
-        $errors = Share::validate_share($pseudo);
-
+        $new_shared_user = User::get_user($pseudo);
+        
+        $share =  new Share($new_shared_user->iduser, $idcalendar, $read_only, $pseudo);
+        
+        $errors = $share->validate_share();
         if (count($errors) == 0)
-            Share::add_share($pseudo, $idcalendar, $read_only);
+            $share->add_share();
 
         return $errors;
     }    
+    
+    private function delete_share() 
+    {
+        $user = $this->get_user_or_redirect();
+        $errors = [];
+        if (isset($_POST['iduser'])) {
+            $iduser = $_POST['iduser'];
+            $idcalendar = $_POST['idcalendar'];
+            
+            $share = Share::get_shared_calendar($iduser, $idcalendar);
+            $share->delete_share();
+        }
+        else
+            $errors = "Missing parameters for shared calendar deletion!";
+        
+        return $errors;
+    }
     
     private function edit() {
         $user = $this->get_user_or_redirect();

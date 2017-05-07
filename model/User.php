@@ -42,7 +42,7 @@ class User extends Model {
         $shared_calendars = [];
         if(count($data) > 0) {
             foreach ($data as $row)
-                $shared_calendars[] = new Share($row['iduser'], $row['idcalendar'], $row['pseudo'], $row['read_only']);
+                $shared_calendars[] = new Share($row['iduser'], $row['idcalendar'], $row['read_only'], $row['pseudo']);
             return $shared_calendars;
         }
         else
@@ -86,6 +86,16 @@ class User extends Model {
         
         $user->iduser = self::lastInsertId();
         return true;
+    }
+    
+    public static function get_user_by_iduser($iduser) {
+        $query = self::execute("SELECT * FROM User where iduser = ?", array($iduser));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return null;
+        } else {
+            return new User( $data["pseudo"], $data["password"], $data["email"], $data["full_name"], $data["iduser"]);
+        }
     }
 
     public static function get_user($pseudo) {
