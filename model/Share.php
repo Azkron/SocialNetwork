@@ -16,8 +16,8 @@ class Share extends Model {
     public function __construct($iduser, $idcalendar, $read_only, $pseudo = NULL) {
         $this->iduser = $iduser;
         $this->idcalendar = $idcalendar;
-        $this->pseudo = $pseudo;
         $this->read_only = $read_only;
+        $this->pseudo = $pseudo;
     }
     
     public static function get_shared_calendar($iduser, $idcalendar) 
