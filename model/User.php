@@ -31,6 +31,21 @@ class User extends Model {
         return Calendar::get_events($this);
     }
 */
+    
+    public function check_current_user($idcalendar){
+        $query =  self::execute("SELECT user.iduser, idcalendar FROM user, calendar 
+                                 WHERE user.iduser = :iduser AND calendar.iduser = :iduser AND
+                                       calendar.idcalendar = :idcalendar",
+                                 array("iduser" => $this->iduser, "idcalendar" => $idcalendar));
+        
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) {
+            return false;
+        } 
+        else if($data["iduser"] == $this->iduser)
+            return true;
+    }
+    
     public function get_shared_users($idcalendar) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?
@@ -51,11 +66,11 @@ class User extends Model {
     }
     
     public function get_not_shared_users($idcalendar) {
-                $query =  self::execute("SELECT user.iduser, pseudo FROM user 
-                                 WHERE user.iduser != :iduser AND user.iduser NOT IN 
-                                    (SELECT share.iduser FROM share WHERE share.idcalendar = :idcalendar)
-                                 ORDER BY pseudo",
-                                 array("iduser" => $this->iduser,"idcalendar" => $idcalendar));
+        $query =  self::execute("SELECT user.iduser, pseudo FROM user 
+                         WHERE user.iduser != :iduser AND user.iduser NOT IN 
+                            (SELECT share.iduser FROM share WHERE share.idcalendar = :idcalendar)
+                         ORDER BY pseudo",
+                         array("iduser" => $this->iduser,"idcalendar" => $idcalendar));
 //        $query =  self::execute("SELECT iduser, pseudo FROM user
 //                                 WHERE user.iduser != :iduser AND user.iduser NOT IN 
 //                                      (select share.iduser FROM share)

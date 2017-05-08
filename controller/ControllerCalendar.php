@@ -64,19 +64,22 @@ class ControllerCalendar extends Controller {
     private function edit_share() 
     {
         $user = $this->get_user_or_redirect();
-        $errors = [];        
+        $errors = []; 
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $read_only = isset($_POST['write']) ? 0 : 1;
             $idcalendar = $_POST['idcalendar'];
             
-            $shared_user = User::get_user_by_iduser($iduser);
+            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            {
+                $shared_user = User::get_user_by_iduser($iduser);
             
-            $share = new Share($iduser, $idcalendar, $read_only, $shared_user->pseudo);
-            
-            $errors = $share->validate_share();
-            if(count($errors) == 0)
-                $share->update_share();
+                $share = new Share($iduser, $idcalendar, $read_only, $shared_user->pseudo);
+
+                $errors = $share->validate_share();
+                if(count($errors) == 0)
+                    $share->update_share();
+            }     
         }
         else
             throw new Exception("Missing parameters for shared calendar edition!");
@@ -100,14 +103,17 @@ class ControllerCalendar extends Controller {
             }
             $read_only = isset($_POST['write']) ? 0 : 1;
             $idcalendar = $_POST['idcalendar'];
+            
+            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            {
+                $new_shared_user = User::get_user($pseudo);
 
-            $new_shared_user = User::get_user($pseudo);
+                $share =  new Share($new_shared_user->iduser, $idcalendar, $read_only, $pseudo);
 
-            $share =  new Share($new_shared_user->iduser, $idcalendar, $read_only, $pseudo);
-
-            $errors = $share->validate_share();
-            if (count($errors) == 0)
-                $share->add_share();
+                $errors = $share->validate_share();
+                if (count($errors) == 0)
+                    $share->add_share();
+            }
         }
         else
             throw new Exception("Missing parameters for shared calendar creation!");
@@ -123,8 +129,11 @@ class ControllerCalendar extends Controller {
             $iduser = $_POST['iduser'];
             $idcalendar = $_POST['idcalendar'];
             
-            $share = Share::get_shared_calendar($iduser, $idcalendar);
-            $share->delete_share();
+            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            {
+                $share = Share::get_shared_calendar($iduser, $idcalendar);
+                $share->delete_share();
+            }
         }
         else
             throw new Exception("Missing parameters for shared calendar deletion!");
@@ -143,10 +152,14 @@ class ControllerCalendar extends Controller {
             $description = trim($_POST['description']);
             $color = $this->prepare_color($_POST['color']);
             $idcalendar = $_POST['idcalendar'];
-            $calendar = new Calendar($description, $color, $user->iduser, $idcalendar);
-            $errors = $calendar->validate();
-            if(count($errors) == 0)
-                $calendar->update();
+            
+            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            {
+                $calendar = new Calendar($description, $color, $user->iduser, $idcalendar);
+                $errors = $calendar->validate();
+                if(count($errors) == 0)
+                    $calendar->update();
+            }
         }
         else
             throw new Exception("Missing parameters for calendar edition!");
@@ -162,11 +175,15 @@ class ControllerCalendar extends Controller {
         {
             $description = $_POST['description'];
             $color = $this->prepare_color($_POST["color"]);
-            $calendar = new Calendar($description, $color, $user->iduser);
-            $errors = $calendar->validate();
             
-            if(count($errors) == 0)
-                $calendar->add_calendar();
+            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            {
+                $calendar = new Calendar($description, $color, $user->iduser);
+                $errors = $calendar->validate();
+
+                if(count($errors) == 0)
+                    $calendar->add_calendar();
+            }
        
         }
         else
@@ -185,12 +202,16 @@ class ControllerCalendar extends Controller {
             $idcalendar = $_POST["idcalendar"];
             if(isset($_POST["confirm"]) || !Calendar::hasEvents($idcalendar))
             {
-                $calendar = Calendar::get_calendar($idcalendar);
-                $calendar->delete();
-                $this->redirect("calendar","my_calendars");
+                if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+                {
+                    $calendar = Calendar::get_calendar($idcalendar);
+                    $calendar->delete();
+                    $this->redirect("calendar","my_calendars");
+                }
             }
             else if(isset($_POST["cancel"]))
-                $this->redirect("calendar","my_calendars");
+                if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+                    $this->redirect("calendar","my_calendars");
             
             (new View("confirm_calendar_delete"))->show(array("idcalendar" => $idcalendar));
         }
