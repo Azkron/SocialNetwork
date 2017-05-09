@@ -6,71 +6,79 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-        <script type ="text/javascript" src='JS/Tools.js'></script>
+        <script src="JS/jquery-3.1.1.min.js" type="text/javascript"></script>
+        <script src="JS/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
         <script>
-            var pseudo, pwd, pwd2;
-            
-             var pseudoReg = [
-                {reg: /^.{3,16}$/ , msg : "The pseudo must be 3-16 characters long"},
-                {reg: /^[a-zA-Z][a-zA-Z0-9]*$/, msg : "The pseudo must be composed of letters and numbers and the first character must be a number"}
-            ];
-            
-            var pwdReg = [
-                {reg: /^.{8,16}$/, msg : "The password must be 8-16 characters long"},
-                {reg: /[A-Z]/, msg : "The password must conaint at least a mayus letter"},
-                {reg: /\d/, msg : "The password must contain a number"},
-                {reg: /['";:,.\/?\\-]/, msg : "The password must contain a punctuation character"}
-            ];
-            
-            document.onreadystatechange = function()
-            {
-                if(document.readyState === 'complete')
-                {
-                    pseudo = document.getElementById("pseudo");
-                    pwd = document.getElementById("password");
-                    pwd2 = document.getElementById("passwordConfirm");
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
                 }
-            };
+            }, "Please enter a valid input.");
             
-            function checkPseudo(display = true)
-            {
-                pass = checkField(pseudo, pseudoReg);
+            $(function () {
+                $('#signupForm').validate({
+                    rules: {
+                        pseudo: {
+                            remote: {
+                                url: 'main/pseudo_available_service',
+                                type: 'post',
+                                data:  {
+                                    pseudo: function() { 
+                                        return $("#pseudo").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 16,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/
+                        },
+                        password: {
+                            required: true,
+                            minlength: 8,
+                            maxlength: 16,
+                            regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/]
+                        },
+                        password_confirm: {
+                            required: true,
+                            minlength: 8,
+                            maxlength: 16,
+                            equalTo: "#password",
+                            regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/]
+                        }
+                    },
+                    messages: {
+                        pseudo: {
+                            remote: 'this pseudo is already taken',
+                            required: 'required',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad format for pseudo'
+                        },
+                        password: {
+                            required: 'required',
+                            minlength: 'minimum 8 characters',
+                            maxlength: 'maximum 16 characters',
+                            regex: 'bad password format'
+                        },
+                        password_confirm: {
+                            required: 'required',
+                            minlength: 'minimum 8 characters',
+                            maxlength: 'maximum 16 characters',
+                            equalTo: 'must be identical to password above',
+                            regex: 'bad password format'
+                        }
+                    }
+                });
                 
-                if(display)
-                    displayErrors(errors);
-                
-                return pass;
-            }
-            
-            function checkPwd(display = true)
-            {
-                pass = checkField(pwd, pwdReg, errors);
-                if(display)
-                    displayErrors(errors);
-                return pass;
-            }
-            
-            function checkPwd2(display = true)
-            {
-                var msg = "The passwords must equal";
-                pass = (pwd.value == pwd2.value);
-                if(!pass)
-                    addError(msg);
-                else
-                    eraseError(msg);
-                
-                if(display)
-                    displayErrors(errors);
-                
-                return pass;
-            }
-            
-            function validate()
-            {
-                pass = checkPseudo(false) && checkPwd(false) && checkPwd2(false);
-                displayErrors(errors);
-                return pass;
-            }
+                $("input:text:first").focus();
+            });
         </script>
     </head>
     <body>
@@ -82,11 +90,11 @@
             Please enter the following details to sign up :
             <br><br>
             <div class="tableForm">
-                <form id="signupForm" action="main/signup" method="post" onsubmit="return validate();">
+                <form id="signupForm" action="main/signup" method="post">
                 <table>
                     <tr>
                         <td>Pseudo:</td>
-                        <td><input id="pseudo" name="pseudo" type="text" size="16" value="<?= $pseudo ?>" onchange="checkPseudo();"></td>
+                        <td><input id="pseudo" name="pseudo" type="text" size="16" value="<?= $pseudo ?>" required></td>
                     </tr>
                     <tr>
                         <td>Full Name:</td>
@@ -94,15 +102,15 @@
                     </tr>
                     <tr>
                         <td>Email:</td>
-                        <td><input id="email" name="email" type="text" size="16" value="<?= $email ?>"></td>
+                        <td><input id="email" name="email" type="email" size="16" value="<?= $email ?>" required></td>
                     </tr>
                     <tr>
                         <td>Password:</td>
-                        <td><input id="password" name="password" type="password" size="16" value="<?= $password ?>" onchange="checkPwd();"></td>
+                        <td><input id="password" name="password" type="password" size="16" value="<?= $password ?>" required></td>
                     </tr>
                     <tr>
                         <td>Confirm Password:</td>
-                        <td><input id="passwordConfirm" name="password_confirm" size="16" type="password" value="<?= $password_confirm ?>" onchange="checkPwd2();"></td>
+                        <td><input id="passwordConfirm" name="password_confirm" size="16" type="password" value="<?= $password_confirm ?>" required></td>
                     </tr>
                     <tr>
                         <td></td>

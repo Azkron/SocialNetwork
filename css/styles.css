@@ -206,6 +206,16 @@ textarea {
    
 }
 
+.error {
+    color:red;
+}
+
+label.error {
+    color: red;
+    font-size: 8pt;
+    padding-left: .5em;
+}
+
 .success {
     color: green;
 }
