@@ -41,7 +41,7 @@
                         <?php if (count($week[$i]) != 0): ?>
                             <?php foreach ($week[$i] as $event): ?>
 
-                <div class="eventRow">
+                <div class="eventRow" title="<?= $event->description; ?>">
                     <form class="buttonForm" action="event/update_event" method="post">
                         <div style="color:#<?=$event->color?>" class="eventHour">
                             <?= $event->get_time_string($day); ?>
