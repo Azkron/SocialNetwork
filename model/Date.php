@@ -23,7 +23,12 @@ class Date {
     
     public static function monday($mod = 0) // the week relative to current week
     {
-        $date = new Date('monday this week');
+        date_default_timezone_set("Europe/Brussels");
+        if(date('N') != 7) // There is a bug in DateTime lib that returns next week if on sunday
+            $date = new Date('monday this week');
+        else 
+            $date = new Date('monday last week');
+        
         //$date->modify("-1 day");// for some reason it gives 1 day after( Tuesday)
         if($mod != 0)
             $date->modify("+$mod weeks");
@@ -33,7 +38,12 @@ class Date {
     
     public static function sunday($mod = 0) // the week relative to current week
     {
-        $date = new Date('sunday this week');
+        date_default_timezone_set("Europe/Brussels");
+        if(date('N') != 7) // There is a bug in DateTime lib that returns next week if on sunday
+            $date = new Date('sunday this week');
+        else 
+            $date = new Date('sunday last week');
+        
         //$date->modify("-1 day");// for some reason it gives 1 day after( monday)
         if($mod != 0)
             $date->modify("+$mod weeks");
