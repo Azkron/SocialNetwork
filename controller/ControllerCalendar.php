@@ -64,13 +64,18 @@ class ControllerCalendar extends Controller {
     private function edit_share() 
     {
         $user = $this->get_user_or_redirect();
+        
+        if(!$user->check_owned_calendar($_POST['idcalendar']))
+            throw new Exception("Current user does not own this calendar!");
+            
         $errors = []; 
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $read_only = isset($_POST['write']) ? 0 : 1;
             $idcalendar = $_POST['idcalendar'];
             
-            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            
+            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
             {
                 $shared_user = User::get_user_by_iduser($iduser);
             
@@ -91,6 +96,10 @@ class ControllerCalendar extends Controller {
     private function create_share() 
     {
         $user = $this->get_user_or_redirect();
+        
+        if(!$user->check_owned_calendar($_POST['idcalendar']))
+            throw new Exception("Current user does not own this calendar!");
+        
         $errors = [];
         $pseudo = NULL;
         if (isset($_POST['pseudo'])) 
@@ -104,7 +113,7 @@ class ControllerCalendar extends Controller {
             $read_only = isset($_POST['write']) ? 0 : 1;
             $idcalendar = $_POST['idcalendar'];
             
-            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
             {
                 $new_shared_user = User::get_user($pseudo);
 
@@ -124,12 +133,16 @@ class ControllerCalendar extends Controller {
     private function delete_share() 
     {
         $user = $this->get_user_or_redirect();
+        
+        if(!$user->check_owned_calendar($_POST['idcalendar']))
+            throw new Exception("Current user does not own this calendar!");
+        
         $errors = [];
         if (isset($_POST['iduser'])) {
             $iduser = $_POST['iduser'];
             $idcalendar = $_POST['idcalendar'];
             
-            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
             {
                 $share = Share::get_shared_calendar($iduser, $idcalendar);
                 $share->delete_share();
@@ -143,6 +156,10 @@ class ControllerCalendar extends Controller {
     
     private function edit() {
         $user = $this->get_user_or_redirect();
+        
+        if(!$user->check_owned_calendar($_POST['idcalendar']))
+            throw new Exception("Current user does not own this calendar!");
+        
         $errors = [];
 
         if (isset($_POST['description']) && 
@@ -153,7 +170,7 @@ class ControllerCalendar extends Controller {
             $color = $this->prepare_color($_POST['color']);
             $idcalendar = $_POST['idcalendar'];
             
-            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
             {
                 $calendar = new Calendar($description, $color, $user->iduser, $idcalendar);
                 $errors = $calendar->validate();
@@ -176,7 +193,7 @@ class ControllerCalendar extends Controller {
             $description = $_POST['description'];
             $color = $this->prepare_color($_POST["color"]);
             
-            if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
             {
                 $calendar = new Calendar($description, $color, $user->iduser);
                 $errors = $calendar->validate();
@@ -197,12 +214,16 @@ class ControllerCalendar extends Controller {
     //gestion du suivi d'un membre
     public function confirm_delete() {
         $user = $this->get_user_or_redirect();
+        
+        if(!$user->check_owned_calendar($_POST['idcalendar']))
+            throw new Exception("Current user does not own this calendar!");
+        
         if (isset($_POST["idcalendar"])) 
         {
             $idcalendar = $_POST["idcalendar"];
             if(isset($_POST["confirm"]) || !Calendar::hasEvents($idcalendar))
             {
-                if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+                if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
                 {
                     $calendar = Calendar::get_calendar($idcalendar);
                     $calendar->delete();
@@ -210,7 +231,7 @@ class ControllerCalendar extends Controller {
                 }
             }
             else if(isset($_POST["cancel"]))
-                if ($user->check_current_user($idcalendar)) // vérifie l'utilisateur courant
+                if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
                     $this->redirect("calendar","my_calendars");
             
             (new View("confirm_calendar_delete"))->show(array("idcalendar" => $idcalendar));
