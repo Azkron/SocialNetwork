@@ -53,57 +53,9 @@ class Event extends Model {
         
     }
     
-    
-    // $weekMod argument is the index of the week relative to the current week
-    public static function get_events_in_week($user, $weekMod = 0) 
+    public static function get_week(&$events, $start)
     {
-        $start = Date::monday($weekMod);
-        $finish = Date::sunday($weekMod);
-        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, -1 as read_only 
-                                FROM event, calendar WHERE event.idcalendar = calendar.idcalendar AND calendar.iduser = :iduser 
-                                AND ( 
-                                        (DATE(start) >= DATE(:start) AND DATE(start) <= DATE(:finish)) 
-                                        OR ( 
-                                            finish IS NOT NULL  
-                                            AND (DATE(start) <= DATE(:finish) AND DATE(finish) >= DATE(:start))
-                                            ) 
-                                    )
-                                UNION
-                                SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, read_only
-                                FROM event, calendar, share WHERE event.idcalendar = calendar.idcalendar AND calendar.idcalendar = share.idcalendar AND share.iduser = :iduser
-                                AND ( 
-                                        (DATE(start) >= DATE(:start) AND DATE(start) <= DATE(:finish)) 
-                                        OR ( 
-                                            finish IS NOT NULL  
-                                            AND (DATE(start) <= DATE(:finish) AND DATE(finish) >= DATE(:start))
-                                            ) 
-                                    )
-                                ", 
-                        array('iduser' => $user->iduser,
-                               'start' => $start->datetime_string(), 
-                               'finish' => $finish->datetime_string())
-        );
-        $data = $query->fetchAll();
-        
-        $events = [];
-        if(count($data) > 0)
-        {
-            foreach ($data as $row) 
-                $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
-                                       $row['finish'], $row['description'], $row['color'], $row['idevent'], $row['read_only']);
-            
-            //$week = [][]; Apparently not needed
-            return self::get_week($events, $start);
-        }
-        else
-            return NULL;
-        
-    }
-    
-    
-    private static function get_week(&$events, $start)
-    {
-        $week;
+        //$week;
         $day = $start;
         for($i=0; $i < 7; $i++) 
         {

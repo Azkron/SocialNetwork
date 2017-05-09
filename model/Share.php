@@ -32,6 +32,9 @@ class Share extends Model {
     }
 
     public function add_share() {
+        
+                if(!$user->check_owned_calendar($_POST['idcalendar']))
+                    throw new Exception("Current user does not own this calendar!");
         self::execute("INSERT INTO share(iduser, idcalendar, read_only) VALUES(?,?,?)", 
                        array($this->iduser, $this->idcalendar, $this->read_only));
         

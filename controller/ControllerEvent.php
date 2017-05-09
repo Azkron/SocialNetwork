@@ -21,7 +21,7 @@ class ControllerEvent extends Controller {
         if(!Calendar::calendars_exist($user))
             $errors[] = "You must own at least one calendar before being able to create an event";
         
-        (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => Event::get_events_in_week($user, $weekMod)));
+        (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => $user->get_events_in_week($weekMod)));
     }
     
     //page d'accueil. 
@@ -49,6 +49,10 @@ class ControllerEvent extends Controller {
         if(isset($_POST["create"]))
             if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['startDate'])) 
             {
+                
+                if(!$user->check_owned_calendar($_POST['idcalendar']))
+                    throw new Exception("Current user does not own this calendar!");
+                
                 $title = trim($_POST['title']);
                 $idcalendar = $_POST['idcalendar'];
                 
@@ -92,7 +96,7 @@ class ControllerEvent extends Controller {
                 }
             }
         
-        $calendars = Calendar::get_writable_calendars($user);
+        $calendars = $user->get_writable_calendars();
         (new View("create_event"))->show(array("calendars" => $calendars, "errors" => $errors, "title" => $title, "whole_day" => $whole_day, 
                                             "startDate" => $startDate, "startTime" => $startTime, "idcalendar" => $idcalendar, "finishDate" => $finishDate, "finishTime" => $finishTime,
                                             "description" => $description));
@@ -102,9 +106,14 @@ class ControllerEvent extends Controller {
     public function update_event()
     {
         $user = $this->get_user_or_redirect();
+        
+        
         $errors = [];
         if(isset($_POST['idevent']) && isset($_POST['weekMod']) && isset($_POST['read_only']))
         {
+            if(!$user->check_owned_event($_POST['idevent']))
+                throw new Exception("Current user does not own this event!");
+                
             if(isset($_POST['cancel']))
                 $this->redirect("event", "my_planning");
             if(isset($_POST['delete']))
@@ -167,7 +176,7 @@ class ControllerEvent extends Controller {
             
             $event = Event::get_event($_POST['idevent']);
             $event->read_only = $_POST['read_only'];
-            $calendars = Calendar::get_calendars($user);
+            $calendars = $user->get_calendars();
             (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
         }
         else 
@@ -177,8 +186,14 @@ class ControllerEvent extends Controller {
     
     
     private function delete() {
+        
+        $user = $this->get_user_or_redirect();
+        
         if (isset($_POST["idevent"])) 
         {
+            if(!$user->check_owned_event($_POST['idevent']))
+                throw new Exception("Current user does not own this event!");
+            
             $event = Event::get_event($_POST["idevent"]);
             $event->delete();
         } 

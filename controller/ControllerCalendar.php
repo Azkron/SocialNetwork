@@ -29,7 +29,7 @@ class ControllerCalendar extends Controller {
             else if(isset($_POST["create"]))
                 $errors = $this->create();
             
-            (new View("my_calendars"))->show(array("calendars" => Calendar::get_calendars($user),
+            (new View("my_calendars"))->show(array("calendars" => $user->get_calendars(),
                                                    "errors" => $errors));
         }
     }
@@ -221,18 +221,23 @@ class ControllerCalendar extends Controller {
         if (isset($_POST["idcalendar"])) 
         {
             $idcalendar = $_POST["idcalendar"];
-            if(isset($_POST["confirm"]) || !Calendar::hasEvents($idcalendar))
+            if(isset($_POST["cancel"]))
             {
                 if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
-                {
-                    $calendar = Calendar::get_calendar($idcalendar);
-                    $calendar->delete();
                     $this->redirect("calendar","my_calendars");
-                }
             }
-            else if(isset($_POST["cancel"]))
-                if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
-                    $this->redirect("calendar","my_calendars");
+            else
+            {
+                $calendar = Calendar::get_calendar($idcalendar);
+                if(isset($_POST["confirm"]) || !$calendar->hasEvents())
+                {
+                    if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
+                    {
+                        $calendar->delete();
+                        $this->redirect("calendar","my_calendars");
+                    }
+                } 
+            }
             
             (new View("confirm_calendar_delete"))->show(array("idcalendar" => $idcalendar));
         }
