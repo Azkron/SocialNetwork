@@ -6,6 +6,58 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="JS/jquery-3.1.1.min.js" type="text/javascript"></script>
+        <script src="JS/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
+        <script>
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
+                }
+            }, "Please enter a valid input.");
+            
+            $(function () {
+                $('form').each(function() { 
+                    // We define description here because $(this) doesn't work inside validate
+                    var description = $(this).find(".description").val();   
+                    $(this).validate({
+                        rules: {
+                            description: {
+                                remote: {
+                                    url: 'calendar/description_available_service',
+                                    type: 'post',
+                                    data:  {
+                                        description: function() { 
+                                            return description;
+                                        }
+                                    }
+                                },
+                                required: true,
+                                minlength: 3,
+                                maxlength: 50,
+                                regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
+                            }
+                        },
+                        messages: {
+                            description: {
+                                remote: 'this description is already taken',
+                                required: 'required',
+                                minlength: 'minimum 3 characters',
+                                maxlength: 'maximum 50 characters',
+                                regex: 'bad format for description'
+                            }
+                        }
+                    });
+                });  
+                
+                $("input:text:first").focus();
+            });
+        </script>
     </head>
     <body>
         <div class="title">My Calendars</div>
@@ -28,8 +80,11 @@
                     <div class="calendarDescription">
                         <?php if ($calendar->read_only == -1) :?>
                         <form class="calendarForm" action="calendar/my_calendars" method="post">
-                            <div class="description">
+                            <div class="calendarDescription">
                                 <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
+                                <br/>
+                                <label id="description-error" class="error" for="description"></label>
+                                
                             </div>
                             <div class="calendarColor">
                                 <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
@@ -52,7 +107,7 @@
                             
                         <?php endif; ?>
                     </div>
-            </div>         
+            </div>    
                     <?php endforeach; ?>
                 <?php endif; ?>
                 
@@ -60,6 +115,8 @@
                 <form class="calendarForm" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">
                         <input class="description" name="description" type="text" size="16" value="">
+                        <br/>
+                        <label id="description-error" class="error" for="description"></label>
                     </div>
                     <div class="calendarColor">
                         <input class="color" name="color" type="color" value="">

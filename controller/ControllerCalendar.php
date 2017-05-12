@@ -13,6 +13,17 @@ class ControllerCalendar extends Controller {
     public function index() {
         $this->my_calendars();
     }
+    
+    public function description_available_service(){
+        $res = "true";
+        if(isset($_POST["description"]) && $_POST["description"] !== ""){
+            $calendar = Calendar::get_calendar_by_description($_POST["description"]);
+            if($calendar != null){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 
     public function my_calendars() {
         $user = $this->get_user_or_redirect();
