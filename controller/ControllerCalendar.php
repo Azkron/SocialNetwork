@@ -193,14 +193,11 @@ class ControllerCalendar extends Controller {
             $description = $_POST['description'];
             $color = $this->prepare_color($_POST["color"]);
             
-            if ($user->check_owned_calendar($idcalendar)) // vérifie l'utilisateur courant
-            {
-                $calendar = new Calendar($description, $color, $user->iduser);
-                $errors = $calendar->validate();
+            $calendar = new Calendar($description, $color, $user->iduser);
+            $errors = $calendar->validate();
 
-                if(count($errors) == 0)
-                    $calendar->add_calendar();
-            }
+            if(count($errors) == 0)
+                $calendar->add_calendar();
        
         }
         else
