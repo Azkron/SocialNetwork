@@ -36,19 +36,39 @@
                             },
                             required: true,
                             minlength: 3,
-                            maxlength: 16,
+                            maxlength: 32,
                             regex: /^[a-zA-Z][a-zA-Z0-9]*$/
+                        },
+                        full_name: {
+                            required: false,
+                            maxlength: 250,
+                            regex: /^[a-zA-Z][a-zA-Z0-9]*$/
+                        },
+                        email: {
+                            remote: {
+                                url: 'main/email_available_service',
+                                type: 'post',
+                                data:  {
+                                    pseudo: function() { 
+                                        return $("#email").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 5,
+                            maxlength: 50,
+                            regex: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                         },
                         password: {
                             required: true,
                             minlength: 8,
-                            maxlength: 16,
+                            maxlength: 32,
                             regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/]
                         },
                         password_confirm: {
                             required: true,
                             minlength: 8,
-                            maxlength: 16,
+                            maxlength: 32,
                             equalTo: "#password",
                             regex: [/[A-Z]/, /\d/, /['";:,.\/?\\-]/]
                         }
@@ -58,19 +78,30 @@
                             remote: 'this pseudo is already taken',
                             required: 'required',
                             minlength: 'minimum 3 characters',
-                            maxlength: 'maximum 16 characters',
+                            maxlength: 'maximum 32 characters',
                             regex: 'bad format for pseudo'
+                        },
+                        full_name: {
+                            maxlength: 'maximum 250 characters',
+                            regex: 'bad format for full name'
+                        },
+                        email: {
+                            remote: 'this email is already taken',
+                            required: 'required',
+                            minlength: 'minimum 5 characters',
+                            maxlength: 'maximum 50 characters',
+                            regex: 'bad format for email'
                         },
                         password: {
                             required: 'required',
                             minlength: 'minimum 8 characters',
-                            maxlength: 'maximum 16 characters',
+                            maxlength: 'maximum 32 characters',
                             regex: 'bad password format'
                         },
                         password_confirm: {
                             required: 'required',
                             minlength: 'minimum 8 characters',
-                            maxlength: 'maximum 16 characters',
+                            maxlength: 'maximum 32 characters',
                             equalTo: 'must be identical to password above',
                             regex: 'bad password format'
                         }
@@ -102,7 +133,7 @@
                     </tr>
                     <tr>
                         <td>Email:</td>
-                        <td><input id="email" name="email" type="email" size="16" value="<?= $email ?>" required></td>
+                        <td><input id="email" name="email" type="text" size="16" value="<?= $email ?>" required></td>
                     </tr>
                     <tr>
                         <td>Password:</td>

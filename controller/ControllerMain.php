@@ -26,6 +26,17 @@ class ControllerMain extends Controller {
         }
         echo $res;
     }
+    
+    public function email_available_service(){
+        $res = "true";
+        if(isset($_POST["pseudo"]) && $_POST["pseudo"] !== ""){
+            $member = User::get_user_by_email($_POST["pseudo"]);
+            if($member != null){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 
     //gestion de la connexion d'un utilisateur
     public function login() {
