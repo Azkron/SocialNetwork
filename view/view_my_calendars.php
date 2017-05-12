@@ -22,18 +22,52 @@
             }, "Please enter a valid input.");
             
             $(function () {
-                $('form').each(function() { 
+                
+                $('#calendarCreate').validate({
+                        rules: {
+                            description: {
+                                remote: {
+                                    url: 'calendar/description_available_service', 
+                                    type: 'post',
+                                    data:  {
+                                        description: function() { 
+                                            return $("#descriptionCreate").val();
+                                        }
+                                    }
+                                },
+                                required: true,
+                                minlength: 3,
+                                maxlength: 50,
+                                regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
+                            }
+                        },
+                        messages: {
+                            description: {
+                                remote: 'this description is already taken',
+                                required: 'required',
+                                minlength: 'minimum 3 characters',
+                                maxlength: 'maximum 50 characters',
+                                regex: 'bad format for description'
+                            }
+                        }
+                    });
+                
+                $('.calendarEdit').each(function() { 
                     // We define description here because $(this) doesn't work inside validate
-                    var description = $(this).find(".description").val();   
+                    var description = $(this).find(".description").val();  
+                    var idcalendar = $(this).find(".idcalendar").val(); 
                     $(this).validate({
                         rules: {
                             description: {
                                 remote: {
-                                    url: 'calendar/description_available_service',
+                                    url: 'calendar/description_available_service_edit', 
                                     type: 'post',
                                     data:  {
                                         description: function() { 
                                             return description;
+                                        },
+                                        idcalendar: function() { 
+                                            return idcalendar;
                                         }
                                     }
                                 },
@@ -79,7 +113,7 @@
             <div class="calendarRow">
                     <div class="calendarDescription">
                         <?php if ($calendar->read_only == -1) :?>
-                        <form class="calendarForm" action="calendar/my_calendars" method="post">
+                        <form class="calendarForm calendarEdit" action="calendar/my_calendars" method="post">
                             <div class="calendarDescription">
                                 <input class="description" name="description" type="text" size="16" value="<?= $calendar->description; ?>">
                                 <br/>
@@ -90,7 +124,7 @@
                                 <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
                             </div>
                             <div class="calendarActions">
-                                <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
+                                <input type="hidden" class = "idcalendar" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
                                 <input class="btn" type="submit" name="edit" value="Edit">
                                 <input class="btn" type="submit" name="delete" value="Delete">
                                 <input class="btn" type="submit" name="share" value="Share">
@@ -112,9 +146,9 @@
                 <?php endif; ?>
                 
             <div class="calendarRow">
-                <form class="calendarForm" action="calendar/my_calendars" method="post">
+                <form class="calendarForm"  id="calendarCreate" action="calendar/my_calendars" method="post">
                     <div class="calendarDescription">
-                        <input class="description" name="description" type="text" size="16" value="">
+                        <input class="description" id="descriptionCreate" name="description" type="text" size="16" value="">
                         <br/>
                         <label id="description-error" class="error" for="description"></label>
                     </div>

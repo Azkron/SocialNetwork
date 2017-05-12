@@ -24,6 +24,17 @@ class ControllerCalendar extends Controller {
         }
         echo $res;
     }
+    
+    public function description_available_service_edit(){
+        $res = "true";
+        if(isset($_POST["description"]) && $_POST["description"] !== "" && isset($_POST["idcalendar"])){
+            $calendar = Calendar::get_calendar_by_description($_POST["description"]);
+            if($calendar != null && $calendar->idcalendar != $_POST["idcalendar"] ){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
 
     public function my_calendars() {
         $user = $this->get_user_or_redirect();
