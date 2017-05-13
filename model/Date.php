@@ -105,12 +105,17 @@ class Date {
         return $this->dateTime->format('Y-m-d H:i:s');
     }
     
-    public function date_input_string()// 1988-03-05 00:00:00
+    public function fullcalendar_string()// 1988-03-05 00:00:00
+    {
+        return $this->dateTime->format('Y-m-d\TH:i:s');
+    }
+    
+    public function date_input_string()// 1988-03-05 
     {
         return $this->dateTime->format('Y-m-d');
     }
     
-    public function hour_input_string()// 1988-03-05 00:00:00
+    public function hour_input_string()//  00:00:00
     {
         return $this->dateTime->format('H:i:s');
     }

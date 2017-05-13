@@ -14,7 +14,7 @@ and open the template in the editor.
 }
 
 body {
-    width       :700px;
+    width       :90%;
     margin      :20px auto;
     background  :white;
     border-style: double 6px;
@@ -25,6 +25,12 @@ body {
 html {
     background  : white;
 }
+
+#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
 
 .main {
     padding     : 20px;

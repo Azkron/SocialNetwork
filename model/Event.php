@@ -35,7 +35,19 @@ class Event extends Model {
         return true;
     } 
     
-    
+    public function fullcalendar_params()
+    {
+        $arr["id"] = $this->idevent;
+        $arr["title"] = $this->title;
+        $arr["allDay"] = $this->whole_day;
+        $arr["start"] = $this->start->fullcalendar_string();
+        $arr["end"] = $this->finish->fullcalendar_string();
+        $arr["editable"] = $this->read_only == 1 ? false : true;
+        $arr["color"] = $this->color;
+        $arr["description"] = $this->description;
+        $arr["idcalendar"] = $this->idcalendar;
+        return $arr;
+    }
     
     public static function get_event($idevent) 
     {
@@ -52,6 +64,7 @@ class Event extends Model {
         }       
         
     }
+    
     
     public static function get_week(&$events, $start)
     {

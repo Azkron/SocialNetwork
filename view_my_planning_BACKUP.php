@@ -10,99 +10,7 @@
         <link href='Lib/fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
         <script src="Lib/jquery-3.1.1.min.js" type="text/javascript"></script>
         <script src="Lib/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="Lib/moment.js" type="text/javascript"></script>
         <script src="Lib/fullcalendar-3.4.0/fullcalendar.min.js" type="text/javascript"></script>
-        <script>
-
-	$(document).ready(function() {
-            
-                /*$.get('event/json_test', function(data){
-                    console.log(data);
-                }, "json").fail(function(){
-                    console.log("Error encountered while retrieving the data!");
-                });
-                
-                $.get('event/get_events_json', { start: '2017-03-10', end: "2017-03-26" }, function(data){
-                    console.log(data);
-                }, "json").fail(function(){
-                    console.log("Error encountered while retrieving the events!");
-                });*/
-                
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,basicWeek,basicDay'
-			},
-			defaultDate: '2017-03-12',
-			navLinks: true, // can click day/week names to navigate views
-			editable: true,
-			eventLimit: true, // allow "more" link when too many events
-			events: 'event/get_events_json'
-            /*events: [
-				{
-					title: 'All Day Event',
-					start: '2017-03-01',
-                                        color: 'yellow',   // a non-ajax option
-                                        textColor: 'black'
-				},
-				{
-					title: 'Long Event',
-					start: '2017-03-07',
-					end: '2017-03-10'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: '2017-03-09T16:00:00'
-				},
-				{
-					id: 999,
-					title: 'Repeating Event',
-					start: '2017-03-16T16:00:00'
-				},
-				{
-					title: 'Conference',
-					start: '2017-03-11',
-					end: '2017-03-13'
-				},
-				{
-					title: 'Meeting',
-					start: '2017-03-12T10:30:00',
-					end: '2017-03-12T12:30:00'
-				},
-				{
-					title: 'Lunch',
-					start: '2017-03-12T12:00:00'
-				},
-				{
-					title: 'Meeting',
-					start: '2017-03-12T14:30:00'
-				},
-				{
-					title: 'Happy Hour',
-					start: '2017-03-12T17:30:00'
-				},
-				{
-					title: 'Dinner',
-					start: '2017-03-12T20:00:00'
-				},
-				{
-					title: 'Birthday Party',
-					start: '2017-03-13T07:00:00'
-				},
-				{
-					title: 'Click for Google',
-					url: 'http://google.com/',
-					start: '2017-03-28'
-				}
-			]*/
-		});
-		
-	});
-
-    </script>
-       
     </head>
     <body>
         <div class="title">My Planning</div>
@@ -110,8 +18,6 @@
             <a href="main/welcome">Back</a>
         </div>
         <div class="main">
-            
-	<div id='calendar'></div>
             <br><br>
                 <table>
                     <tr>

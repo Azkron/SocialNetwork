@@ -50,6 +50,46 @@ class User extends Model {
     }
     
     
+    public function get_events_json($start, $finish = NULL)
+    {
+        
+        $start = (new Date($start))->datetime_string();
+        if($finish != NULL)
+            $finish = (new Date($finish))->datetime_string();
+        
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, -1 as read_only
+                                    FROM event, calendar 
+                                    WHERE :iduser = calendar.iduser && calendar.idcalendar = event.idcalendar && 
+                                        ((start >= :start && start <= :finish) || (finish IS NOT NULL && (finish >= :start && finish <= :finish)))
+                                UNION
+                                SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color, read_only
+                                    FROM event, calendar, share 
+                                    WHERE :iduser = share.iduser && calendar.idcalendar = share.idcalendar && calendar.idcalendar = event.idcalendar && 
+                                        ((start >= :start && start <= :finish) || (finish IS NOT NULL && (finish >= :start && finish <= :finish)))
+                                ", 
+                                array('iduser' => $this->iduser, 'start' => $start, 'finish' =>$finish));
+        $data = $query->fetchAll();
+        
+        
+        
+        if ($query->rowCount() == 0) {
+            return NULL;
+        } else {
+            
+            $events = Array();
+            foreach ($data as $row) 
+                $events[] = new event($row['title'], $row['whole_day'], $row['start'], $row['idcalendar'],
+                                       $row['finish'], $row['description'], $row['color'], $row['idevent'], $row['read_only']);
+            
+            $fullcalendarArr = Array();
+            foreach($events as $event)
+                $fullcalendarArr[] = $event->fullcalendar_params();
+            
+            return json_encode($fullcalendarArr);
+        }    
+        
+    }
+    
     public function get_shared_users($idcalendar) {
         $query =  self::execute("SELECT user.iduser, pseudo, read_only, idcalendar FROM user, share
                                  WHERE share.iduser = user.iduser AND idcalendar = ? AND user.iduser != ?

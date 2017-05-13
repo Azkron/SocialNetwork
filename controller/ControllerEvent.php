@@ -29,6 +29,24 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
+    
+    public function json_test()
+    {
+        echo json_encode("JSON TEST");
+    }
+    
+    public function get_events_json()
+    {
+        $user = $this->get_user_or_redirect();
+        
+        if (isset($_GET["start"]) && isset($_GET["end"]))
+        {
+            echo $user->get_events_json($_GET["start"], $_GET["end"]);
+        } 
+        else 
+            throw new Exception("Missing start end parameters");
+    }
+    
     public function create_event()
     {
         $user = $this->get_user_or_redirect();
