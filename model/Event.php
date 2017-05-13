@@ -43,7 +43,7 @@ class Event extends Model {
         $arr["start"] = $this->start->fullcalendar_string();
         $arr["end"] = $this->finish->fullcalendar_string();
         $arr["editable"] = $this->read_only == 1 ? false : true;
-        $arr["color"] = $this->color;
+        $arr["color"] = "#".$this->color;
         $arr["description"] = $this->description;
         $arr["idcalendar"] = $this->idcalendar;
         return $arr;
