@@ -6,6 +6,11 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <link href='Lib/fullcalendar-3.4.0/fullcalendar.min.css' rel='stylesheet' />
+        <link href='Lib/fullcalendar-3.4.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+        <script src="Lib/jquery-3.1.1.min.js" type="text/javascript"></script>
+        <script src="Lib/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="Lib/fullcalendar-3.4.0/fullcalendar.min.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="title">My Planning</div>
