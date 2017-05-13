@@ -16,7 +16,7 @@ class ControllerCalendar extends Controller {
     
     public function description_available_service(){
         $res = "true";
-        if(isset($_POST["description"]) && $_POST["description"] !== ""){
+        if(isset($_POST["description"]) && $_POST["description"] != ""){
             $calendar = Calendar::get_calendar_by_description($_POST["description"]);
             if($calendar != null){
                 $res = "false";
@@ -27,7 +27,7 @@ class ControllerCalendar extends Controller {
     
     public function description_available_service_edit(){
         $res = "true";
-        if(isset($_POST["description"]) && $_POST["description"] !== "" && isset($_POST["idcalendar"])){
+        if(isset($_POST["description"]) && $_POST["description"] != "" && isset($_POST["idcalendar"])){
             $calendar = Calendar::get_calendar_by_description($_POST["description"]);
             if($calendar != null && $calendar->idcalendar != $_POST["idcalendar"] ){
                 $res = "false";

@@ -31,6 +31,7 @@
                                     type: 'post',
                                     data:  {
                                         description: function() { 
+                                            console.log( "sending description" );
                                             return $("#descriptionCreate").val();
                                         }
                                     }
@@ -63,10 +64,12 @@
                                     url: 'calendar/description_available_service_edit', 
                                     type: 'post',
                                     data:  {
-                                        description: function() { 
+                                        description: function() {
+                                            console.log(description);
                                             return description;
                                         },
                                         idcalendar: function() { 
+                                            console.log(idcalendar);
                                             return idcalendar;
                                         }
                                     }
@@ -150,7 +153,7 @@
                     <div class="calendarDescription">
                         <input class="description" id="descriptionCreate" name="description" type="text" size="16" value="">
                         <br/>
-                        <label id="description-error" class="error" for="description"></label>
+                        <label id="descriptionCreate-error" class="error" for="descriptionCreate"></label>
                     </div>
                     <div class="calendarColor">
                         <input class="color" name="color" type="color" value="">
