@@ -6,13 +6,71 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <script src="Lib/jquery-3.1.1.min.js" type="text/javascript"></script>
+        <script src="Lib/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
+        <script>
+            $.validator.addMethod("regex", function (value, element, pattern) {
+                if (pattern instanceof Array) {
+                    for(p of pattern) {
+                        if (!p.test(value))
+                            return false;
+                    }
+                    return true;
+                } else {
+                    return pattern.test(value);
+                }
+            }, "Please enter a valid input.");
+            
+            $(function () {
+                $('#updateEventForm').validate({
+                    rules: {
+                        title: {
+                            remote: {
+                                url: 'main/update_event_title_available_service',
+                                type: 'post',
+                                data:  {
+                                    pseudo: function() { 
+                                        console.log($("#title").val());
+                                        return $("#title").val();
+                                    }
+                                }
+                            },
+                            required: true,
+                            minlength: 3,
+                            maxlength: 50,
+                            regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
+                        },
+                        description: {
+                            minlength: null,
+                            maxlength: 500,
+                            regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
+                        }
+                    },
+                    messages: {
+                        title: {
+                            remote: 'this title is already taken',
+                            required: 'required',
+                            minlength: 'minimum 3 characters',
+                            maxlength: 'maximum 50 characters',
+                            regex: 'bad format for title'
+                        },
+                        description: {
+                            maxlength: 'maximum 500 characters',
+                            regex: 'bad format for description'
+                        }
+                    }
+                });
+                
+                $("input:text:first").focus();
+            });
+        </script>
     </head>
     <body>
         <div class="title">Update event</div>
         <div class="main">
             <br><br>
             <div class="tableForm">
-                <form class="eventForm" action="Event/update_event" method="post">
+                <form class="eventForm" id="updateEventForm"action="Event/update_event" method="post">
                     <table>
                         <tr>
                             <td>Title:</td>

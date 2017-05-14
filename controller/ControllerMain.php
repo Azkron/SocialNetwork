@@ -40,8 +40,8 @@ class ControllerMain extends Controller {
     
     public function email_available_service(){
         $res = "true";
-        if(isset($_POST["pseudo"]) && $_POST["pseudo"] != ""){
-            $member = User::get_user_by_email($_POST["pseudo"]);
+        if(isset($_POST["email"]) && $_POST["email"] != ""){
+            $member = User::get_user_by_email($_POST["email"]);
             if($member != null){
                 $res = "false";
             }
