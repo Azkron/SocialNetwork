@@ -112,7 +112,7 @@ class Calendar extends Model {
         $query = self::execute("SELECT COUNT(*) 
                                 FROM event
                                 WHERE idcalendar = :idcalendar", 
-                                array("idcalendar" => $this->$idcalendar));
+                                array("idcalendar" => $this->idcalendar));
         
         $data = $query->fetch();
         return $data[0] > 0;

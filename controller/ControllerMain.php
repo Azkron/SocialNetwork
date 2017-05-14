@@ -16,6 +16,17 @@ class ControllerMain extends Controller {
         }
     }
     
+    public function login_pseudo_available_service(){
+        $res = "true";
+        if(isset($_POST["pseudo"]) && $_POST["pseudo"] != ""){
+            $member = User::get_user($_POST["pseudo"]);
+            if($member == null){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
+    
     public function pseudo_available_service(){
         $res = "true";
         if(isset($_POST["pseudo"]) && $_POST["pseudo"] != ""){
