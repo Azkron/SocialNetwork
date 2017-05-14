@@ -29,9 +29,18 @@
                                 url: 'main/create_event_title_available_service',
                                 type: 'post',
                                 data:  {
-                                    pseudo: function() { 
+                                    /*pseudo: function() { 
                                         console.log($("#title").val());
                                         return $("#title").val();
+                                    }*/
+                                    title: function() { 
+                                        console.log($("#title").val());
+                                        return $("#title").val();
+                                    }
+                                    
+                                    idcalendar: function() { 
+                                        console.log($("#idcalendar").val());
+                                        return $("#idcalendar").val();
                                     }
                                 }
                             },
