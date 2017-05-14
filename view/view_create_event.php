@@ -41,7 +41,7 @@
                             regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
                         },
                         description: {
-                            required: false,
+                            minlength: null,
                             maxlength: 500,
                             regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
                         }
