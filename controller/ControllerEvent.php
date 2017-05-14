@@ -29,6 +29,28 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
+    public function update_event_title_available_service(){
+        $res = "true";
+        if(isset($_POST["title"]) && $_POST["title"] != ""){
+            $event = Event::get_event_by_title($_POST["title"]);
+            if($event != null){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
+    
+    public function create_event_title_available_service(){
+        $res = "true";
+        if(isset($_POST["title"]) && $_POST["title"] != ""){
+            $event = Event::get_event_by_title($_POST["title"]);
+            if($event != null){
+                $res = "false";
+            }
+        }
+        echo $res;
+    }
+    
     
     public function json_test()
     {

@@ -49,6 +49,22 @@ class Event extends Model {
         return $arr;
     }
     
+    public static function get_event_by_title($title) 
+    {
+        $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color
+                                FROM event, calendar WHERE title = :title", 
+                                array('title' => $title));
+        $data = $query->fetch();
+        
+        if ($query->rowCount() == 0) {
+            return NULL;
+        } else {
+            return new event($data["title"], $data["whole_day"], $data["start"], $data["idcalendar"],   
+                              $data["finish"], $data["description"], $data["color"], $data["idevent"]);
+        }       
+        
+    }
+    
     public static function get_event($idevent) 
     {
         $query = self::execute("SELECT idevent, start, finish, whole_day, title, event.description, event.idcalendar, color

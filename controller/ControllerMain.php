@@ -27,7 +27,7 @@ class ControllerMain extends Controller {
         echo $res;
     }
     
-    public function pseudo_available_service(){
+    public function signup_pseudo_available_service(){
         $res = "true";
         if(isset($_POST["pseudo"]) && $_POST["pseudo"] != ""){
             $member = User::get_user($_POST["pseudo"]);

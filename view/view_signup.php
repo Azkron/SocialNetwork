@@ -26,7 +26,7 @@
                     rules: {
                         pseudo: {
                             remote: {
-                                url: 'main/pseudo_available_service',
+                                url: 'main/signup_pseudo_available_service',
                                 type: 'post',
                                 data:  {
                                     pseudo: function() { 
