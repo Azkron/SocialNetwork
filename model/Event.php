@@ -52,7 +52,7 @@ class Event extends Model {
     public static function get_event_by_title($idcalendar, $title) 
     {
         $query = self::execute("SELECT * FROM event 
-                                WHERE title = ? AND idcalendar = ?", array($idcalendar, $title));
+                                WHERE idcalendar = ? AND title = ?", array($idcalendar, $title));
         $data = $query->fetch();
         
         if ($query->rowCount() == 0) {
