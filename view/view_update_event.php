@@ -26,12 +26,16 @@
                     rules: {
                         title: {
                             remote: {
-                                url: 'main/update_event_title_available_service',
+                                url: 'event/update_available_service',
                                 type: 'post',
                                 data:  {
-                                    pseudo: function() { 
+                                    title: function() { 
                                         console.log($("#title").val());
                                         return $("#title").val();
+                                    },                                   
+                                    idcalendar: function() { 
+                                        console.log($("#idcalendar").val());
+                                        return $("#idcalendar").val();
                                     }
                                 }
                             },
@@ -74,12 +78,12 @@
                     <table>
                         <tr>
                             <td>Title:</td>
-                            <td><input name="title" type="text" value="<?=$event->title?>"></td>
+                            <td><input id="title" name="title" type="text" value="<?=$event->title?>"></td>
                         </tr>
                         <tr>
                             <td>Calendar:</td>
                             <td>
-                                <select name="idcalendar">
+                                <select id="idcalendar" name="idcalendar">
                                     <?php
                                     if (count($calendars) != 0) 
                                         foreach($calendars as $calendar)
@@ -100,7 +104,7 @@
                         </tr>
                         <tr>
                             <td>Description:</td> 
-                            <td><textarea name="description" rows=4 cols=50><?=$event->description ?></textarea></td>
+                            <td><textarea id="description" name="description" rows=4 cols=50><?=$event->description ?></textarea></td>
                         </tr>
                         <tr>
                             <td>Start time:</td> 

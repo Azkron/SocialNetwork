@@ -29,10 +29,10 @@ class ControllerEvent extends Controller {
         $this->my_planning();
     }
     
-    public function update_event_title_available_service(){
+    public function update_available_service(){
         $res = "true";
-        if(isset($_POST["title"]) && $_POST["title"] != ""){
-            $event = Event::get_event_by_title($_POST["title"]);
+        if(isset($_POST["title"]) && $_POST["title"] != "" && isset($_POST["idcalendar"])){
+            $event = Event::get_event_by_title($_POST["idcalendar"], $_POST["title"]);
             if($event != null){
                 $res = "false";
             }
@@ -40,10 +40,10 @@ class ControllerEvent extends Controller {
         echo $res;
     }
     
-    public function create_event_title_available_service(){
+    public function create_available_service(){
         $res = "true";
-        if(isset($_POST["title"]) && $_POST["title"] != ""){
-            $event = Event::get_event_by_title($_POST["title"]);
+        if(isset($_POST["title"]) && $_POST["title"] != "" && isset($_POST["idcalendar"])){
+            $event = Event::get_event_by_title($_POST["idcalendar"], $_POST["title"]);
             if($event != null){
                 $res = "false";
             }
