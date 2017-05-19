@@ -29,7 +29,13 @@
                 }, "json").fail(function(){
                     console.log("Error encountered while retrieving the events!");
                 });*/
-                
+                /*var viewName = null;
+                var viewIntervalStart = null;
+                $.get( "main/get_view_session", function( data ) {
+                    if(data == "null")
+                        console.log("data == " + data);
+                  }, "json" );*/
+                  
                 var defaultViewCookie = $.cookie('defaultViewCookie');
                 var defaultDateCookie = $.cookie('defaultDateCookie');
                 
@@ -43,7 +49,8 @@
                         defaultView: defaultViewCookie != undefined ? defaultViewCookie : 'month',
                         viewRender: function(view) { 
                             $.cookie('defaultViewCookie', view.name); 
-                            $.cookie('defaultDateCookie', view.start.format()); 
+                            //$.cookie('defaultDateCookie', view.start.format()); 
+                            $.cookie('defaultDateCookie', view.intervalStart); 
                         },
 			navLinks: true, // can click day/week names to navigate views
 			editable: true,
