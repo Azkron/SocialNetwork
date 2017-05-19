@@ -13,23 +13,26 @@ class ControllerCalendar extends Controller {
     public function index() {
         $this->my_calendars();
     }
+
     
-    public function description_available_service(){
+    public function description_available_service_edit(){
+        $user = $this->get_user_or_redirect();
         $res = "true";
-        if(isset($_POST["description"]) && $_POST["description"] != ""){
-            $calendar = Calendar::get_calendar_by_description($_POST["description"]);
-            if($calendar != null){
+        if(isset($_POST["description"]) && $_POST["description"] != "" && isset($_POST["idcalendar"])){
+            $calendar = Calendar::get_calendar_by_description_id($_POST["description"], $_POST["idcalendar"]);
+            if($calendar != null ){
                 $res = "false";
             }
         }
         echo $res;
     }
     
-    public function description_available_service_edit(){
+    public function description_available_service(){
+        $user = $this->get_user_or_redirect();
         $res = "true";
-        if(isset($_POST["description"]) && $_POST["description"] != "" && isset($_POST["idcalendar"])){
+        if(isset($_POST["description"]) && $_POST["description"] != ""){
             $calendar = Calendar::get_calendar_by_description($_POST["description"]);
-            if($calendar != null && $calendar->idcalendar != $_POST["idcalendar"] ){
+            if($calendar != null){
                 $res = "false";
             }
         }

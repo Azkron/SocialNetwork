@@ -25,12 +25,24 @@ class Calendar extends Model {
         $this->owner_pseudo= $owner_pseudo;
     }
     
-    public static function get_calendar_by_description($description)
+    public static function get_calendar_by_description_id($description, $idcalendar)
     {
-        $query = self::execute("SELECT * FROM calendar where description = ?", array($description));
+        $query = self::execute("SELECT * FROM calendar where description = ? AND idcalendar != ?", 
+                 array($description, $idcalendar));
         $data = $query->fetch(); // un seul résultat au maximum
         if ($query->rowCount() == 0) 
-            return false;
+            return NULL;
+        else
+            return new calendar($data["description"], $data["color"], $data["iduser"], $data["idcalendar"]);
+    }
+    
+    public static function get_calendar_by_description($description)
+    {
+        $query = self::execute("SELECT * FROM calendar where description = ?", 
+                 array($description));
+        $data = $query->fetch(); // un seul résultat au maximum
+        if ($query->rowCount() == 0) 
+            return NULL;
         else
             return new calendar($data["description"], $data["color"], $data["iduser"], $data["idcalendar"]);
     }

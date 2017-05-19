@@ -31,7 +31,7 @@
                                     type: 'post',
                                     data:  {
                                         description: function() { 
-                                            console.log( "sending description" );
+                                            console.log($("#descriptionCreate").val());
                                             return $("#descriptionCreate").val();
                                         }
                                     }
@@ -55,18 +55,24 @@
                 
                 $('.calendarEdit').each(function() { 
                     // We define description here because $(this) doesn't work inside validate
-                    var description = $(this).find(".description").val();  
+//                    var description = $(this).find(".description").val();  
+                    var current = $(this);
                     var idcalendar = $(this).find(".idcalendar").val(); 
+//                        var description = $(this.description).val;
+//                        var idcalendar = $(this.idcalendar).val;
                     $(this).validate({
+                        onfocusout: function(element) {
+                            this.element(element);
+                        },
                         rules: {
                             description: {
                                 remote: {
                                     url: 'calendar/description_available_service_edit', 
                                     type: 'post',
                                     data:  {
-                                        description: function() {
-                                            console.log(description);
-                                            return description;
+                                        description: function() {                       
+                                            console.log(current.find(".description").val());
+                                            return current.find(".description").val();
                                         },
                                         idcalendar: function() { 
                                             console.log(idcalendar);
@@ -127,7 +133,7 @@
                                 <input class="color" name="color" type="color" <?php $color = $calendar->color; echo "value=\"#$color\""?>>
                             </div>
                             <div class="calendarActions">
-                                <input type="hidden" class = "idcalendar" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
+                                <input type="hidden" class="idcalendar" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
                                 <input class="btn" type="submit" name="edit" value="Edit">
                                 <input class="btn" type="submit" name="delete" value="Delete">
                                 <input class="btn" type="submit" name="share" value="Share">

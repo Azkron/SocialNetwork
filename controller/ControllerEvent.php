@@ -33,7 +33,7 @@ class ControllerEvent extends Controller {
         $res = "true";
         if(isset($_POST["title"]) && $_POST["title"] != "" && isset($_POST["idcalendar"])){
             $event = Event::get_event_by_title($_POST["idcalendar"], $_POST["title"]);
-            if($event != null){
+            if($event != null && $event->idcalendar != $_POST["idcalendar"]){
                 $res = "false";
             }
         }
@@ -44,7 +44,7 @@ class ControllerEvent extends Controller {
         $res = "true";
         if(isset($_POST["title"]) && $_POST["title"] != "" && isset($_POST["idcalendar"])){
             $event = Event::get_event_by_title($_POST["idcalendar"], $_POST["title"]);
-            if($event != null){
+            if($event != NULL){
                 $res = "false";
             }
         }
