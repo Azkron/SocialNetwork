@@ -168,7 +168,12 @@
                         <input class="btn" type="submit" value="Create calendar" name="create">
                     </div>
                 </form>         
-            </div>       
+            </div>
+            <div id="confirm_dialog" title="Confirm Message Deletion" hidden="true">
+                <p>Please confirm that you want to delete the calendar <b><span id="calendar_to_delete_body"></span></b>
+                    posted by <b><span id="calendar_to_delete_owner">!!!</p>
+                <p>This operation can't be reversed!</p>
+            </div>
             
             <?php
                 if(isset($errors))
