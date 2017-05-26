@@ -22,6 +22,10 @@
             }, "Please enter a valid input.");
             
             $(function () {
+                //$.cookie('defaultViewCookie', null, { path: '/' });
+                //$.cookie('defaultDateCookie', null, { path: '/' });
+
+                
                 $('#loginForm').validate({
                     rules: {
                         pseudo: {
@@ -30,7 +34,6 @@
                                 type: 'post',
                                 data:  {
                                     pseudo: function() {
-                                        console.log($("#pseudo").val())
                                         return $("#pseudo").val();
                                     }
                                 }

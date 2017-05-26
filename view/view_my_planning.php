@@ -48,9 +48,9 @@
 			defaultDate: defaultDateCookie != undefined ? moment(defaultDateCookie) : moment(),
                         defaultView: defaultViewCookie != undefined ? defaultViewCookie : 'month',
                         viewRender: function(view) { 
-                            $.cookie('defaultViewCookie', view.name); 
+                            $.cookie('defaultViewCookie', view.name, { path: '/' }); 
                             //$.cookie('defaultDateCookie', view.start.format()); 
-                            $.cookie('defaultDateCookie', view.intervalStart); 
+                            $.cookie('defaultDateCookie', view.intervalStart, { path: '/' }); 
                         },
 			navLinks: true, // can click day/week names to navigate views
 			editable: true,

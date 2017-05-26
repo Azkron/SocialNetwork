@@ -78,3 +78,16 @@ function parse(val)
     else
         alert("In parse(val) : Type not recognized!");
 }
+
+function getSession(name)
+{
+    $.post( "Main/get_session", { sessionName : name }, function( data ) {
+        console.log(data);
+        return data;
+      });
+}
+
+function setSession(name, value)
+{
+    $.post( "Main/set_session", { sessionName : name , sessionValue : value});
+}

@@ -6,8 +6,12 @@
         <base href="<?= $web_root ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="css/styles.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.theme.min.css" rel="stylesheet" type="text/css"/>
+        <link href="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.structure.min.css" rel="stylesheet" type="text/css"/>
         <script src="Lib/jquery-3.1.1.min.js" type="text/javascript"></script>
         <script src="Lib/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
+        <script src="lib/jquery-ui-1.12.1.ui-lightness/jquery-ui.min.js" type="text/javascript"></script>
         <script>
             $.validator.addMethod("regex", function (value, element, pattern) {
                 if (pattern instanceof Array) {
@@ -96,9 +100,35 @@
                             }
                         }
                     });
+                    
+                    var btnDelete = current.find(".btnDelete"); 
+                    btnDelete.attr("type","button");
+                    btnDelete.click(function () {
+                        var ret = null;
+                        $("#calendar_to_delete_body").html(current.find(".description").val());
+                        $('#confirmDialog').dialog({
+                            resizable: false,
+                            height: 300,
+                            width: 500,
+                            modal: true,
+                            autoOpen: true,
+                            buttons: {
+                                Oui: function () {
+                                    $.post( 'calendar/delete_calendar_ajax', { "idcalendar" : idcalendar});
+                                    current.parents(".calendarRow").remove();
+                                    $(this).dialog("close");
+                                },
+                                Non: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            close: function () {
+                            }
+                        });
+                    });
                 });  
                 
-                $("input:text:first").focus();
+                
             });
         </script>
     </head>
@@ -135,7 +165,7 @@
                             <div class="calendarActions">
                                 <input type="hidden" class="idcalendar" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>   
                                 <input class="btn" type="submit" name="edit" value="Edit">
-                                <input class="btn" type="submit" name="delete" value="Delete">
+                                <input class="btn btnDelete" type="submit" name="delete" value="Delete">
                                 <input class="btn" type="submit" name="share" value="Share">
                             </div>
                         </form>         
@@ -169,10 +199,9 @@
                     </div>
                 </form>         
             </div>
-            <div id="confirm_dialog" title="Confirm Message Deletion" hidden="true">
-                <p>Please confirm that you want to delete the calendar <b><span id="calendar_to_delete_body"></span></b>
-                    posted by <b><span id="calendar_to_delete_owner">!!!</p>
-                <p>This operation can't be reversed!</p>
+            <div id="confirmDialog" title="Confirm Message Deletion" hidden>
+                <p><b><span id="calendar_to_delete_body"></span></b> contains events ! Please confirm that you want to delete it anyway 
+                     !!!</p>
             </div>
             
             <?php

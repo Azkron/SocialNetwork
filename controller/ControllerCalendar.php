@@ -231,6 +231,21 @@ class ControllerCalendar extends Controller {
         return $errors;
     }
  
+    public function delete_calendar_ajax() {
+        $user = $this->get_user_or_redirect();
+        
+        if (isset($_POST["idcalendar"])) 
+        {
+            $idcalendar = $_POST["idcalendar"];
+            if(!$user->check_owned_calendar($idcalendar))
+                throw new Exception("Current user does not own this calendar!");
+            
+                $calendar = Calendar::get_calendar($idcalendar);
+                $calendar->delete();
+        }
+        else 
+            throw new Exception("Missing Calendar ID");
+    }   
 
     
     //gestion du suivi d'un membre

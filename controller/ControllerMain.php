@@ -104,5 +104,29 @@ class ControllerMain extends Controller {
         $user = $this->get_user_or_redirect();
         (new View("welcome"))->show(array("userPseudo" => $user->pseudo));
     }
+    
+    
+    public function set_session()
+    {
+        $user = $this->get_user_or_redirect();
+        if(isset($_POST["sessionName"]) && isset($_POST["sessionValue"]))
+        {
+            $_SESSION[$_POST["sessionName"]] = $_POST["sessionValue"];
+        }
+    }
+    
+    public function get_session()
+    {
+        $user = $this->get_user_or_redirect();
+        $session = null;
+        if(isset($_POST["sessionName"]))
+            if(isset($_SESSION[$_POST["sessionName"]]))
+                $session = $_SESSION[$_POST["sessionName"]];
+        
+        if($session == null)
+            echo "null";
+        else
+            echo $session;
+    }
 
 }
