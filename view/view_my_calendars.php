@@ -102,29 +102,43 @@
                     });
                     
                     var btnDelete = current.find(".btnDelete"); 
+                    var hasEvents;
+                    $.post( 'calendar/has_events_ajax', { "idcalendar" : idcalendar}, function( data ) {
+                                    hasEvents = JSON.parse(data);
+                                  });
+                                  
                     btnDelete.attr("type","button");
                     btnDelete.click(function () {
                         var ret = null;
                         $("#calendar_to_delete_body").html(current.find(".description").val());
-                        $('#confirmDialog').dialog({
-                            resizable: false,
-                            height: 300,
-                            width: 500,
-                            modal: true,
-                            autoOpen: true,
-                            buttons: {
-                                Oui: function () {
-                                    $.post( 'calendar/delete_calendar_ajax', { "idcalendar" : idcalendar});
-                                    current.parents(".calendarRow").remove();
-                                    $(this).dialog("close");
+                        
+                        if(!hasEvents)
+                        {
+                            $.post( 'calendar/delete_calendar_ajax', { "idcalendar" : idcalendar});
+                            current.parents(".calendarRow").remove();
+                        }
+                        else if(hasEvents)
+                        {
+                            $('#confirmDialog').dialog({
+                                resizable: false,
+                                height: 300,
+                                width: 500,
+                                modal: true,
+                                autoOpen: true,
+                                buttons: {
+                                    Oui: function () {
+                                        $.post( 'calendar/delete_calendar_ajax', { "idcalendar" : idcalendar});
+                                        current.parents(".calendarRow").remove();
+                                        $(this).dialog("close");
+                                    },
+                                    Non: function () {
+                                        $(this).dialog("close");
+                                    }
                                 },
-                                Non: function () {
-                                    $(this).dialog("close");
+                                close: function () {
                                 }
-                            },
-                            close: function () {
-                            }
-                        });
+                            });
+                        }
                     });
                 });  
                 
