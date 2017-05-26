@@ -35,7 +35,6 @@
         }
         
         function openEventForm() {
-            clearEventForm();
             $('#eventPopup').dialog({
                 resizable: false,
                 height: 500,
@@ -45,12 +44,17 @@
             });
         } 
         var isNew = 0;
+        var allDayChecked = false;
+        
+        function submitEvent()
+        {
+            
+        }
         
 	$(function() {
             
-            var defaultViewCookie = $.cookie('defaultViewCookie');
-            var defaultDateCookie = $.cookie('defaultDateCookie');
-
+            //var defaultViewCookie = $.cookie('defaultViewCookie');
+            //var defaultDateCookie = $.cookie('defaultDateCookie');
 
             $('#calendar').fullCalendar({
                     header: {
@@ -58,13 +62,16 @@
                             center: 'title',
                             right: 'month,basicWeek,basicDay'
                     },
+                    defaultDate: moment(),
+                    defaultView: 'month',
+                    /*
                     defaultDate: defaultDateCookie != undefined ? moment(defaultDateCookie) : moment(),
                     defaultView: defaultViewCookie != undefined ? defaultViewCookie : 'month',
                     viewRender: function(view) { 
-                        $.cookie('defaultViewCookie', view.name, { path: '/' }); 
+                        //$.cookie('defaultViewCookie', view.name, { path: '/' }); 
                         //$.cookie('defaultDateCookie', view.start.format()); 
-                        $.cookie('defaultDateCookie', view.intervalStart, { path: '/' }); 
-                    },
+                        //$.cookie('defaultDateCookie', view.intervalStart, { path: '/' }); 
+                    },*/
                     navLinks: true, // can click day/week names to navigate views
                     editable: true,
                     eventLimit: true, // allow "more" link when too many events
@@ -73,6 +80,7 @@
                         //$.redirect('event/update_event', { 'weekMod' : 0, 'idevent':event.id, read_only:(event.editable ? 0: 1) });
                         isNew = 0;
                         $("#eventCreate").hide();
+                        clearEventForm();
                         openEventForm();
                     },
                     dayClick: function(date, jsEvent, view) {
@@ -82,14 +90,19 @@
                         //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
 
                         isNew = 1;
+                        clearEventForm();
                         $("#eventUpdate").hide();
                         $("#eventDelete").hide();
-                        
+                        var dateString = date.format("YYYY-MM-DD");
+                        $("#eventStartDate").val(dateString);
                         openEventForm();
-
                     }
-
             });
+            
+            $('#eventStartDate').change(function() {
+                console.log($("#eventStartDate").val());
+            });
+           
             
             $("#eventCancel").click(function(){$("#eventPopup").dialog("close");});
 
@@ -97,11 +110,13 @@
                 if($(this).is(":checked")) {
                     $("#eventFinishTime").hide();
                     $("#eventStartTime").hide();
+                    allDayChecked = true;
                 }
                 else
                 {
                     $("#eventFinishTime").show();
                     $("#eventStartTime").show();
+                    allDayChecked = false;
                 }
                 
                 $("#eventForm").valid();
@@ -120,14 +135,20 @@
             }, "Please enter a valid input.");
             
             $.validator.addMethod("laterThanStartDate", function (value, element, pattern) {
-                return value == "" || value >= $("#eventStartDate").val();
-            }, "Must be equal or later than start date.");
+                if(allDayChecked)
+                    return value > $("#eventStartDate").val();
+                else
+                    return value >= $("#eventStartDate").val();
+            }, "Must be later than start date.");
             
             $.validator.addMethod("laterThanStartHour", function (value, element, pattern) {
-                return (($('#eventAllDay').is(":checked")) ||
-                        $("#eventFinishDate").val() == "" || $("#eventFinishDate").val() > $("#eventStartDate").val()) 
-                        || (value == "" || value >= $("#eventStartTime").val());
-            }, "Must be equal or later than start hour.");
+                if(allDayChecked)
+                    return true;
+                else
+                    return  ($("#eventFinishDate").val() == "" 
+                                || $("#eventFinishDate").val() > $("#eventStartDate").val()) 
+                                || (value == "" || value > $("#eventStartTime").val());
+            }, "Must be later than start hour.");
 
 
             $('#eventForm').validate({
@@ -163,14 +184,14 @@
                         required: true
                     },
                     finishDate: {
-                        required: function() { return !($('#eventAllDay').is(":checked")) && $("#eventFinishTime").val() != "";},
+                        required: function() { return !allDayChecked && $("#eventFinishTime").val() != "";},
                         laterThanStartDate: $("#eventFinishDate").val()
                     },
                     startTime: {
-                        required: function() { return !($('#eventAllDay').is(":checked"));}
+                        required: function() { return !allDayChecked;}
                     },
                     finishTime: {
-                        required: function() { return !($('#eventAllDay').is(":checked")) && $("#eventFinishDate").val() != "";},
+                        required: function() { return !allDayChecked && $("#eventFinishDate").val() != "";},
                         laterThanStartHour: $("#eventFinishTime").val()
                     }
                 },
@@ -200,10 +221,7 @@
                     }
                 }
             });
-            
-                
 	});
-
     </script>
        
     </head>
@@ -309,14 +327,14 @@
                         <td><textarea id="eventDescription" name="description" rows=4 cols=50 ></textarea></td>
                     </tr>
                     <tr>
-                        <td>Start time:</td> 
+                        <td>Start :</td> 
                         <td>
                             <input id="eventStartDate" class="datetime" name="startDate" type="date">
                             <input id="eventStartTime" class="datetime" name="startTime" type="time">
                         </td>
                     </tr>
                     <tr>
-                        <td>Finish time:</td>
+                        <td>Finish :</td>
                         <td>
                             <input id="eventFinishDate" class="datetime" name="finishDate"  type="date">
                             <input id="eventFinishTime" class="datetime" name="finishTime"  type="time">
