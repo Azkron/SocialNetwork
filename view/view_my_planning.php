@@ -21,7 +21,7 @@
         <script src="Lib/jquery.redirect.js" type="text/javascript"></script>
         <script>
 
-        var isNew = 0;
+        var isNew = false;
         var allDayChecked = false;
         var currEvent = null;
         
@@ -50,7 +50,7 @@
         
         function formToEvent(event)
         {
-            event.idcalendar = $("#eventIdCalendar").val();
+            event.idcalendar = $("#eventIdcalendar").val();
             event.color = $("#" + event.idcalendar + "color").val();
             event.title = $("#eventTitle").val();
             event.description = $("#eventDescription").val();  
@@ -60,10 +60,29 @@
             event.editable = 1;
         }
         
-        function submitEvent()
+        function eventToForm(event)
+        {
+            console.log(event.idcalendar);
+            $("#eventIdcalendar").val(event.idcalendar);
+            $("#eventTitle").val(event.title);
+            $("#eventDescription").val(event.description);  
+            $('#eventAllDay').prop('checked', event.allDay);
+            updateAllDay()
+            $("#eventStartDate").val(event.start.format("YYYY-MM-DD"));
+            $("#eventStartTime").val(event.start.format("HH-mm-ss"));
+            if(event.end != null)
+            {
+                $("#eventFinishDate").val(event.end.format("YYYY-MM-DD"));
+                $("#eventFinishTime").val(event.end.format("HH-mm-ss")); 
+            }
+            //event.editable = 1;
+        }
+        
+        function submitEventForm()
         {
             console.log("submit event");
             formToEvent(currEvent);
+            $('#calendar').fullCalendar('updateEvent', currEvent);
             
             postMap ={"title" : $("#eventTitle").val(), 
                         "idcalendar" : $("#eventIdcalendar").val(), 
@@ -77,15 +96,31 @@
             if(allDayChecked)
                postMap["whole_day"] = $("#eventAllDay").val();
            
-           if(isNew)
+            if(isNew)
                 $.post( 'event/create_event_ajax', postMap);
             else
             {
-                postMap["idevent"] = event.idevent;
+                postMap["idevent"] = currEvent.id;
+                console.log(postMap);
                 $.post( 'event/update_event_ajax', postMap);
             }
             
             $("#eventPopup").dialog("close");
+        }
+        
+        function updateAllDay()
+        {
+            if($('#eventAllDay').is(":checked")) {
+                $("#eventFinishTime").hide();
+                $("#eventStartTime").hide();
+                allDayChecked = true;
+            }
+            else
+            {
+                $("#eventFinishTime").show();
+                $("#eventStartTime").show();
+                allDayChecked = false;
+            }
         }
         
 	$(function() {
@@ -115,25 +150,34 @@
                     events: 'event/get_events_json',
                     eventClick: function(event, element) {
                         //$.redirect('event/update_event', { 'weekMod' : 0, 'idevent':event.id, read_only:(event.editable ? 0: 1) });
-                        isNew = 0;
-                        $("#eventCreate").hide();
+                        isNew = false;
                         clearEventForm();
-                        openEventForm();
+                        $("#eventCreate").hide();
+                        $("#eventUpdate").show();
+                        $("#eventDelete").show();
+                        eventToForm(event);
+                        
+                        openEventForm(event);
                     },
                     dayClick: function(date, jsEvent, view) {
 
                         //alert('Clicked on: ' + date.format());
 
                         //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                        console.log(jsEvent);
-                        isNew = 1;
+                        isNew = true;
                         clearEventForm();
+                        $("#eventCreate").show();
                         $("#eventUpdate").hide();
                         $("#eventDelete").hide();
-                        var dateString = date.format("YYYY-MM-DD");
-                        $("#eventStartDate").val(dateString);
+                        
+                        $("#eventStartDate").val(date.format("YYYY-MM-DD"));
                         openEventForm(jsEvent);
                     }
+            });
+            
+            $("#eventDelete").click(function(){
+                $.post( 'event/delete',{idevent : currEvent.id});
+                $('#calendar').fullCalendar('removeEvents', currEvent.id);
             });
             
             $('#eventStartDate').change(function() {
@@ -144,18 +188,7 @@
             $("#eventCancel").click(function(){$("#eventPopup").dialog("close");});
 
             $('#eventAllDay').change(function() {
-                if($(this).is(":checked")) {
-                    $("#eventFinishTime").hide();
-                    $("#eventStartTime").hide();
-                    allDayChecked = true;
-                }
-                else
-                {
-                    $("#eventFinishTime").show();
-                    $("#eventStartTime").show();
-                    allDayChecked = false;
-                }
-                
+                updateAllDay();
                 $("#eventForm").valid();
             });
 
@@ -343,7 +376,7 @@
         <input id='color' value="5" hidden/>
         
         <div id="eventPopup" class="tableForm" hidden>
-            <form class="eventForm" id="eventForm" action="javascript:submitEvent()" method="post">
+            <form class="eventForm" id="eventForm" action="javascript:submitEventForm()" method="post">
                 <table>
                     <tr>
                         <td>Title:</td>
@@ -397,7 +430,7 @@
                             <input id="eventCreate" class="btn" type="submit" name = "create" value="Create">
                             <input id="eventUpdate" class="btn" type="submit" name = "update" value="Update">
                             <input id="eventCancel" class="btn" type="button" name = "cancel" value="Cancel"> 
-                            <input id="eventDelete" class="btn" type="submit" name = "delete" value="Delete"> 
+                            <input id="eventDelete" class="btn" type="button" name = "delete" value="Delete"> 
                         </td>
                     </tr>                                     
                 </table>
