@@ -366,7 +366,7 @@ class ControllerEvent extends Controller {
 
     
     
-    private function delete() {
+    public function delete() {
         
         $user = $this->get_user_or_redirect();
         

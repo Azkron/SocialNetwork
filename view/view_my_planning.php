@@ -48,6 +48,35 @@
             });
         } 
         
+        
+        function clearEventShow()
+        {
+            $("#eventIdcalendar").html("");
+            $("#eventTitleShow").html("");
+            $("#eventDescriptionShow").html("");  
+            $('#eventAllDayShow').html("");
+            $("#eventStartShow").html("");
+            $("#eventStartShow").html("");
+        }
+        
+        function openEventShow(event) {
+            currEvent = event;
+            clearEventShow();
+            eventToShow(event);
+            $('#showEventPopup').dialog({
+                resizable: false,
+                height: 700,
+                width: 700,
+                modal: true,
+                autoOpen: true,
+                buttons: {
+                    Close: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        } 
+        
         function formToEvent(event)
         {
             event.idcalendar = $("#eventIdcalendar").val();
@@ -62,7 +91,6 @@
         
         function eventToForm(event)
         {
-            console.log(event.idcalendar);
             $("#eventIdcalendar").val(event.idcalendar);
             $("#eventTitle").val(event.title);
             $("#eventDescription").val(event.description);  
@@ -70,6 +98,7 @@
             updateAllDay()
             $("#eventStartDate").val(event.start.format("YYYY-MM-DD"));
             $("#eventStartTime").val(event.start.format("HH-mm-ss"));
+            
             if(event.end != null)
             {
                 $("#eventFinishDate").val(event.end.format("YYYY-MM-DD"));
@@ -78,9 +107,19 @@
             //event.editable = 1;
         }
         
+        function eventToShow(event)
+        {
+            $("#eventIdcalendar").html(event.idcalendar);
+            $("#eventTitleShow").html(event.title);
+            $("#eventDescriptionShow").html(event.description);  
+            $('#eventAllDayShow').html(event.allDay ? "This event lasts the whole day" : "");
+            $("#eventStartShow").html(event.start.format());
+            if(event.end != null)
+                $("#eventStartShow").html(event.end.format());
+        }
+        
         function submitEventForm()
         {
-            console.log("submit event");
             formToEvent(currEvent);
             $('#calendar').fullCalendar('updateEvent', currEvent);
             
@@ -150,14 +189,20 @@
                     events: 'event/get_events_json',
                     eventClick: function(event, element) {
                         //$.redirect('event/update_event', { 'weekMod' : 0, 'idevent':event.id, read_only:(event.editable ? 0: 1) });
-                        isNew = false;
-                        clearEventForm();
-                        $("#eventCreate").hide();
-                        $("#eventUpdate").show();
-                        $("#eventDelete").show();
-                        eventToForm(event);
-                        
-                        openEventForm(event);
+                        if(event.editable)
+                        {
+                            isNew = false;
+                            clearEventForm();
+                            $("#eventCreate").hide();
+                            $("#eventUpdate").show();
+                            $("#eventDelete").show();
+                            eventToForm(event);
+                            openEventForm(event);
+                        }
+                        else
+                        {
+                            openEventShow(event);
+                        }
                     },
                     dayClick: function(date, jsEvent, view) {
 
@@ -169,7 +214,6 @@
                         $("#eventCreate").show();
                         $("#eventUpdate").hide();
                         $("#eventDelete").hide();
-                        
                         $("#eventStartDate").val(date.format("YYYY-MM-DD"));
                         openEventForm(jsEvent);
                     }
@@ -435,6 +479,37 @@
                     </tr>                                     
                 </table>
             </form>
+        </div>
+        
+        <div id="showEventPopup"  hidden>
+                <table>
+                    <tr>
+                        <td>Title:</td>
+                        <td id="eventTitleShow"></td>
+                    </tr>
+                    <tr>
+                        <td>Calendar:</td>
+                        <td id="eventCalendarshow">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Description:</td> 
+                        <td id="eventDescriptionShow"></td>
+                    </tr>
+                    <tr>
+                        <td>Start :</td> 
+                        <td id="eventStartShow">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Finish :</td>
+                        <td id="eventFinishShow">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="eventAllDayShow"></td>
+                    </tr>                                      
+                </table>
         </div>
         
     </body>

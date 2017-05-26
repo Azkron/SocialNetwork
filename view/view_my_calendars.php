@@ -66,6 +66,9 @@
 //                        var description = $(this.description).val;
 //                        var idcalendar = $(this.idcalendar).val;
                     $(this).validate({
+                        submitHandler: function(form){
+                            form.submit();
+                        },
                         onfocusout: function(element) {
                             this.element(element);
                         },
