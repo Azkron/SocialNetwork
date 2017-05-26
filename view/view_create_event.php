@@ -30,11 +30,9 @@
                                 type: 'post',
                                 data:  {
                                     title: function() { 
-                                        console.log($("#title").val());
                                         return $("#title").val();
                                     },                                   
                                     idcalendar: function() { 
-                                        console.log($("#idcalendar").val());
                                         return $("#idcalendar").val();
                                     }
                                 }

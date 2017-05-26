@@ -21,13 +21,29 @@ class ControllerEvent extends Controller {
         if(!Calendar::calendars_exist($user))
             $errors[] = "You must own at least one calendar before being able to create an event";
         
-        (new View("my_planning"))->show(array("weekMod" => $weekMod, "errors" => $errors, "week" => $user->get_events_in_week($weekMod)));
+        
+        $calendars = $user->get_writable_calendars();
+        (new View("my_planning"))->show(array("calendars" => $calendars, "weekMod" => $weekMod, "errors" => $errors, "week" => $user->get_events_in_week($weekMod)));
     }
     
     //page d'accueil. 
     public function index() {
         $this->my_planning();
     }
+    
+    public function available_service(){
+        if(isset($_POST["isnewevent"]))
+        {
+            if($_POST["isnewevent"] == 1)
+                $this->create_available_service();
+            else
+                $this->update_available_service();
+        }
+        else
+            throw new Exception("inew has not been posted");
+                
+    }
+    
     
     public function update_available_service(){
         $res = "true";
@@ -51,11 +67,6 @@ class ControllerEvent extends Controller {
         echo $res;
     }
     
-    
-    public function json_test()
-    {
-        echo json_encode("JSON TEST");
-    }
     
     public function get_events_json()
     {
