@@ -245,6 +245,22 @@ class ControllerCalendar extends Controller {
         }
         else 
             throw new Exception("Missing Calendar ID");
+    } 
+    
+    public function has_events_ajax() {
+        $user = $this->get_user_or_redirect();
+        
+        if (isset($_POST["idcalendar"])) 
+        {
+            $idcalendar = $_POST["idcalendar"];
+            if(!$user->check_owned_calendar($idcalendar))
+                throw new Exception("Current user does not own this calendar!");
+            
+                $calendar = Calendar::get_calendar($idcalendar);
+                echo $calendar->hasEvents() ? "true" : "false";
+        }
+        else 
+            throw new Exception("Missing Calendar ID");
     }   
 
     
