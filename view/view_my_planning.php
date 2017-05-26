@@ -21,6 +21,9 @@
         <script src="Lib/jquery.redirect.js" type="text/javascript"></script>
         <script>
 
+        var isNew = 0;
+        var allDayChecked = false;
+        var currEvent = null;
         
         function clearEventForm()
         {
@@ -34,7 +37,8 @@
             $("#eventAllDay").val("");
         }
         
-        function openEventForm() {
+        function openEventForm(event) {
+            currEvent = event;
             $('#eventPopup').dialog({
                 resizable: false,
                 height: 500,
@@ -43,12 +47,45 @@
                 autoOpen: true
             });
         } 
-        var isNew = 0;
-        var allDayChecked = false;
+        
+        function formToEvent(event)
+        {
+            event.idcalendar = $("#eventIdCalendar").val();
+            event.color = $("#" + event.idcalendar + "color").val();
+            event.title = $("#eventTitle").val();
+            event.description = $("#eventDescription").val();  
+            event.allDay = allDayChecked;
+            event.start = $("#eventStartDate").val() + " " + $("#eventStartTime").val();
+            event.end = $("#eventFinishDate").val() + " " + $("#eventFinishTime").val(); 
+            event.editable = 1;
+        }
         
         function submitEvent()
         {
+            console.log("submit event");
+            formToEvent(currEvent);
             
+            postMap ={"title" : $("#eventTitle").val(), 
+                        "idcalendar" : $("#eventIdcalendar").val(), 
+                        "startDate" : $("#eventStartDate").val(), 
+                        "startTime" : $("#eventStartTime").val(), 
+                        "finishDate" : $("#eventFinishDate").val(), 
+                        "finishTime" : $("#eventFinishTime").val(), 
+                        "description" : $("#eventDescription").val()
+                        };
+                        
+            if(allDayChecked)
+               postMap["whole_day"] = $("#eventAllDay").val();
+           
+           if(isNew)
+                $.post( 'event/create_event_ajax', postMap);
+            else
+            {
+                postMap["idevent"] = event.idevent;
+                $.post( 'event/update_event_ajax', postMap);
+            }
+            
+            $("#eventPopup").dialog("close");
         }
         
 	$(function() {
@@ -88,14 +125,14 @@
                         //alert('Clicked on: ' + date.format());
 
                         //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-
+                        console.log(jsEvent);
                         isNew = 1;
                         clearEventForm();
                         $("#eventUpdate").hide();
                         $("#eventDelete").hide();
                         var dateString = date.format("YYYY-MM-DD");
                         $("#eventStartDate").val(dateString);
-                        openEventForm();
+                        openEventForm(jsEvent);
                     }
             });
             
@@ -135,7 +172,9 @@
             }, "Please enter a valid input.");
             
             $.validator.addMethod("laterThanStartDate", function (value, element, pattern) {
-                if(allDayChecked)
+                if(value == "")
+                    return true;
+                else if(allDayChecked)
                     return value > $("#eventStartDate").val();
                 else
                     return value >= $("#eventStartDate").val();
@@ -301,7 +340,7 @@
             </div>
         </div>
         
-        
+        <input id='color' value="5" hidden/>
         
         <div id="eventPopup" class="tableForm" hidden>
             <form class="eventForm" id="eventForm" action="javascript:submitEvent()" method="post">
@@ -320,6 +359,12 @@
                                         echo '<option value="'.$calendar->idcalendar.'" style="color:#'.$calendar->color.'">'.$calendar->description.'</option>';  
                                 ?>
                             </select>
+                            
+                            <?php
+                            if (count($calendars) != 0) 
+                                foreach($calendars as $calendar)
+                                    echo "<input id='".$calendar->idcalendar."color' value='#".$calendar->color."' type='hidden'/>";
+                            ?>
                         </td>
                     </tr>
                     <tr>

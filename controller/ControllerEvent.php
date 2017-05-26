@@ -153,6 +153,68 @@ class ControllerEvent extends Controller {
                                             "description" => $description));
     }
     
+    public function create_event_ajax()
+    {
+        $user = $this->get_user_or_redirect();
+        
+        if (!Calendar::calendars_exist($user))
+            throw new Exception("The calendar for this event does not exists");
+            //$this->redirect("event", "my_planning");
+        
+        $title = '';
+        $whole_day = '';
+        $startDate = '';
+        $startTime = '';
+        $finishDate = '';
+        $finishTime = '';
+        $description = '';
+        $idcalendar = NULL;
+        $errors = [];
+            if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['startDate'])) 
+            {
+                
+                if(!$user->check_owned_calendar($_POST['idcalendar']))
+                    throw new Exception("Current user does not own this calendar!");
+                
+                $title = trim($_POST['title']);
+                $idcalendar = $_POST['idcalendar'];
+                
+                $whole_day = isset($_POST['whole_day']) ? 1 : 0;
+
+                if($_POST['startDate'] != "")
+                    $startDate = $_POST['startDate'];
+                else
+                    $startDate = NULL;
+                
+                if(isset($_POST['startTime']) && $_POST['startTime'] != "")
+                    $startTime = $_POST['startTime'];
+                else
+                    $startTime = NULL;
+
+                if(isset($_POST['finishDate']) && $_POST['finishDate'] != "")
+                    $finishDate = $_POST['finishDate'];
+                else
+                    $finishDate = NULL;
+
+                if(isset($_POST['finishTime']) && $_POST['finishTime'] != "")
+                    $finishTime = $_POST['finishTime'];
+                else
+                    $finishTime = NULL;
+
+                if(isset($_POST['description']))
+                    $description = trim($_POST['description']);
+                else
+                    $description = NULL;
+                
+
+                $event = new event($title, $whole_day, $startDate.$startTime, $idcalendar, $finishDate.$finishTime, $description);
+                
+                $errors = $event->validate();
+                
+                if(count($errors) == 0)
+                    $event->add_event();
+            }
+    }
     
     public function update_event()
     {
@@ -229,6 +291,74 @@ class ControllerEvent extends Controller {
             $event->read_only = $_POST['read_only'];
             $calendars = $user->get_calendars();
             (new View("update_event"))->show(array("event" => $event, "errors" => $errors, "weekMod" => $_POST['weekMod'], "calendars" => $calendars));
+        }
+        else 
+            throw new Exception("Missing parameters for update event!");
+    }
+    
+    
+    
+    public function update_event_ajax()
+    {
+        $user = $this->get_user_or_redirect();
+        
+        
+        $errors = [];
+        if(isset($_POST['idevent']))
+        {
+            if(!$user->check_owned_event($_POST['idevent']))
+                throw new Exception("Current user does not own this event!");
+                
+                if (isset($_POST['title']) && isset($_POST['idcalendar']) && isset($_POST['startDate']) && isset($_POST['idevent'])) 
+                {
+                    $title = trim($_POST['title']);
+                    $idcalendar = $_POST['idcalendar'];
+                    $idevent = $_POST['idevent'];
+
+                    $whole_day = isset($_POST['whole_day']) ? 1 : 0;
+
+                    if($_POST['startDate'] != "")
+                        $startDate = $_POST['startDate'];
+                    else
+                        $startDate = NULL;
+
+                    if(isset($_POST['startTime']) && $_POST['startTime'] != "")
+                        $startTime = $_POST['startTime'];
+                    else
+                        $startTime = NULL;
+
+                    if(isset($_POST['finishDate']) && $_POST['finishDate'] != "")
+                        $finishDate = $_POST['finishDate'];
+                    else
+                        $finishDate = NULL;
+
+                    if(isset($_POST['finishTime']) && $_POST['finishTime'] != "")
+                        $finishTime = $_POST['finishTime'];
+                    else
+                        $finishTime = NULL;
+
+                    if(isset($_POST['description']))
+                        $description = trim($_POST['description']);
+                    else
+                        $description = NULL;
+
+                    $event = new Event($title, $whole_day, $startDate.$startTime, 
+                                    $idcalendar, $finishDate.$finishTime, $description, NULL, $idevent);
+                    
+                    $errors = $event->validate();
+
+                    if(count($errors) == 0)
+                    {
+                        $event->update();
+                        
+                        $this->redirect("event", "my_planning");
+                    }
+                    else
+                        throw new Exception($errors);
+                        
+                }
+                else
+                    throw new Exception("Missing parameters for event update!");
         }
         else 
             throw new Exception("Missing parameters for update event!");

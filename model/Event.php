@@ -41,7 +41,10 @@ class Event extends Model {
         $arr["title"] = $this->title;
         $arr["allDay"] = $this->whole_day;
         $arr["start"] = $this->start->fullcalendar_string();
-        $arr["end"] = $this->finish->fullcalendar_string();
+        if($this->finish != NULL)
+            $arr["end"] = $this->finish->fullcalendar_string();
+        else
+            $arr["end"] = "";
         $arr["editable"] = $this->read_only == 1 ? false : true;
         $arr["color"] = "#".$this->color;
         $arr["description"] = $this->description;
