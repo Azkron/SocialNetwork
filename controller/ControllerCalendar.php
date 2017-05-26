@@ -109,10 +109,12 @@ class ControllerCalendar extends Controller {
                 $errors = $share->validate_share();
                 if(count($errors) == 0)
                     $share->update_share();
+                else
+                    return $errors;
             }     
         }
         else
-            throw new Exception("Missing parameters for shared calendar edition!");
+            $errors[] = "Missing user for shared calendar edition!";
         
         return $errors;
         
@@ -147,10 +149,12 @@ class ControllerCalendar extends Controller {
                 $errors = $share->validate_share();
                 if (count($errors) == 0)
                     $share->add_share();
+                else
+                    return $errors;
             }
         }
         else
-            throw new Exception("Missing parameters for shared calendar creation!");
+            $errors[] = "Missing user for shared calendar edition!";
         
         return $errors;
     }    
