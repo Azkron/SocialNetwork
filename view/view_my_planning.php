@@ -37,14 +37,54 @@
             $("#eventAllDay").val("");
         }
         
-        function openEventForm(event) {
+        function openNewEventForm(event) {
             currEvent = event;
             $('#eventPopup').dialog({
                 resizable: false,
-                height: 500,
+                height: 700,
                 width: 700,
                 modal: true,
-                autoOpen: true
+                autoOpen: true,
+                buttons: {
+                    Create: function () {
+                        if($("#eventForm").valid())
+                        {
+                            submitEventForm();
+                            $(this).dialog("close");
+                        }
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        } 
+        
+        function openEditEventForm(event) {
+            currEvent = event;
+            $('#eventPopup').dialog({
+                resizable: false,
+                height: 700,
+                width: 700,
+                modal: true,
+                autoOpen: true,
+                buttons: {
+                    Update: function () {
+                        if($("#eventForm").valid())
+                        {
+                            submitEventForm();
+                            $(this).dialog("close");
+                        }
+                    },
+                    Cancel: function () {
+                        $(this).dialog("close");
+                    },
+                    Delete: function () {
+                        $.post( 'event/delete',{idevent : currEvent.id});
+                        $('#calendar').fullCalendar('removeEvents', currEvent.id);
+                        $(this).dialog("close");
+                    }
+                }
             });
         } 
         
@@ -97,12 +137,14 @@
             $('#eventAllDay').prop('checked', event.allDay);
             updateAllDay()
             $("#eventStartDate").val(event.start.format("YYYY-MM-DD"));
-            $("#eventStartTime").val(event.start.format("HH-mm-ss"));
+            console.log(event.start.format());
+            console.log(event.start.format("HH:mm:ss"));
+            $("#eventStartTime").val(event.start.format("HH:mm:ss"));
             
             if(event.end != null)
             {
                 $("#eventFinishDate").val(event.end.format("YYYY-MM-DD"));
-                $("#eventFinishTime").val(event.end.format("HH-mm-ss")); 
+                $("#eventFinishTime").val(event.end.format("HH:mm:ss")); 
             }
             //event.editable = 1;
         }
@@ -203,7 +245,7 @@
                             $("#eventUpdate").show();
                             $("#eventDelete").show();
                             eventToForm(event);
-                            openEventForm(event);
+                            openEditEventForm(event);
                         }
                         else
                         {
@@ -221,7 +263,7 @@
                         $("#eventUpdate").hide();
                         $("#eventDelete").hide();
                         $("#eventStartDate").val(date.format("YYYY-MM-DD"));
-                        openEventForm(jsEvent);
+                        openNewEventForm(jsEvent);
                     }
             });
             
@@ -428,7 +470,8 @@
         <input id='color' value="5" hidden/>
         
         <div id="eventPopup" class="tableForm" hidden>
-            <form class="eventForm" id="eventForm" action="javascript:submitEventForm()" method="post">
+            <form class="eventForm" id="eventForm"  method="post">
+                <!--action="javascript:submitEventForm()"-->
                 <table>
                     <tr>
                         <td>Title:</td>
@@ -473,7 +516,7 @@
                     <tr>
                         <td><input id="eventAllDay" type="checkbox" name="allDay" value="1">Whole day event</td>
                     </tr>    
-                    <tr>
+                    <!--<tr>
                         <td></td>
                         <td>
                             <input type="hidden" name="weekMod" />
@@ -484,7 +527,7 @@
                             <input id="eventCancel" class="btn" type="button" name = "cancel" value="Cancel"> 
                             <input id="eventDelete" class="btn" type="button" name = "delete" value="Delete"> 
                         </td>
-                    </tr>                                     
+                    </tr>   -->                                  
                 </table>
             </form>
         </div>

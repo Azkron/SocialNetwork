@@ -39,7 +39,7 @@ class Event extends Model {
     {
         $arr["id"] = $this->idevent;
         $arr["title"] = $this->title;
-        $arr["allDay"] = $this->whole_day;
+        $arr["allDay"] = $this->whole_day == 1 ? true : false;
         $arr["start"] = $this->start->fullcalendar_string();
         if($this->finish != NULL)
             $arr["end"] = $this->finish->fullcalendar_string();
