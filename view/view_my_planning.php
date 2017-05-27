@@ -51,7 +51,7 @@
         
         function clearEventShow()
         {
-            $("#eventIdcalendar").html("");
+            $("#eventCalendarShow").html("");
             $("#eventTitleShow").html("");
             $("#eventDescriptionShow").html("");  
             $('#eventAllDayShow').html("");
@@ -109,7 +109,10 @@
         
         function eventToShow(event)
         {
-            $("#eventIdcalendar").html(event.idcalendar);
+            $.post( 'calendar/calendar_sharing_name_ajax', {idcalendar : event.idcalendar}, function( data ) {
+                                    $("#eventCalendarShow").html(JSON.parse(data));
+                                });
+            //$("#eventCalendarShow").html("test calendar");
             $("#eventTitleShow").html(event.title);
             $("#eventDescriptionShow").html(event.description);  
             $('#eventAllDayShow').html(event.allDay ? "This event lasts the whole day" : "");
@@ -121,9 +124,9 @@
         function submitEventForm()
         {
             formToEvent(currEvent);
-            $('#calendar').fullCalendar('updateEvent', currEvent);
             
-            postMap ={"title" : $("#eventTitle").val(), 
+            var postMap ={
+                        "title" : $("#eventTitle").val(), 
                         "idcalendar" : $("#eventIdcalendar").val(), 
                         "startDate" : $("#eventStartDate").val(), 
                         "startTime" : $("#eventStartTime").val(), 
@@ -136,11 +139,14 @@
                postMap["whole_day"] = $("#eventAllDay").val();
            
             if(isNew)
+            {
+                $('#calendar').fullCalendar('renderEvent', currEvent , true);
                 $.post( 'event/create_event_ajax', postMap);
+            }
             else
             {
+                $('#calendar').fullCalendar('updateEvent', currEvent);
                 postMap["idevent"] = currEvent.id;
-                console.log(postMap);
                 $.post( 'event/update_event_ajax', postMap);
             }
             
@@ -233,7 +239,9 @@
 
             $('#eventAllDay').change(function() {
                 updateAllDay();
-                $("#eventForm").valid();
+                $("#eventStartTime").valid();
+                $("#eventFinishTime").valid();
+                $("#eventFinishDate").valid();
             });
 
             $.validator.addMethod("regex", function (value, element, pattern) {
@@ -489,7 +497,7 @@
                     </tr>
                     <tr>
                         <td>Calendar:</td>
-                        <td id="eventCalendarshow">
+                        <td id="eventCalendarShow">
                         </td>
                     </tr>
                     <tr>

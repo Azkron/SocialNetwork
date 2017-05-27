@@ -59,6 +59,17 @@ class ControllerCalendar extends Controller {
         }
     }
     
+    public function calendar_sharing_name_ajax()
+    {
+        if(isset($_POST["idcalendar"]))
+        {
+            $calendar = Calendar::get_calendar($_POST["idcalendar"]);
+            $user = User::get_user_by_iduser($calendar->iduser);
+            
+            echo json_encode($calendar->description." shared by ".$user->pseudo);
+        }
+    }
+    
     public function sharing_settings()
     {
         $user = $this->get_user_or_redirect();

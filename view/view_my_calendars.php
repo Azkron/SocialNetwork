@@ -130,12 +130,12 @@
                                 modal: true,
                                 autoOpen: true,
                                 buttons: {
-                                    Oui: function () {
+                                    Yes: function () {
                                         $.post( 'calendar/delete_calendar_ajax', { "idcalendar" : idcalendar});
                                         current.parents(".calendarRow").remove();
                                         $(this).dialog("close");
                                     },
-                                    Non: function () {
+                                    No: function () {
                                         $(this).dialog("close");
                                     }
                                 },
