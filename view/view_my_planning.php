@@ -163,6 +163,26 @@
                 $("#eventStartShow").html(event.end.format());
         }
         
+        function postEventUpdate(event)
+        {
+            $.post( 'event/update_event_ajax', postMap);
+            var postMap ={
+                        "title" : event.title, 
+                        "idcalendar" : event.idcalendar, 
+                        "startDate" : event.start.format("YYYY-MM-DD"), 
+                        "startTime" : event.start.format("HH:mm:ss"), 
+                        "finishDate" : event.end != null ? event.end.format("YYYY-MM-DD") : "", 
+                        "finishTime" : event.end != null ? event.end.format("HH:mm:ss") : "", 
+                        "description" : event.description,
+                        "idevent" : event.id
+                        };
+            if(event.allDay)
+               postMap["whole_day"] = event.allDay
+           
+           
+            $.post( 'event/update_event_ajax', postMap);
+        }
+        
         function submitEventForm()
         {
             formToEvent(currEvent);
@@ -232,7 +252,12 @@
                         //$.cookie('defaultDateCookie', view.intervalStart, { path: '/' }); 
                     },*/
                     navLinks: true, // can click day/week names to navigate views
-                    editable: true,
+                    eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+                        postEventUpdate(event);
+                        },
+                    eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+                        postEventUpdate(event);
+                    },
                     eventLimit: true, // allow "more" link when too many events
                     events: 'event/get_events_json',
                     eventClick: function(event, element) {
@@ -287,7 +312,10 @@
             });
 
             $.validator.addMethod("regex", function (value, element, pattern) {
-                if (pattern instanceof Array) {
+                console.log("value = " + value);
+                if(value == null || value == "")
+                    return  true;
+                else if (pattern instanceof Array) {
                     for(p of pattern) {
                         if (!p.test(value))
                             return false;
@@ -342,7 +370,6 @@
                         regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
                     },
                     description: {
-                        minlength: 3,
                         maxlength: 500,
                         regex: /^[a-zA-Z][\sa-zA-Z0-9]*$/
                     },
