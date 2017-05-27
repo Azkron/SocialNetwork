@@ -232,6 +232,7 @@
         
 	$(function() {
             
+            $("#onlyhtml").hide();
             //var defaultViewCookie = $.cookie('defaultViewCookie');
             //var defaultDateCookie = $.cookie('defaultDateCookie');
 
@@ -240,7 +241,7 @@
                             left: 'prev,next today',
                             center: 'title',
                             right: 'month,basicWeek,basicDay'
-                    },
+                    }, 
                     defaultDate: moment(),
                     defaultView: 'month',
                     /*
@@ -258,7 +259,7 @@
                     eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
                         postEventUpdate(event);
                     },
-                    eventLimit: true, // allow "more" link when too many events
+                    //eventLimit: true, // allow "more" link when too many events
                     events: 'event/get_events_json',
                     eventClick: function(event, element) {
                         //$.redirect('event/update_event', { 'weekMod' : 0, 'idevent':event.id, read_only:(event.editable ? 0: 1) });
@@ -426,75 +427,78 @@
         <div class="main">
             
 	<div id='calendar'></div>
-            <br><br>
-                <table>
-                    <tr>
-                        <td>
-                        <form class="buttonForm" action="event/my_planning" method="post">
-                            <input type="hidden" name="weekMod" value="<?=$weekMod-1; ?>"/>
-                            <input class="btn" type="submit" name="change_week" value="<< Previous week">
+        
+            <div id="onlyhtml">
+                <br><br>
+                    <table>
+                        <tr>
+                            <td>
+                            <form class="buttonForm" action="event/my_planning" method="post">
+                                <input type="hidden" name="weekMod" value="<?=$weekMod-1; ?>"/>
+                                <input class="btn" type="submit" name="change_week" value="<< Previous week">
+                            </form>
+                            </td>
+                            <td><h1>My Planning</h1></td>
+                            <td>
+                            <form class="buttonForm" action="event/my_planning" method="post">
+                                <input type="hidden" name="weekMod" value="<?=$weekMod+1; ?>"/>
+                                <input class="btn" type="submit" name="change_week" value="Next week >>">
+                            </form>
+                            </td>
+                    </table>
+                            <h2><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></h2>
+
+                <div class="events">
+                    <?php for ($i = 0; $i < 7; ++$i): ?>
+
+                    <div class="eventHeader">
+                        <div class="eventHour"><?=$day->day_string()?></div>
+                    </div>
+                            <?php if (count($week[$i]) != 0): ?>
+                                <?php foreach ($week[$i] as $event): ?>
+
+                    <div class="eventRow" title="<?= $event->description; ?>">
+                        <form class="buttonForm" action="event/update_event" method="post">
+                            <div style="color:#<?=$event->color?>" class="eventHour">
+                                <?= $event->get_time_string($day); ?>
+                            </div>
+                            <div style="color:#<?=$event->color?>" class="eventTitle">
+                                <?= $event->title; ?>
+                            </div>
+                            <?php if ($event->read_only != 1): ?>
+                            <div class="eventEdit">
+                                    <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                                    <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
+                                    <input type="hidden" name="read_only" value="<?= $event->read_only; ?>"/>
+                                    <input class="btn" type="submit" name="edit_event" value="Edit event">
+                            </div>
+
+                            <?php endif; ?>
                         </form>
-                        </td>
-                        <td><h1>My Planning</h1></td>
-                        <td>
-                        <form class="buttonForm" action="event/my_planning" method="post">
-                            <input type="hidden" name="weekMod" value="<?=$weekMod+1; ?>"/>
-                            <input class="btn" type="submit" name="change_week" value="Next week >>">
+                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+
+                            <?php $day->next_day();?>
+
+                        <?php endfor; ?>
+                    <div id="createEvent">
+                        <?php
+                            if(isset($errors))
+                                View::print_errors($errors);
+                        ?>
+                        <?php if (!isset($errors) || count($errors) <= 0): ?>
+                        <form class="buttonForm" action="event/create_event" method="post">
+                            <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
+                            <input class="btn" type="submit" value="create" name="create">
                         </form>
-                        </td>
-                </table>
-                        <h2><?php $day = Date::monday($weekMod);?><?=$day->week_string()?></h2>
-                
-            <div class="events">
-                <?php for ($i = 0; $i < 7; ++$i): ?>
-
-                <div class="eventHeader">
-                    <div class="eventHour"><?=$day->day_string()?></div>
-                </div>
-                        <?php if (count($week[$i]) != 0): ?>
-                            <?php foreach ($week[$i] as $event): ?>
-
-                <div class="eventRow" title="<?= $event->description; ?>">
-                    <form class="buttonForm" action="event/update_event" method="post">
-                        <div style="color:#<?=$event->color?>" class="eventHour">
-                            <?= $event->get_time_string($day); ?>
-                        </div>
-                        <div style="color:#<?=$event->color?>" class="eventTitle">
-                            <?= $event->title; ?>
-                        </div>
-                        <?php if ($event->read_only != 1): ?>
-                        <div class="eventEdit">
-                                <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                                <input type="hidden" name="idevent" value="<?= $event->idevent; ?>"/>
-                                <input type="hidden" name="read_only" value="<?= $event->read_only; ?>"/>
-                                <input class="btn" type="submit" name="edit_event" value="Edit event">
-                        </div>
-                        
                         <?php endif; ?>
-                    </form>
-                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-
-                        <?php $day->next_day();?>
-
-                    <?php endfor; ?>
-                <div id="createEvent">
-                    <?php
-                        if(isset($errors))
-                            View::print_errors($errors);
-                    ?>
-                    <?php if (!isset($errors) || count($errors) <= 0): ?>
-                    <form class="buttonForm" action="event/create_event" method="post">
-                        <input type="hidden" name="weekMod" value="<?= $weekMod; ?>"/>
-                        <input class="btn" type="submit" value="create" name="create">
-                    </form>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
+                        
         </div>
         
-        <input id='color' value="5" hidden/>
         
         <div id="eventPopup" class="tableForm" hidden>
             <form class="eventForm" id="eventForm"  method="post">
