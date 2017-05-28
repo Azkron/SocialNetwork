@@ -14,8 +14,6 @@ class ControllerCalendar extends Controller {
         $this->my_calendars();
     }
 
-    
-    // JQUERY VALIDATION FOR EDIT CALENDAR
     public function description_available_service_edit(){
         $user = $this->get_user_or_redirect();
         $res = "true";
