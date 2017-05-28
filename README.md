@@ -1,9 +1,11 @@
+NEW ERRORS:
+
+- in FullCalendar, if an event has a start and finish that covers at least 2 days AND the option whole day is checked, the box of the event only covers the first day and not the rest.
+
 20/03/2017      
 G10: Hugo Barbachano & Tidiane Toure
 
 I. Correction de la première itération
-
-
 
 Nous avons rectifié notre premier travail en suivant la série de recommandations reçue le 17/03/2017:
 
