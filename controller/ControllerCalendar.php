@@ -13,6 +13,15 @@ class ControllerCalendar extends Controller {
     public function index() {
         $this->my_calendars();
     }
+    
+    public function sharing_avalaible_service() {
+        if(isset($_POST['pseudo']))
+            $res = "true";
+        else 
+            $res = "false";
+        
+        echo $res;
+    }
 
     
     public function description_available_service_edit(){
@@ -85,7 +94,9 @@ class ControllerCalendar extends Controller {
                 $errors = $this->delete_share();
             }
             else if (isset($_POST["share_calendar"])) {
-                    $errors = $this->create_share();      
+//                if(isset($_POST['pseudo']))
+//                    var_dump ($_POST['pseudo']);
+                $errors = $this->create_share();      
             }            
         }
         else
@@ -165,7 +176,7 @@ class ControllerCalendar extends Controller {
             }
         }
         else
-            $errors[] = "Missing user for shared calendar edition!";
+            $errors[] = "Missing user for shared calendar creation!";
         
         return $errors;
     }    
