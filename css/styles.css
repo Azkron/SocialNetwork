@@ -14,12 +14,13 @@ and open the template in the editor.
 }
 
 body {
-    width       :90%;
+    width       :75%;
     margin      :20px auto;
     background  :white;
     border-style: double 6px;
     box-shadow  :6px 6px 6px #888;
     border-radius: 5px;
+    text-align:center;
 }
 
 html {
@@ -31,10 +32,26 @@ html {
 		margin: 0 auto;
 	}
 
+#selectCalendars
+{
+    width:200px;
+    margin:auto;
+    color : white;
+}
+
+#selectCalendars div{
+    
+    margin:5px;
+    border-radius:25px;
+    text-shadow: 2px 2px black;
+    box-shadow: 2px 2px 2px black;
+}
 
 .main {
     padding     : 20px;
+    max-width: 675px;
     text-align:center;
+    margin: auto;
      
 }
 

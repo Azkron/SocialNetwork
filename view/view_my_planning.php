@@ -24,6 +24,7 @@
         var isNew = false;
         var allDayChecked = false;
         var currEvent = null;
+        var hiddenCalendars = [];
         
         function clearEventForm()
         {
@@ -233,6 +234,7 @@
 	$(function() {
             
             $("#onlyhtml").hide();
+            $("#selectCalendars").show();
             //var defaultViewCookie = $.cookie('defaultViewCookie');
             //var defaultDateCookie = $.cookie('defaultDateCookie');
 
@@ -261,6 +263,10 @@
                     },
                     //eventLimit: true, // allow "more" link when too many events
                     events: 'event/get_events_json',
+                    eventRender: function(event, element) {
+                        if(hiddenCalendars["id" + event.idcalendar])
+                            $('#calendar').fullCalendar('removeEvents', event.id);
+                    },
                     eventClick: function(event, element) {
                         //$.redirect('event/update_event', { 'weekMod' : 0, 'idevent':event.id, read_only:(event.editable ? 0: 1) });
                         if(event.editable)
@@ -293,17 +299,26 @@
                     }
             });
             
-            $("#eventDelete").click(function(){
+            
+            $('.calendarSelectBox').each(function(){
+                hiddenCalendars["id" + $(this).val()] = false;
+                $(this).change(function(){
+                    hiddenCalendars["id" + $(this).val()] = !$(this).is(":checked");
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+                });
+                
+            });
+            /*$("#eventDelete").click(function(){
                 $.post( 'event/delete',{idevent : currEvent.id});
                 $('#calendar').fullCalendar('removeEvents', currEvent.id);
-            });
+            });*/
             
-            $('#eventStartDate').change(function() {
+            /*$('#eventStartDate').change(function() {
                 console.log($("#eventStartDate").val());
-            });
+            });*/
            
             
-            $("#eventCancel").click(function(){$("#eventPopup").dialog("close");});
+            /*$("#eventCancel").click(function(){$("#eventPopup").dialog("close");});*/
 
             $('#eventAllDay').change(function() {
                 updateAllDay();
@@ -415,6 +430,7 @@
                     }
                 }
             });
+            
 	});
     </script>
        
@@ -424,9 +440,19 @@
         <div class="menu">
             <a href="main/welcome">Back</a>
         </div>
-        <div class="main">
             
 	<div id='calendar'></div>
+        <div id="selectCalendars" hidden>
+            <?php
+            if (count($calendars) != 0) 
+                foreach($calendars as $calendar)
+                {   
+                    echo '<div style="background-color:#'.$calendar->color.'">'.$calendar->description;
+                    echo '<input class="calendarSelectBox" id="'.$calendar->idcalendar.'check" type="checkbox" value="'.$calendar->idcalendar.'" checked></div>';  
+                }
+            ?>
+        </div>
+        <div class="main">
         
             <div id="onlyhtml">
                 <br><br>
