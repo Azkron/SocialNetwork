@@ -1,7 +1,3 @@
-NEW ERRORS:
-
-- in FullCalendar, if an event has a start and finish that covers at least 2 days AND the option whole day is checked, the box of the event only covers the first day and not the rest.
-
 28/05/2017      
 G10: Hugo Barbachano & Tidiane Toure
 
@@ -35,8 +31,6 @@ Pour ce qui concerne les contraintes et les règles métiers, nous avons fait en
 II. Résume de l'itération finale
 
     Nous avons implémenté toutes les nouvelles fonctionnalités ainsi que les validations des formulaires avec le plugin jQuery Validation vu au cours.    
-
-    We have decided to set the event hour to 00:00 if none is given by default for the comfort of the user.
 
     Enfin, nous avons ajouté plusieurs fonctionnalités qui se remarque sur la page My Planning avec l'affiche du calendrier à l'aide du plugin jQuery FullCalendar:
         - Créer des événements via un click sur une partie vide du calendrier;
