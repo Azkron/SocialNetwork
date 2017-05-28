@@ -39,7 +39,7 @@
                         }
                     },
                     messages: {
-                        pseudoCreate: {
+                        pseudo: {
                             remote: 'required',
                             required: 'required',
                         }

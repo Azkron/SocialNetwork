@@ -94,8 +94,6 @@ class ControllerCalendar extends Controller {
                 $errors = $this->delete_share();
             }
             else if (isset($_POST["share_calendar"])) {
-//                if(isset($_POST['pseudo']))
-//                    var_dump ($_POST['pseudo']);
                 $errors = $this->create_share();      
             }            
         }
@@ -200,7 +198,7 @@ class ControllerCalendar extends Controller {
             }
         }
         else
-            throw new Exception("Missing parameters for shared calendar deletion!");
+            $errors[] = "Missing parameters for shared calendar deletion!";
         
         return $errors;
     }
