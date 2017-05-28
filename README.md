@@ -41,8 +41,10 @@ II. Résume de l'itération finale
     Enfin, nous avons ajouté plusieurs fonctionnalités qui se remarque sur la page My Planning avec l'affiche du calendrier à l'aide du plugin jQuery FullCalendar:
         - Créer des événements via un click sur une partie vide du calendrier;
         - Editer des événements via un click sur l'événement désiré
-        -
-        -
+        - Event drag´n´drop
+        - Event resize
+        - Dynamic calendar hidding
+
 
 
 
