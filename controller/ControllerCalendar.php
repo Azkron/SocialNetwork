@@ -14,16 +14,6 @@ class ControllerCalendar extends Controller {
         $this->my_calendars();
     }
     
-    public function sharing_avalaible_service() {
-        if(isset($_POST['pseudo']))
-            $res = "true";
-        else 
-            $res = "false";
-        
-        echo $res;
-    }
-
-    
     public function description_available_service_edit(){
         $user = $this->get_user_or_redirect();
         $res = "true";
