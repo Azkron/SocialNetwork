@@ -444,8 +444,8 @@
 	<div id='calendar'></div>
         <div id="selectCalendars" hidden>
             <?php
-            if (count($calendars) != 0) 
-                foreach($calendars as $calendar)
+            if (count($allCalendars) != 0) 
+                foreach($allCalendars as $calendar)
                 {   
                     echo '<div style="background-color:#'.$calendar->color.'">'.$calendar->description;
                     echo '<input class="calendarSelectBox" id="'.$calendar->idcalendar.'check" type="checkbox" value="'.$calendar->idcalendar.'" checked></div>';  
