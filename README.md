@@ -30,12 +30,11 @@ Nous avons rectifié notre second travail en suivant la série de recommandation
 
     DIVERS :
 
+Pour ce qui concerne les contraintes et les règles métiers, nous avons fait en sorte que toutes nos pages sont conformes au standard W3C HTML5 (vérifié à l'aide du validateur W3C), with the exception of the display of the events in the color of the calendar, we had to add the color="#.." in the html directly because we use the color palette.
 
 II. Résume de l'itération finale
 
-    Nous avons implémenté toutes les nouvelles fonctionnalités ainsi que les validations des formulaires avec le plugin jQuery Validation vu au cours.
-
-    Pour ce qui concerne les contraintes et les règles métiers, nous avons fait en sorte que toutes nos pages sont conformes au standard W3C HTML5 (vérifié à l'aide du validateur W3C), with the exception of the display of the events in the color of the calendar, we had to add the color="#.." in the html directly because we use the color palette.
+    Nous avons implémenté toutes les nouvelles fonctionnalités ainsi que les validations des formulaires avec le plugin jQuery Validation vu au cours.    
 
     We have decided to set the event hour to 00:00 if none is given by default for the comfort of the user.
 
@@ -47,6 +46,6 @@ II. Résume de l'itération finale
 
 
 
-I created test 2 users; 
+We created 2 users for testing; 
 Tid and Hugo
 The password for both users is EPFC2017.  <-the last char of the password is a dot (.)
