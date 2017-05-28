@@ -23,7 +23,8 @@ class ControllerEvent extends Controller {
         
         
         $calendars = $user->get_writable_calendars();
-        (new View("my_planning"))->show(array("calendars" => $calendars, "weekMod" => $weekMod, "errors" => $errors, "week" => $user->get_events_in_week($weekMod)));
+        $allCalendars = $user->get_calendars();
+        (new View("my_planning"))->show(array("calendars" => $calendars, "allCalendars" => $allCalendars, "weekMod" => $weekMod, "errors" => $errors, "week" => $user->get_events_in_week($weekMod)));
     }
     
     //page d'accueil. 
