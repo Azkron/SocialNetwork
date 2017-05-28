@@ -9,41 +9,19 @@
         <script src="Lib/jquery-3.1.1.min.js" type="text/javascript"></script>
         <script src="Lib/jquery-validation-1.16.0/jquery.validate.min.js" type="text/javascript"></script>
         <script>
-            $.validator.addMethod("regex", function (value, element, pattern) {
-                if (pattern instanceof Array) {
-                    for(p of pattern) {
-                        if (!p.test(value))
-                            return false;
-                    }
-                    return true;
-                } else {
-                    return pattern.test(value);
-                }
-            }, "Please enter a valid input.");
+            $.validator.addMethod("valueNotEquals", function(value, element, arg){
+                return arg != value;
+            }, "Value must not equal arg.");
             
             $(function () {
+                // configure your validation
                 $('#sharingCreateForm').validate({
-                    rules: {
-                        pseudo: {
-                            remote: {
-                                url: 'calendar/sharing_avalaible_service', 
-                                type: 'post',
-                                data:  {
-                                    pseudo: function() { 
-                                        console.log($("#pseudoCreate").val());
-                                        return $("#pseudoCreate").val();
-                                    }
-                                }
-                            },
-                            required: true,
-                        }
-                    },
-                    messages: {
-                        pseudo: {
-                            remote: 'required',
-                            required: 'required',
-                        }
-                    }
+                 rules: {
+                  pseudo: { valueNotEquals: "default" }
+                 },
+                 messages: {
+                  pseudo: { valueNotEquals: "Please select a user name!" }
+                 }  
                 });
                 
                 $("input:text:first").focus();
@@ -88,8 +66,8 @@
                     <form class="SharingForm" id="sharingCreateForm" action="calendar/sharing_settings" method="post">
                         <input type="hidden" name="idcalendar" value="<?= $calendar->idcalendar; ?>"/>
                         <div class="SharingPseudo">
-                            <select id="pseudoCreate" name="pseudo[]">
-                                <option selected disabled>Select pseudo</option>
+                            <select id="pseudoCreate" class="required" name="pseudo[]">
+                                <option selected disabled value="default">Select pseudo</option>
                                 <?php
                                 if (count($not_shared_users) != 0)
                                     foreach ($not_shared_users as $value)
